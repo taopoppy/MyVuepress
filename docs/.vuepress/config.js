@@ -1,4 +1,6 @@
 const constructSidebar = require('./sidebars/construct')
+const typescriptSidebar = require('./sidebars/typescript')
+const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
 module.exports = {
   title: 'VuePress',
   description: '陶振川',
@@ -12,10 +14,10 @@ module.exports = {
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
       {
-        text: 'language',
+        text: 'TypeScript系列',
         items: [
-          { text: 'javascript', link: '/javascript/' },
-          { text: 'typescript', link: '/typescript/' }
+          { text: 'TypeScript入门', link: '/typescript/' },
+          { text: 'TypeScript重构axios', link: '/typescript-axios/' }
         ]
       },
       // 下来列表产生分组
@@ -43,6 +45,8 @@ module.exports = {
     lastUpdated: 'Last Updated', // string | boolean
     sidebar: {
       '/construct/':constructSidebar,
+      '/typescript/': typescriptSidebar,
+      '/typescript-axios/': typescriptAxiosSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
@@ -57,16 +61,6 @@ module.exports = {
           children:[
             '/react/vue1',
             '/react/vue2'
-          ]
-        }
-      ],
-      '/language/':[
-        '/language/', // 这个就是language文件夹下面额README.md文件。不是下拉的格式
-        {
-          title:'js&ts',
-          children: [
-            '/language/javascript', //以docs为根目录来查找文件
-            '/language/typescript'
           ]
         }
       ]

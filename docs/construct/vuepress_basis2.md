@@ -72,7 +72,7 @@ git push -f git@github.com:taopoppy/myvuepress.git master:gh-pages
 cd -
 ```
 3. 我们需要在.vuepress/config中配置
-```js
+```typescript
 module.exports = {
   base: '/myvuepress/'
 }
@@ -84,8 +84,8 @@ bash deploy.sh
 5. 访问的路径就不再是taopoppy.github.io,而是taopoppy.github.io/myvuepress
 
 ## 绑定到独立的域名
-1. 买域名www.taopoppy.cn(你自己可以买喜欢的域名)
-2. 在控制台上ping出taopoppy.github.io的IP
+1. 买域名www.taopoppy.cn(这里是我买的域名，你自己需要买你自己的域名，买域名推荐到[万网](https://wanwang.aliyun.com/),在首页先查询并购买即可)
+2. 在控制台上ping出taopoppy.github.io的IP(这里将taopoppy.github.io换成你github的账号usename.github.io)
 ```
 ping taopoppy.github.io
 ```

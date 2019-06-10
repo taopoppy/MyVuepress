@@ -1,7 +1,7 @@
 # 本地构建
 
 ## 构建项目
-1. 首先需要的是我们要去下载git和node
+1. 首先需要的是我们要去下载git和node (这两个直接百度，下载都是无脑一路next的)
 2. E盘创建blog文件夹，进入blog，打开命令行，全局安装vuepress: 
 ```
 npm install -g vuepress
@@ -22,17 +22,30 @@ vuepress dev
 然后打开浏览器，输入提示的url即可看到最简单的blog了
 
 ## 配置文件
-1. docs文件夹下面创建.vuepress: mkdir .vuepress,然后进入.vuepress文件夹
-2. 在.vuepress文件夹下面创建config.js文件: touch config.js
-3. 回到blog文件夹下面去创建一个package.json文件：npm init -y
+1. docs文件夹下面创建.vuepress: 
+```
+mkdir .vuepress
+```
+然后进入.vuepress文件夹
+2. 在.vuepress文件夹下面创建config.js文件:
+```
+touch config.js
+```
+3. 回到blog文件夹下面去创建一个package.json文件：
+```
+npm init -y
+```
 4. 在config.js配置下面的代码：
-```js
+```javascript
 module.exports = {
   title: 'Hello VuePress',
   description: 'Just playing around'
 }
 ```
-5. 然后启动项目:vuepress dev docs
+5. 然后启动项目:
+```
+vuepress dev docs
+```
 
 ## 首页的配置和markdown
 1. 首页的配置是在docs下面的README.md，我们添加下面的代码
@@ -58,7 +71,7 @@ footer: MIT Licensed | Copyright © 2018-present Evan You
 
 3. 导航栏的配置和介绍
 + 导航栏的配置在.vuepress/config.js中配置themeConfig对象
-```js
+```typescript
 themeConfig: {
   nav: [
     { text: 'Home', link: '/' },
@@ -86,7 +99,7 @@ themeConfig: {
   └─ four.md
 ```
 + 接着，遵循以下的侧边栏配置：
-```js
+```typescript
 // .vuepress/config.js
 module.exports = {
   themeConfig: {
@@ -123,7 +136,7 @@ yarn add vuepress@next
 ## 安装back-to-top插件
 1. yarn add -D @vuepress/plugin-back-to-top@next
 2. 在config.js文件中添加下面的代码:
-```js
+```typescript
 module.exports = {
   plugins: ['@vuepress/back-to-top'] 
 }
