@@ -1,7 +1,7 @@
 # 上传到服务器
 
 ## 上传到github(方法一)
-1. 创建username.github.io的项目
+1. 在github上创建username.github.io的项目(这里的username指你的github用户名，我的是taopoppy，所以我创建的项目名称就是taopoppy.github.io),特别要注意的是这个命名方式是固定的，以这种形式创建项目，github就会自动开启Code Page功能，能直接通过域名https://username.github.io 访问你项目中的静态文件
 2. 在本地的vuepress项目中添加deploy.sh文件,内容如下：
 ```sh
 #!/usr/bin/env sh
@@ -31,6 +31,8 @@ git push -f git@github.com:taopoppy/taopoppy.github.io.git master
 cd -
 ```
 3. 在package.json中添加命令，如下：
++ <code>docs:dev</code>是用来在本地启动项目的命令
++ <code>docs:build</code>是用来打包的，打包的文件在docs/.vuepress/dist目录下
 ```json
 {
   "scripts": {
