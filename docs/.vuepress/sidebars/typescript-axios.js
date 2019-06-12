@@ -2,7 +2,7 @@
 module.exports = [
   '/typescript-axios/',
   {
-    title: '语法部分',
+    title: 'TS语法部分',
     children: [
       '/typescript-axios/basis_acquaintance',
       '/typescript-axios/basis_basictype',
@@ -16,9 +16,11 @@ module.exports = [
     ]
   },
   {
-    title: '进阶部分',
+    title: 'tzc-axios项目初始化',
     children: [
-      
+      '/typescript-axios/init_require',
+      '/typescript-axios/init_startinit',
+      '/typescript-axios/init_writebase',
     ]
   }
 ]

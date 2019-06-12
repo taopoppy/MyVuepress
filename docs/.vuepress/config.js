@@ -44,7 +44,7 @@ module.exports = {
     sidebarDepth: 3,
     lastUpdated: 'Last Updated', // string | boolean
     sidebar: {
-      '/construct/':constructSidebar,
+      '/construct/': constructSidebar,
       '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/react/':[
