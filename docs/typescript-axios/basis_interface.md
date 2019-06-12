@@ -212,6 +212,7 @@ class Clock implements ClockConstructor {
 }
 ```
 这里因为当一个类实现了一个接口时，只对其实例部分进行类型检查。constructor 存在于类的静态部分，所以不在检查的范围内。
+
 4. 所以通常和类相关的就是实例接口和构造器接口，上面的ClockInterface就是个实例接口，而ClockConstructor是构造器接口
 ```typescript
 interface ClockConstructor {                               // 构造器接口，返回的是ClockInterface实例接口类型
