@@ -22,5 +22,16 @@ module.exports = [
       '/typescript-axios/init_startinit',
       '/typescript-axios/init_writebase',
     ]
+  },
+  {
+    title: 'tzc-axios基础功能实现',
+    children: [
+      '/typescript-axios/basicfunc_url',
+      '/typescript-axios/basicfunc_data',
+      '/typescript-axios/basicfunc_header',
+      '/typescript-axios/basicfunc_response',
+      '/typescript-axios/basicfunc_response-header',
+      '/typescript-axios/basicfunc_reponse-data',
+    ]
   }
 ]

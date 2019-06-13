@@ -1,6 +1,6 @@
 # 编写基础请求代码
 
-我们这节课开始编写 `ts-axios` 库，我们的目标是实现简单的发送请求功能，即客户端通过 `XMLHttpRequest` 对象把请求发送到 server 端，server 端能收到请求并响应即可。
+我们开始编写 `tzc-axios` 库，我们的目标是实现简单的发送请求功能，即客户端通过 `XMLHttpRequest` 对象把请求发送到 server 端，server 端能收到请求并响应即可。
 
 我们实现 `axios` 最基本的操作，通过传入一个对象发送请求，如下：
 
@@ -31,7 +31,7 @@ export default axios
 
 这里 TypeScript 编译器会检查到错误，分别是 `config` 的声明上有隐含的 `any` 报错，以及代码块为空。代码块为空我们比较好理解，第一个错误的原因是因为我们给 TypeScript 编译配置的 `strict` 设置为 `true` 导致。
 
-### 编译配置文件 tsconfig.json
+**1. 编译配置文件 tsconfig.json**
 
 `tsconfig.json` 文件中指定了用来编译这个项目的根文件和编译选项，关于它的具体学习，我希望同学们去[官网](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)系统学习一下
 
@@ -41,7 +41,7 @@ export default axios
 
 我们讲 TypeScript 的基础时提到了 `--strictNullChecks`，其它的编译配置我建议同学们都去查看它的[官网文档](https://www.typescriptlang.org/docs/handbook/compiler-options.html)，把它当做手册去查阅即可。
 
-### 定义 AxiosRequestConfig 接口类型
+**2. 定义 AxiosRequestConfig 接口类型**
 
 接下来，我们需要给 `config` 参数定义一种接口类型。我们创建一个 `types` 目录，在下面创建一个 `index.ts` 文件，作为我们项目中公用的类型定义文件。
 
@@ -127,7 +127,7 @@ export default function xhr(config: AxiosRequestConfig): void {
 
 对于 `XMLHttpRequest` 的学习，我希望同学们去 [mdn](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) 上系统地学习一下它的一些属性和方法，当做参考资料，因为在后续的开发中我们可能会反复查阅这些文档资料。
 
-### 引入 xhr 模块
+**1. 引入 xhr 模块**
 
 编写好了 `xhr` 模块，我们就需要在 `index.ts` 中去引入这个模块，如下：
 
@@ -148,7 +148,7 @@ export default axios
 
 我们会利用 Node.js 的 [`express`](http://expressjs.com/) 库去运行我们的 demo，利用 [`webpack`](https://webpack.js.org/) 来作为 demo 的构建工具。
 
-### 依赖安装
+**1. 依赖安装**
 
 我们先来安装一些编写 demo 需要的依赖包，如下：
 
@@ -164,7 +164,7 @@ export default axios
 
 其中，`webpack` 是打包构建工具，`webpack-dev-middleware` 和 `webpack-hot-middleware` 是 2 个 `express` 的 `webpack` 中间件，`ts-loader` 和 `tslint-loader` 是 `webpack` 需要的 TypeScript 相关 loader，`express` 是 Node.js 的服务端框架，`body-parser` 是 `express` 的一个中间件，解析 `body` 数据用的。
 
-### 编写 webpack 配置文件
+**2. 编写 webpack 配置文件**
 
 在 `examples` 目录下创建 `webpack` 配置文件 `webpack.config.js`：
 
@@ -239,7 +239,7 @@ module.exports = {
 }
 ```
 
-### 编写 server 文件
+**3. 编写 server 文件**
 
 在 `examples` 目录下创建 `server.js` 文件：
 
@@ -269,13 +269,23 @@ app.use(express.static(__dirname))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const port = process.env.PORT || 8080
+const router = express.Router()
+
+router.get('/simple/get', function(req,res){
+  res.json({
+    msg: `Hello World`
+  })
+})
+app.use(router)
+
+const port = process.env.PORT || 8090
 module.exports = app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}, Ctrl+C to stop`)
 })
+
 ```
 
-### 编写 demo 代码
+**4. 编写 demo 代码**
 
 首先在 `examples` 目录下创建 `index.html` 和 `global.css`，作为所有 `demo` 的入口文件已全局样式文件。
 
@@ -286,11 +296,11 @@ module.exports = app.listen(port, () => {
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>ts-axios examples</title>
+    <title>tzc-axios examples</title>
     <link rel="stylesheet" href="/global.css">
   </head>
   <body style="padding: 0 20px">
-    <h1>ts-axios examples</h1>
+    <h1>tzc-axios examples</h1>
     <ul>
       <li><a href="simple">Simple</a></li>
     </ul>
@@ -367,7 +377,7 @@ router.get('/simple/get', function(req, res) {
 app.use(router)
 ```
 
-### 运行 demo
+**5. 运行 demo**
 
 接着我们在 `package.json` 中去新增一个 `npm script`：
 
