@@ -33,5 +33,12 @@ module.exports = [
       '/typescript-axios/basicfunc_response-header',
       '/typescript-axios/basicfunc_reponse-data',
     ]
+  }, 
+  {
+    title: 'tzc-axios异常情况处理',
+    children: [
+      '/typescript-axios/error_error',
+      '/typescript-axios/error_enhance'
+    ]
   }
 ]
