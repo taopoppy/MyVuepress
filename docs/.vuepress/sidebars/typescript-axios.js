@@ -40,5 +40,13 @@ module.exports = [
       '/typescript-axios/error_error',
       '/typescript-axios/error_enhance'
     ]
+  },
+  {
+    title: 'tzc-axios接口扩展',
+    children: [
+      '/typescript-axios/extend_entend',
+      '/typescript-axios/extend_overload',
+      '/typescript-axios/extend_generic'
+    ]
   }
 ]
