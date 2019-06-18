@@ -1,6 +1,7 @@
 const constructSidebar = require('./sidebars/construct')
 const typescriptSidebar = require('./sidebars/typescript')
 const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
+const FrontendSidebar = require('./sidebars/Front-end')
 module.exports = {
   title: 'VuePress',
   description: '陶振川',
@@ -18,6 +19,12 @@ module.exports = {
         items: [
           { text: 'TypeScript入门', link: '/typescript/' },
           { text: 'TypeScript重构axios', link: '/typescript-axios/' }
+        ]
+      },
+      {
+        text: '重学前端',
+        items: [
+          { text: '前端架构', link: '/Front-end/' },
         ]
       },
       // 下来列表产生分组
@@ -47,6 +54,7 @@ module.exports = {
       '/construct/': constructSidebar,
       '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
+      '/Front-end': FrontendSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
