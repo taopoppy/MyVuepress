@@ -48,5 +48,11 @@ module.exports = [
       '/typescript-axios/extend_overload',
       '/typescript-axios/extend_generic'
     ]
+  }, 
+  {
+    title: 'tzc-axios拦截器设计和实现',
+    children: [
+      '/typescript-axios/interceptor_interceptor'
+    ]
   }
 ]
