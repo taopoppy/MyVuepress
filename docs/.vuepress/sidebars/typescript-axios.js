@@ -54,5 +54,13 @@ module.exports = [
     children: [
       '/typescript-axios/interceptor_interceptor'
     ]
+  },
+  {
+    title: 'tzc-axios合并配置的设计和实现',
+    children: [
+      '/typescript-axios/config_merge',
+      '/typescript-axios/config_transform',
+      '/typescript-axios/config_create'
+    ]
   }
 ]
