@@ -141,3 +141,73 @@ module.exports = {
   plugins: ['@vuepress/back-to-top'] 
 }
 ```
+
+## 使用Mermaid去构建流程图
+**1. 安装Mermaid** 
+```javascript
+yarn add --dev mermaid@7.1.2
+```
+
+**2. 创建mermaid.vue组件**
+
++ 新建mermaid.vue组件，存储位置在docs/.vuepress/components
++ 在mermaid.vue写如下代码
+```javascript
+<template>
+  <div class="mermaid">
+    <slot></slot>
+  </div>
+</template>
+
+<script>
+export default {
+  mounted() {
+    import("mermaid/dist/mermaid").then(m => {
+      m.initialize({
+        startOnLoad: true
+      });
+      m.init();
+    });
+  }
+};
+</script>
+```
+
+**3. 使用vue组件**
++ 在 Markdown 中使用&lt;mermaid&gt;标签对启用 Mermaid 语法：
+```markdown
+<mermaid>
+  mermaid 语句块
+</mermaid>
+```
++ 关于mermaid的简单用法，推荐[这里](https://www.unaxu.com/blog/posts/005-one-how-to-generate-static-blog-with-vuepress.html#flowchart-%E6%B5%81%E7%A8%8B%E5%9B%BE)去阅读以下，如果想仔细研究一下，建议去[github官网](https://github.com/knsv/mermaid)看看,阅读[官网文档](https://mermaidjs.github.io/)
+
+**4. 简单实例**
++ markdown源码如下:
+```markdown
+<mermaid>
+graph TB
+  id1["shapeSquareRect: [方角矩形]"]
+  id2("shapeRoundedSquare: (圆角矩形)")
+  id3(("shapeCircle: ((圆形))"))
+  id4{"shapeRhombus: {菱形}"}
+  id5>"shapeAsymetric: >旗形]"]
+  id1 ==> id2
+  id2 ==> id3
+  id3 ==> id4
+  id4 ==> id5
+</mermaid>
+```
++ 效果图如下: 
+<mermaid>
+graph TB
+  id1["shapeSquareRect: [方角矩形]"]
+  id2("shapeRoundedSquare: (圆角矩形)")
+  id3(("shapeCircle: ((圆形))"))
+  id4{"shapeRhombus: {菱形}"}
+  id5>"shapeAsymetric: >旗形]"]
+  id1 ==> id2
+  id2 ==> id3
+  id3 ==> id4
+  id4 ==> id5
+</mermaid>

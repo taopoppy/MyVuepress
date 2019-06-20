@@ -19,6 +19,7 @@
     "vuepress": "^1.0.0-beta.2"
   },
   "devDependencies": {
-    "@vuepress/plugin-back-to-top": "^1.0.0-beta.2"
+    "@vuepress/plugin-back-to-top": "^1.0.0-beta.2",
+    "mermaid": "7.1.2"
   }
 }
