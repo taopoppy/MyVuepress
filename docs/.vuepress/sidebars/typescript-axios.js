@@ -62,5 +62,11 @@ module.exports = [
       '/typescript-axios/config_transform',
       '/typescript-axios/config_create'
     ]
+  }, 
+  {
+    title: 'tzc-axios取消功能实现',
+    children: [
+      '/typescript-axios/cancel_cancel'
+    ]
   }
 ]

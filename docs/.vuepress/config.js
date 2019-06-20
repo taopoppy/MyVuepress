@@ -9,6 +9,11 @@ module.exports = {
     ['link', { rel: 'icon', href: '/meta.png' }]    // 配置html页面meta的图标
   ],
   plugins: ['@vuepress/back-to-top'],               //  配置回到顶部的插件
+  // markdown: {
+  //   config: md => {
+  //     md.use(require('markdown-it-xxx'))
+  //   }
+  // },
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
