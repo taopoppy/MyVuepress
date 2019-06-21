@@ -56,7 +56,7 @@ module.exports = [
     ]
   },
   {
-    title: 'tzc-axios合并配置的设计和实现',
+    title: 'tzc-axios合并配置设计和实现',
     children: [
       '/typescript-axios/config_merge',
       '/typescript-axios/config_transform',
@@ -67,6 +67,19 @@ module.exports = [
     title: 'tzc-axios取消功能实现',
     children: [
       '/typescript-axios/cancel_cancel'
+    ]
+  },
+  {
+    title: 'tzc-axios更多功能',
+    children: [
+      '/typescript-axios/more_withCredentials',
+      '/typescript-axios/more_xsrf',
+      '/typescript-axios/more_updownload',
+      '/typescript-axios/more_auth',
+      '/typescript-axios/more_validateStatus',
+      '/typescript-axios/more_paramsSerializer',
+      '/typescript-axios/more_baseURL',
+      '/typescript-axios/more_basic'
     ]
   }
 ]
