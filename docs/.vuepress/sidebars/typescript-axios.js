@@ -81,5 +81,20 @@ module.exports = [
       '/typescript-axios/more_baseURL',
       '/typescript-axios/more_basic'
     ]
+  },
+  {
+    title: 'tzc-axios单元测试',
+    children: [
+      '/typescript-axios/jest_preface',
+      '/typescript-axios/jest_jest',
+      '/typescript-axios/jest_helpers',
+      '/typescript-axios/jest_requests',
+      '/typescript-axios/jest_headers',
+      '/typescript-axios/jest_instance',
+      '/typescript-axios/jest_interceptor',
+      '/typescript-axios/jest_mergeConfig',
+      '/typescript-axios/jest_cancel',
+      '/typescript-axios/jest_more'
+    ]
   }
 ]
