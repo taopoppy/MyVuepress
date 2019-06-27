@@ -2,8 +2,9 @@ const constructSidebar = require('./sidebars/construct')
 const typescriptSidebar = require('./sidebars/typescript')
 const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
 const FrontendSidebar = require('./sidebars/Front-end')
+const typescriptAxiosFontSidebar = require('./sidebars/typescript-axios-font')
 module.exports = {
-  title: 'VuePress',
+  title: 'TaoPoppy',
   description: '陶振川',
   head: [
     ['link', { rel: 'icon', href: '/meta.png' }]    // 配置html页面meta的图标
@@ -20,14 +21,15 @@ module.exports = {
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
       {
-        text: 'TypeScript系列',
+        text: 'TS系列',
         items: [
           { text: 'TypeScript入门', link: '/typescript/' },
-          { text: 'TypeScript重构axios', link: '/typescript-axios/' }
+          { text: 'TS重构axios前置学习', link: '/typescript-axios-font/' },
+          { text: 'TS重构axios项目开发', link: '/typescript-axios/' }
         ]
       },
       {
-        text: '重学前端',
+        text: '前端系列',
         items: [
           { text: '前端架构', link: '/Front-end/' },
         ]
@@ -59,7 +61,8 @@ module.exports = {
       '/construct/': constructSidebar,
       '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
-      '/Front-end': FrontendSidebar,
+      '/typescript-axios-font/':typescriptAxiosFontSidebar,
+      '/Front-end/': FrontendSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
