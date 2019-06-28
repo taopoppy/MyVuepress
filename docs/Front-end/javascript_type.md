@@ -1,4 +1,4 @@
-# javascript中的类型
+# JS中的六个基本类型
 
 JavaScript语言的每一个值都属于某一种数据类型。JavaScript语言规定了7种语言类型。语言类型广泛用于变量、函数参数、表达式、函数返回值等场合。根据最新的语言标准，这7种语言类型是：
 
@@ -269,3 +269,42 @@ console.log( Math.abs(0.1 + 0.2 - 0.3) <= Number.EPSILON);  // true
 ```
 
 ## Symbol 类型
+
+### 1. ECMA官网[定义](https://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types-symbol-type)
+`The Symbol type is the set of all non-String values that may be used as the key of an Object property (6.1.7).Each possible Symbol value is unique and immutable.Each Symbol value immutably holds an associated value called [[Description]] that is either undefined or a String value.`
+
+这句话的意思是: `Symbol类型是可用作Object属性的键的所有非String值的集合。每个可能的Symbol值都是唯一且不可变的。每个Symbol值都不可变地保存一个名为[[Description]]的关联值，该值是undefined的或String值。`
+
+### 2. Symbol类型描述和创建
+
+`symbol`是`ES6`新增的一种基本数据类型，它和`number`、`string`、`boolean`、`undefined`和`null`是同类型的,它用来表示独一无二的值，通过`Symbol`函数生成。在 ES6 之前，对象的属性名只能是字符串，这样会导致一个问题，当通过 mixin 模式为对象注入新属性的时候，就可能会和原来的属性名产生冲突 。而在 ES6 中，Symbol 类型也可以作为对象属性名，凡是属性名是 Symbol 类型的，就都是独一无二的，可以保证不会与其他属性名产生冲突。  
+
+我们使用Symbol函数生成一个symbol类型的值，注意，Symbol前面不能加关键字，直接调用即可，关于Symbol函数参数注意下面几点
++ 参数只是表示对当前 Symbol 值的描述，有无都可以，并不影响symbol类型值的唯一性
++ 参数类型无所谓，因为最终会转化为字符串
+```javascript
+const s1 = Symbol("lison");
+const s2 = Symbol("lison");
+console.log(s1 === s2); // false
+```
+
+### 作为属性名
+用`Symbol`作为对象的属性名时，不能直接通过点的方式访问属性和设置属性值。
+
++ 原因是：因为正常情况下，引擎会把点后面的属性名解析成字符串。但是ES6当中，对象的属性名支持表达式，可以使用一个变量作为属性名，属性名必须方括号[]内
++ 可利用: 由于symbol值的独一无二性，当它作为属性名，不会和其他属性名重复，所以ES6中类会利用这个特性实现私有属性和私有方法
+
+...未完待续
+
+
+
+
+PS:到目前为止，我们讲述了关于javascript中关于变量和类型的知识，这些知识都是进阶的知识，可能在写代码的时候很多东西都用不到，或者你感觉不到，但是这些知识是真正能让你更加了解JS的必经之路，也会让你在书写JS代码的时候更清楚的知道自己在写什么，获得安全感
+
+## 参考资料: 
+
+1. [ECMA官网文档](https://www.ecma-international.org)
+2. [MDN官网文档](https://developer.mozilla.org)
+3. [细说JavaScript七种数据类型](https://www.cnblogs.com/onepixel/p/5140944.html)
+4. [你真的掌握变量和类型了么](https://juejin.im/post/5cec1bcff265da1b8f1aa08f#heading-29)
+5. [零基础学透typescript](https://www.imooc.com/read/35/article/343)
