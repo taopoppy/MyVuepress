@@ -166,6 +166,22 @@ graph LR
   H --> O["自身可枚举，原型可枚举"]
 </mermaid>
 
+我们怎么去记忆这幅图?首先5个遍历方法，我们可以按照输出的方位从大到小来记忆:
+记忆的顺序: `for...in` > `Reflect.ownKeys()` > `getOwnPropertySymbols()` > `getOwnPropertyNames()` > `Object.keys()`
+<mermaid>
+graph LR
+  A["for...in"] -->B["Reflect.ownKeys()"]
+  B --> C["Object.getOwnPropertySymbols()"]
+  B --> D["Objcet.getOwnPropertyNames()"]
+  D --> E["Object.keys()"]
+</mermaid>
+
+为什么这样排序，因为`for...in`不仅能输出对象本身上的可枚举属性，还能输出原型上的可枚举属性，所以它是老大，范围最大，过来是`Reflect.ownKeys()`,它只能输出对象本身上的属性，所以比`for...in`范围就小一下，但是它能输出对象本身所有属性，所以相对于后面三个，它就是对象本身属性输出最全的，排老二。过来是`getOwnPropertySymbols()`，最后`getOwnPropertyNames()`和 `Object.keys()`连在一起是有原因的，因为`getOwnPropertyNames()`输出可枚举和不可枚举，现在`Object.keys()`的输出是它的子集，而且按照上面的图你还能看见`getOwnPropertySymbols()`和`getOwnPropertyNames()`长的很像，上下并列也有助于加深记忆，所以按照这样的顺序你记忆保证不会忘。
+
+
+
+
+
 **参考资料**
 1. [JS常用方法整理-遍历对象](https://cloud.tencent.com/developer/article/1195953)
 2. [js中遍历对象（5种）和遍历数组（6种）的方法总结](http://www.php.cn/js-tutorial-408347.html)
