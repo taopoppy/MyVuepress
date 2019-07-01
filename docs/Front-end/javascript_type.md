@@ -288,20 +288,44 @@ const s2 = Symbol("lison");
 console.log(s1 === s2); // false
 ```
 
-### 作为属性名
+### 3. 作为属性名
 用`Symbol`作为对象的属性名时，不能直接通过点的方式访问属性和设置属性值。
 
 + 原因是：因为正常情况下，引擎会把点后面的属性名解析成字符串。但是ES6当中，对象的属性名支持表达式，可以使用一个变量作为属性名，属性名必须方括号[]内
 + 可利用: 由于symbol值的独一无二性，当它作为属性名，不会和其他属性名重复，所以ES6中类会利用这个特性实现私有属性和私有方法
+```javascript
+let name = Symbol();
+let obj = {
+  [name]: "lison",
+  name: 'taopoppy'
+};
+console.log(obj)         // {Symbol(): 'lison'}
+console.log(obj[name])   // 'lison'
+console.log(obj['name']) // 'taopoppy'
+console.log(obj.name)    // 'taopoppy'
+```
 
-...未完待续
+我们知道通过`Object.getOwnPropertySymbols()`和`Reflect.ownKeys()`两种方法去获得`Symbol`类型的属性名，两者的区别是`Object.getOwnPropertySymbols()`输出对象自身的所有Symbol属性,而`Reflect.ownKeys()`除了输出自身的所有Symbol还输出可枚举和不可枚举的属性名,如果你想知道更多，点击查看[JS对象属性遍历](https://www.taopoppy.cn/Front-end/javascriptKnowladge_PropNameForEach.html)
+
+### 4. 两个静态方法
+**`Symbol.for()`**
+  + 它接受一个字符串作为参数，然后全局搜索有没有以该参数作为名称的`Symbol`值。如果有，就返回这个`Symbol`值，否则就新建并返回一个以该字符串为名称的`Symbol`值。使用这个方法创建的`symbol`值会在全局范围进行注册。这个注册范围包括当前页面和页面中包含的`iframe`，以及`service sorker`
+
+  + `Symbol.for()`也可以生成`Symbol`值，它和`Symbol()`的区别是：`Symbol.for()`方法在创建`Symbol`值之前会在全局环境中<font color=#3eaf7c>查找</font>，在创建之后会在全局环境中将生成的`Symbol`<font color=#3eaf7c>登记</font>供搜索使用。而`Symbol()`方法没有查找和登记这两个过程。
+
+**`Symbol.keyFor()`**
+  + 该方法传入一个symbol值，返回该值在全局注册的键名
+    ```javascript
+    const name = Symbol.for('name')
+    console.log(Symbol.keyFor(name)) //'name' 
+    ```
+### 5. 更多
+关于Symbol的更多内容，我们开设了一个`Symbol`的[专题](https://www.taopoppy.cn/Front-end/javascriptKnowladge_Symbol.html),在这里我们会更深入的去讲解关于Symbol的知识
 
 
 
 
-PS:到目前为止，我们讲述了关于javascript中关于变量和类型的知识，这些知识都是进阶的知识，可能在写代码的时候很多东西都用不到，或者你感觉不到，但是这些知识是真正能让你更加了解JS的必经之路，也会让你在书写JS代码的时候更清楚的知道自己在写什么，获得安全感
-
-## 参考资料: 
+**参考资料**: 
 
 1. [ECMA官网文档](https://www.ecma-international.org)
 2. [MDN官网文档](https://developer.mozilla.org)
