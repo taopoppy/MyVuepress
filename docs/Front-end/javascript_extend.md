@@ -127,7 +127,7 @@ console.log(obj1.name); // ConardLi
 ## 类型判断
 未完待续...
 
-## 类型转化
+## 类型转换
 未完待续...
 
 **参考资料**
@@ -138,3 +138,4 @@ console.log(obj1.name); // ConardLi
 4. [js判断数据类型](https://segmentfault.com/a/1190000015264821)
 5. [在JavaScript中，如何判断数据类型(类型检测)](https://segmentfault.com/a/1190000015580514)
 6. [JavaScript数据类型判断](https://segmentfault.com/a/1190000011419984)
+7. [JavaScript的数据类型及其检测](https://github.com/ljianshu/Blog/issues/4)

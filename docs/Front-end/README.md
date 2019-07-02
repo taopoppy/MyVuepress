@@ -94,3 +94,5 @@
 ## 总结
 希望同学们都能都按照正确的方法建立自己的知识架构，想着梦想前进！下面我们会去推荐一些优秀的博客地址
 1. [前端工匠](https://github.com/ljianshu/Blog)
+2. [leonardomso](https://github.com/stephentian/33-js-concepts)
+3. [前端一万小时](https://juejin.im/post/5ce4171ff265da1bd04eb4f3#heading-5)
