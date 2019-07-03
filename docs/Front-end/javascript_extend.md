@@ -124,18 +124,15 @@ console.log(obj1.name); // ConardLi
 
 **总结**: <font color=#3eaf7c>函数参数传递的并不是变量的引用，而是变量拷贝的副本，当变量是原始类型时，这个副本就是值本身，当变量是引用类型时，这个副本是指向堆内存的地址</font>
 
-## 类型判断
-未完待续...
-
 ## 类型转换
 未完待续...
+
+## 类型判断
+关于Javascript的类型判断，我们专门开设了一个专题，请到[JS中的类型判断](https://www.taopoppy.cn/Front-end/javascriptKnowladge_TypeJudgement.html)专题中查看
+
+
+
 
 **参考资料**
 
 1. [你真的掌握变量和类型了吗](https://juejin.im/post/5cec1bcff265da1b8f1aa08f#heading-2)
-2. [JS 数据类型，数据类型的判断，类型转换](https://juejin.im/post/5cff51b15188251260273f84#heading-14)
-3. [Javascript中的数据类型判断](https://juejin.im/post/59c7535a6fb9a00a600f77b4)
-4. [js判断数据类型](https://segmentfault.com/a/1190000015264821)
-5. [在JavaScript中，如何判断数据类型(类型检测)](https://segmentfault.com/a/1190000015580514)
-6. [JavaScript数据类型判断](https://segmentfault.com/a/1190000011419984)
-7. [JavaScript的数据类型及其检测](https://github.com/ljianshu/Blog/issues/4)

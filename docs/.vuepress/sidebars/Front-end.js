@@ -14,6 +14,7 @@ module.exports = [
     title: 'JavaScript知识专题',
     children: [
       '/Front-end/javascriptKnowladge_PropNameForEach',
+      '/Front-end/javascriptKnowladge_TypeJudgement',
       '/Front-end/javascriptKnowladge_Symbol',
       '/Front-end/javascriptKnowladge_DeepCopyAndShallowCopy',
       '/Front-end/javascriptKnowladge_GarbageCollection'
