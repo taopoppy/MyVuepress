@@ -125,10 +125,10 @@ console.log(obj1.name); // ConardLi
 **总结**: <font color=#3eaf7c>函数参数传递的并不是变量的引用，而是变量拷贝的副本，当变量是原始类型时，这个副本就是值本身，当变量是引用类型时，这个副本是指向堆内存的地址</font>
 
 ## 类型转换
-未完待续...
+关于`Javascript`的类型转化，我们专门开设了一个专题，请到[JS中的类型转换](https://www.taopoppy.cn/Front-end/javascriptKnowladge_TypeConversion.html)专题中查看
 
 ## 类型判断
-关于Javascript的类型判断，我们专门开设了一个专题，请到[JS中的类型判断](https://www.taopoppy.cn/Front-end/javascriptKnowladge_TypeJudgement.html)专题中查看
+关于`Javascript`的类型判断，我们专门开设了一个专题，请到[JS中的类型判断](https://www.taopoppy.cn/Front-end/javascriptKnowladge_TypeJudgement.html)专题中查看
 
 
 

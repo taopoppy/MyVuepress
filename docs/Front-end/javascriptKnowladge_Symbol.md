@@ -1,4 +1,4 @@
-# Symbol
+# Js中新类型Symbol
 
 
 **参考资料**

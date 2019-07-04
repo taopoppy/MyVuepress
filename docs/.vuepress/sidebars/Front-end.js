@@ -15,6 +15,7 @@ module.exports = [
     children: [
       '/Front-end/javascriptKnowladge_PropNameForEach',
       '/Front-end/javascriptKnowladge_TypeJudgement',
+      '/Front-end/javascriptKnowladge_TypeConversion',
       '/Front-end/javascriptKnowladge_Symbol',
       '/Front-end/javascriptKnowladge_DeepCopyAndShallowCopy',
       '/Front-end/javascriptKnowladge_GarbageCollection'
