@@ -183,13 +183,50 @@ console.log(String(a));//'1.07e+21'
   ```
   `a`对象转换为`Number`基本类型，`javascript`执行抽象操作`ToPrimitive`，调用对象的内部方法`[[DefaultValue]]`,一个参数`input`就是`a`对象，第二个参数`hint`就是`Number`，所以优先调用了`a`的`valueOf()`方法，返回的`true`为基本类型，就返回了，此时拆箱完成。最后一步，再将基本类型`true`转换，返回`Number(true)`，所以最终结果是1。对于`b`对象来说，`valueOf()`方法返回的是不是基本类型，所以就使用了`toString()`方法，返回的是`String`类型,最后`Nnumber("1e3")`，显然这是我们之前讲的`NumberToString`的转换过程。
 
-+ 实际上到这里类型转换的大多数情况我们都学过了，强制类型转换我们上面都展示了，而隐式类型转换大多存在于运算符合条件语句中，我们下面会介绍
++ 实际上到这里类型转换的大多数情况我们都学过了，强制类型转换我们上面都展示了，而隐式类型转换大多存在于运算符合条件语句中
 
 
 ## 运算符和语句
-未完待续...
+关于运算符和语句当中存在的隐式类型转换，我们专门开设了一个专题,请到[隐式类型转换](https://www.taopoppy.cn/Front-end/javascriptKnowladge_ImplicitTypeConversion.html)专题中查看
 
 ## 总结
++ 类型转换的思维导图
+  <mermaid>
+  graph LR
+    A["Number()"] --- F["StringToNumber"]
+    B["parseInt()"] --- F
+    C["parseFloat()"] --- F
+    D["toString()"] --- G["NumberToString"]
+    E["String()"] ---G
+    F --- H["类型转换"]
+    G --- H
+    H --- I["装箱转换"]
+    H --- J["拆箱装换"]
+    I --- K["new&ensp;包装类型(基本类型值)"]
+    I --- L["Object(基本类型值)"]
+    I --- M["(function(){return&ensp;this}).call(基本类型值)"]
+    J --- N["ToPrimitive抽象操作"]
+    style H fill:#f9f,stroke:#333,stroke-width:4px
+  </mermaid>
+
++ 拆箱转换的思维导图
+  <mermaid>
+  graph LR
+    subgraph 先拆箱
+    A["ToPrimitive"] --> B["DefaultValue(input,hint)"]
+    B --> C["hint&ensp;===&ensp;String"]
+    C --> E["toString()方法"]
+    E --> F["valueOf()方法"]
+    B --> D["hint&ensp;===&ensp;Number"]
+    D --> H["valueOf()方法"]
+    H --> I["toString()方法"]
+    end
+    subgraph 再转换
+    F --> G["String(拆箱结果)"]
+    I --> J["Number(拆箱转换)"]
+    end
+  </mermaid>
+
 
 **参考资料**
 
