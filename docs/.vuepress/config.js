@@ -3,6 +3,7 @@ const typescriptSidebar = require('./sidebars/typescript')
 const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
 const FrontendSidebar = require('./sidebars/Front-end')
 const typescriptAxiosFontSidebar = require('./sidebars/typescript-axios-font')
+const FlutterSidebar = require('./sidebars/Flutter')
 module.exports = {
   title: 'TaoPoppy',
   description: '陶振川',
@@ -20,6 +21,7 @@ module.exports = {
       { text: '首页', link: '/' },
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
+      { text: 'Flutter', link: '/Flutter/'},
       {
         text: 'TS系列',
         items: [
@@ -59,6 +61,7 @@ module.exports = {
     lastUpdated: 'Last Updated', // string | boolean
     sidebar: {
       '/construct/': constructSidebar,
+      '/Flutter/': FlutterSidebar,
       '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
