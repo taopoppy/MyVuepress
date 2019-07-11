@@ -57,16 +57,16 @@
 
 `Flutter`需要安装和配置`Android Studio`:
 
-下载并安装 (`Android Studio`)[https://developer.android.com/studio/index.html].
+下载并安装 (Android Studio)[https://developer.android.com/studio/index.html].
 
 启动`Android Studio`，然后执行`“Android Studio安装向导”`。这将安装最新的`Android SDK`，`Android SDK`平台工具和`Android SDK`构建工具，这是`Flutter`为`Android`开发时所必需的
 
 ### 2. 实际问题
 下载`Android Studio`依旧需要翻墙，因为给的地址的服务器在国外，当然你可以查看一下`google`给中国开发者留的[镜像](https://developer.android.google.cn/studio)，从这上面下载也可以, 另外关于`Android Studio`的说明文档也可以从[说明文档](https://developer.android.google.cn/studio/intro)上查看
 
-现在是2019年7月10，本主下载的版本时3.4，3.4和3.2内置了`java`环境,我们自己是不用配置额外`java`环境。你可能在别的博客上看到要自己从`Oricle`官网上下`jdk`，然后配置`java`环境，下载了新版本的`android studio`，这些步骤直接省略了
+现在是2019年7月10，本主下载的版本时3.4，`Android Studio`3.4和3.2内置了`java`环境,我们自己是不用配置额外`java`环境。你可能在别的博客上看到要自己从`Oricle`官网上下`jdk`，然后配置`java`环境，下载了新版本的`android studio`，这些步骤直接省略了
 
-下载时候会提示你下载`Android SDK`, `Android SDK Platform-Tools`,` Android SDK Build-Tools`,你都要打上对勾，然后下载
+下载`Android Studio`的过程中会提示你下载`Android SDK`, `Android SDK Platform-Tools`,` Android SDK Build-Tools`,你都要打上对勾，然后下载
 
 但是官网好像没有配置环境的问题，这里我要详细说一下：
 
@@ -98,34 +98,36 @@
 
 ### 2. 实际问题
 
-关于插件的下载真的坑，因为按照官网的说法压根下载不了，不知道是网的问题还是要翻墙，但是好的是如果你下载失败它会提示插件下载的网址，你就去给的网址直接下载压缩包，然后在android stuido中有个`download from disk`的选项，我们点击，分别选择下载好的`dart`和`flutter`插件压缩包，即可
+关于插件的下载真的坑，因为按照官网的说法压根下载不了总会提示你下载失败，不知道是网的问题还是要翻墙。但是好的是如果你下载失败它会提示`dart form www.xxxxx.com rquire failed`，你就去给的这个网址上直接下载压缩包，不用解压。
+
+然后在`android stuido`插件下载面板的右上角的工具通标中有个`download from disk`的选项，这个就是从本地选择插件文件，我们点击它，分别选择下载好的`dart`和`flutter`插件压缩包，即可
 
 ## 安装模拟器
 
 ### 1. 官网说明
 要准备在Android模拟器上运行并测试您的Flutter应用，请按照以下步骤操作：
 
-+ 在您的机器上启用 VM acceleration .
-+ 启动 Android Studio>Tools>Android>AVD Manager 并选择 Create Virtual Device.
-+ 选择一个设备并选择 Next。
-+ 为要模拟的Android版本选择一个或多个系统映像，然后选择 Next. 建议使用 x86 或 x86_64 image .
-+ 在 Emulated Performance下, 选择 Hardware - GLES 2.0 以启用 硬件加速.
-+ 验证AVD配置是否正确，然后选择 Finish。
-有关上述步骤的详细信息，请参阅 Managing AVDs.
++ 在您的机器上启用 `VM acceleration` .
++ 启动 `Android Studio>Tools>Android>AVD Manager` 并选择 `Create Virtual Device`.
++ 选择一个设备并选择 `Next`。
++ 为要模拟的`Android`版本选择一个或多个系统映像，然后选择 `Next`. 建议使用 `x86` 或 `x86_64 image` .
++ 在 `Emulated Performance`下, 选择 `Hardware - GLES 2.0` 以启用 硬件加速.
++ 验证`AVD`配置是否正确，然后选择 `Finish`。
+有关上述步骤的详细信息，请参阅 `Managing AVDs`.
 
-+ 在 Android Virtual Device Manager中, 点击工具栏的 Run。模拟器启动并显示所选操作系统版本或设备的启动画面.
-+ 运行 flutter run 启动您的设备. 连接的设备名是 Android SDK built for <platform>,其中 platform 是芯片系列, 如 x86.
++ 在 `Android Virtual Device Manager`中, 点击工具栏的 `Run`。模拟器启动并显示所选操作系统版本或设备的启动画面.
++ 运行 `flutter run` 启动您的设备. 连接的设备名是 `Android SDK built for <platform>`,其中 `platform` 是芯片系列, 如 `x86`.
 
 ### 2. 实际问题
 如果你是严格按照官网的流程的话，应该是没有问题，但是本主是直接去创建了新的模拟器，然后启动的时候发现启动不了，提示我忘记了，但是有两个关键字，一个是`Haxm`,还有一个是`vt-x`,解决的步骤有两个
 
 + 在`android studio`的`SDK tools`查看`Haxm`是否下载，没有下载就下载
-+ 重启计算机，一开始的时候就点击`F2`进入`BIOS`界面，进入`Configuration`，将`Inter Virtual Technology`修改为`[Enabled]`,然后退出
++ 重启计算机，一开始的时候就点击`F2`进入`BIOS`界面，进入`Configuration`，将`Inter Virtual Technology`修改为`[Enabled]`,然后点`F10`退出(退出这一步你要看自己的计算机最下面的提示，我的是`F10`,`save and exit`)
 
 这样我们的模拟器就能启动了，注意的是第一次启动的时候很慢，需要几分钟
 
 ## 检测
 我们通过在命令行中输入`flutter doctor`，会检测4条内容，`协议`，`android-sdk`，`两个插件`，`模拟器的链接`
-后面三个我们都解决了，第一个是检测协议的，它会提示你run一个命令，然后你就根据提示即可
+后面三个我们在前面的步骤中都解决了，第一个是检测协议的，它会提示你run一个命令，然后你就根据提示去`run`它提示的命令。这个命令是帮助你同意协议的，需要同意大概4-5条。总之你就根据提示同意即可
 
 当检测全部通过后，我们就可以正式来创建flutter的项目了

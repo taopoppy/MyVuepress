@@ -2,9 +2,10 @@
 module.exports = [
   '/Flutter/',
   {
-    title: '进击Flutter',
+    title: 'Flutter新体验',
     children: [
-      '/Flutter/flutter_setupEnvironment'
+      '/Flutter/flutter_setupEnvironment',
+      '/Flutter/flutter_dart'
     ]
   }
 ]
