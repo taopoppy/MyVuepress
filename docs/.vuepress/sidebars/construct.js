@@ -13,5 +13,11 @@ module.exports = [
     children: [
       '/construct/vuepress_advanced1',
     ]
+  },
+  {
+    title: '计算机基础',
+    children: [
+      '/construct/computer_assembly',
+    ]
   }
 ]
