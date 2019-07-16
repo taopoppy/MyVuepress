@@ -4,6 +4,7 @@ const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
 const FrontendSidebar = require('./sidebars/Front-end')
 const typescriptAxiosFontSidebar = require('./sidebars/typescript-axios-font')
 const FlutterSidebar = require('./sidebars/Flutter')
+const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
 module.exports = {
   title: 'TaoPoppy',
   description: '陶振川',
@@ -22,6 +23,14 @@ module.exports = {
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
       { text: 'Flutter', link: '/Flutter/'},
+      { 
+        text: 'node',
+        items: [
+          { text: 'node入门', link: '/node/' },
+          { text: 'node博客后台', link: '/node-blog/' },
+          { text: 'node与RESTful', link: '/node-RESTful/' }
+        ]
+      },
       {
         text: 'TS系列',
         items: [
@@ -62,6 +71,7 @@ module.exports = {
     sidebar: {
       '/construct/': constructSidebar,
       '/Flutter/': FlutterSidebar,
+      '/node-RESTful/': nodeRESTfulSidebar,
       '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
