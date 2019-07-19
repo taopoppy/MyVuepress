@@ -17,7 +17,8 @@ module.exports = [
   {
     title: '计算机基础',
     children: [
-      '/construct/computer_assembly',
+      '/construct/computer_assembly_cpu',
+      '/construct/computer_assembly_motherboard'
     ]
   }
 ]
