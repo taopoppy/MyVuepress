@@ -5,6 +5,8 @@ const FrontendSidebar = require('./sidebars/Front-end')
 const typescriptAxiosFontSidebar = require('./sidebars/typescript-axios-font')
 const FlutterSidebar = require('./sidebars/Flutter')
 const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
+const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle')
+
 module.exports = {
   title: 'TaoPoppy',
   description: '陶振川',
@@ -23,6 +25,12 @@ module.exports = {
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
       { text: 'Flutter', link: '/Flutter/'},
+      { 
+        text: '全栈', 
+        items: [
+          { text: '朋友圈', link: '/Full-Stack-FriendCircle/'}
+        ]
+      },
       { 
         text: 'node',
         items: [
@@ -76,6 +84,7 @@ module.exports = {
       '/typescript-axios/': typescriptAxiosSidebar,
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
+      '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
