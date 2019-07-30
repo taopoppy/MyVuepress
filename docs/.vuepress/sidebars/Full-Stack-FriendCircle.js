@@ -7,6 +7,7 @@ module.exports = [
       '/Full-Stack-FriendCircle/ready1',
       '/Full-Stack-FriendCircle/ready2',
       '/Full-Stack-FriendCircle/ready3',
+      '/Full-Stack-FriendCircle/ready4',
     ]
   }
 ]
