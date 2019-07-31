@@ -21,5 +21,11 @@ module.exports = [
       '/construct/computer_assembly_motherboard',
       '/construct/computer_assembly_RAM'
     ]
+  },
+  {
+    title: '翻墙',
+    children: [
+      '/construct/science_online'
+    ]
   }
 ]

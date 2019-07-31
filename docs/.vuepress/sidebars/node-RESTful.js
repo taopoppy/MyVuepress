@@ -9,10 +9,16 @@ module.exports = [
     ]
   },
   {
-    title:'koa介绍',
+    title: 'koa介绍',
     children: [
       '/node-RESTful/two_koaintroduce',
       '/node-RESTful/two_koarouter'
+    ]
+  },
+  {
+    title: '控制器和目录',
+    children: [
+      '/node-RESTful/three_controller'
     ]
   }
 ]
