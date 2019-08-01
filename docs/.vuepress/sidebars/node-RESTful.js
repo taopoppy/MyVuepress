@@ -18,7 +18,8 @@ module.exports = [
   {
     title: '控制器和目录',
     children: [
-      '/node-RESTful/three_controller'
+      '/node-RESTful/three_controller',
+      '/node-RESTful/three_directory'
     ]
   }
 ]

@@ -19,7 +19,8 @@ module.exports = [
     children: [
       '/construct/computer_assembly_cpu',
       '/construct/computer_assembly_motherboard',
-      '/construct/computer_assembly_RAM'
+      '/construct/computer_assembly_RAM',
+      '/construct/computer_assembly_graphicscard'
     ]
   },
   {

@@ -5,6 +5,7 @@
 
 ### 1. 为什么要使用控制器
 我们使用控制器是由于它的作用，那么控制器有什么作用呢？
+
 **1. 控制器的作用一**：<font color=#3eaf7c>获取HTTP请求参数</font> :
   + `Query String`,中文名叫做查询字符串，如?q=keyword(比如谷歌的搜索url就是讲搜索的内容放在q参数后面，比如q=what is rest),当然`Query String`是可选的，如果是必选的我们应该使用下面这种
   + `Router params`,如/users/id，这种是<font color=#3eaf7c>路由参数</font>
@@ -13,7 +14,7 @@
 
 **2. 控制器的作用二**：<font color=#3eaf7c>处理业务逻辑</font>
 
-**3. 控制器的作用三**：<font color=#3eaf7c>发送`HTTP`响应</font>
+**3. 控制器的作用三**：<font color=#3eaf7c>发送HTTP响应</font>
   + 发送`Status`,如200、400等
   + 发送`Body`,如`{code:200, msg: '失败'}`，这个是响应的响应体，不是请求体
   + 发送`Header`,如`Allow`、`Content-Type`
@@ -31,10 +32,10 @@
 + 在左边变量栏中会有你需要的变量，如果你有几个经常要监视的变量，可以在变量栏下面的监视栏中看到
 
 ### 2. 获取query
-通过<font color=#3eaf7c>ctx.query</font>即可拿到整个`url`问号后面的东西
+通过<font color=#3eaf7c>**ctx.query**</font>即可拿到整个`url`问号后面的东西
 
 ### 3. 获取router params
-通过<font color=#3eaf7c>ctx.params</font>即可拿到路由参数
+通过<font color=#3eaf7c>**ctx.params**</font>即可拿到路由参数
 
 ### 4. 获取body
 我们需要先安装<font color=#3eaf7c>koa-bodyparser</font>去拿到和解析请求体
@@ -47,7 +48,18 @@ const bodyparser = require('koa-bodyparser') // 引入
 ...
 app.use(bodyparser())
 ```
-通过<font color=#3eaf7c>ctx.request.body</font>即可拿到请求体部分
+通过<font color=#3eaf7c>**ctx.request.body**</font>即可拿到请求体部分
 
 ### 5. 获取header
-通过<font color=#3eaf7c>ctx.header</font>即可拿到请求体部分
+通过<font color=#3eaf7c>**ctx.header**</font>即可拿到请求体部分
+
+## 发送HTTP响应
+
+### 1. 发送status
+通过<font color=#3eaf7c>**ctx.status = 200**</font>即可设置`Status`
+
+### 2. 发送body
+通过<font color=#3eaf7c>**ctx.body = xxx**</font>即可设置返回体
+
+### 3. 发送header
+通过<font color=#3eaf7c>**ctx.set('Allow','GET,POST')**</font>这种方式去设置消息头
