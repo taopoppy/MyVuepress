@@ -21,5 +21,11 @@ module.exports = [
       '/node-RESTful/three_controller',
       '/node-RESTful/three_directory'
     ]
+  },
+  {
+    title: '错误处理',
+    children: [
+      '/node-RESTful/four_errorhanding'
+    ]
   }
 ]

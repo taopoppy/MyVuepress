@@ -6,6 +6,7 @@ const typescriptAxiosFontSidebar = require('./sidebars/typescript-axios-font')
 const FlutterSidebar = require('./sidebars/Flutter')
 const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
 const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle')
+const jestSidebar = require('./sidebars/jest')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -25,6 +26,7 @@ module.exports = {
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
       { text: 'Flutter', link: '/Flutter/'},
+      { text: 'Jest测试', link: '/Jest/'},
       { 
         text: '全栈', 
         items: [
@@ -81,6 +83,7 @@ module.exports = {
       '/Flutter/': FlutterSidebar,
       '/node-RESTful/': nodeRESTfulSidebar,
       '/typescript/': typescriptSidebar,
+      '/Jest/': jestSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
