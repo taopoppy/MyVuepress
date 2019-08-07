@@ -33,5 +33,12 @@ module.exports = [
     children: [
       '/node-RESTful/five_nosqlintroduce'
     ]
+  },
+  {
+    title: '用户认证和授权',
+    children: [
+      '/node-RESTful/six_sessionAndJWT',
+      '/node-RESTful/six_achieveJWT'
+    ]
   }
 ]

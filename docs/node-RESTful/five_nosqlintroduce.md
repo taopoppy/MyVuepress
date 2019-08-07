@@ -59,7 +59,7 @@
 
 ### 5. 获取连接地址
 + 点击`Connect to your cluster`,选择`connect Your Application`
-+ 在`Connection String Only`中的那个地址就是我们后面要在`mongoose`中连接的地址：我们暂时要将其记住：（我这里记住我的，你们记住你们的）mongodb+srv://taopoppy:<password>@zhihu-2kvxj.mongodb.net/test?retryWrites=true&w=majority
++ 在`Connection String Only`中的那个地址就是我们后面要在`mongoose`中连接的地址：我们暂时要将其记住：（我这里记住我的，你们记住你们的）`mongodb+srv://taopoppy:<password>@zhihu-2kvxj.mongodb.net/test?retryWrites=true&w=majority`
 
 ## Mongoose连接MongoDB
 实际上`MongoDB`有`node`的驱动的，但是原生的驱动用起来不方便，而`mongoose`能使`node`连接`MongoDB`数据库变得非常生动和简单，我们下面就来说说操作步骤
@@ -73,10 +73,13 @@ npm install mongoose --save
 const mongoose = require('mongoose')     // 引入
 const { connenctionStr } = require('./config') // 引入地址
 
-mongoose.connect(connenctionStr,{ useNewUrlParser: true },(err)=>console.log(`MongoDB连接成功`)) // 连接
-mongoose.connection.on('error',(error)=>{console.log(error)}) // 监听错误
+mongoose.connect(connenctionStr,{ 
+  useNewUrlParser: true,
+  useFindAndModify: false
+},()=>console.log(`MongoDB连接成功`))
+mongoose.connection.on('error',(error)=>console.error)
 ```
-上面代码总的`connenctionStr`就是我们上面在`MongoDB Atlas`中获取的连接地址，然后启动
+上面代码总的`connenctionStr`就是我们上面在`MongoDB Atlas`中获取的连接地址，然后关于`useNewUrlParser`和`useFindAndModify`的配置都是后面我们在测试的时候`MongoDB`给我们提示的，最后启动
 
 ## 设计用户的Schema
 我们这里的`Schema`指的是`json`的结构，而且设计和编写的`Schema`都是写在代码当中的，不用对数据库进行设置
@@ -101,4 +104,68 @@ module.exports = model('User', userSchema)
 ```
 
 ## MongoDB实现增删改查
+我们这里直接上传控制器的代码：
+```javascript
+const User = require('../models/users')
 
+class UsersCtl {
+  /**
+   * 查询用户列表
+   */
+  async find(ctx) {
+    ctx.body = await User.find()
+  }
+
+  /**
+   * 查询特定用户
+
+   */
+  async findById(ctx) {
+    const user = await User.findById(ctx.params.id)
+    if(!user){
+      ctx.throw(404,'用户不存在')
+    }
+    ctx.body = user
+  }
+
+  /**
+   * 新建用户
+   */
+  async create(ctx) {
+    // 校验
+    ctx.verifyParams({
+      name: { type: 'string', required: true }
+    })
+    const newUser = await new User(ctx.request.body).save(); //数据库会自动帮我们添加ID
+    ctx.body = newUser
+  }
+
+  /**
+   * 更新用户
+   */
+  async update(ctx) {
+    ctx.verifyParams({
+      name: { type: 'string', required: true }
+    })
+    const updateUser = await User.findByIdAndDelete(ctx.params.id, ctx.request.body)
+    if(!updateUser){
+      ctx.throw(404,'更新用户不存在')
+    }
+    ctx.body = updateUser
+  }
+
+  /**
+   * 删除用户
+   */
+  async deleteById(ctx) {
+    const deleteUser = await User.findByIdAndRemove(ctx.params.id)
+    if(!deleteUser){
+      ctx.throw(404,'删除用户不存在')
+    }
+    ctx.status = 204
+  }
+}
+
+module.exports = new UsersCtl();
+```
+然后我们去`postman`中测试，测试都没有问题
