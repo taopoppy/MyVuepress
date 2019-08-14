@@ -40,5 +40,17 @@ module.exports = [
       '/node-RESTful/six_sessionAndJWT',
       '/node-RESTful/six_achieveJWT'
     ]
+  },
+  {
+    title: '上传图片',
+    children: [
+      '/node-RESTful/seven_pictureupload'
+    ]
+  },
+  {
+    title: '个人资料',
+    children: [
+      '/node-RESTful/eight_userinformation'
+    ]
   }
 ]
