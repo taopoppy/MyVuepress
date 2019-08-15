@@ -26,6 +26,8 @@ module.exports = {
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
       { text: 'Flutter', link: '/Flutter/'},
+      { text: '算法世界', link: '/Algorithm/'},
+      { text: '小程序', link: '/WeiXin/'},
       { text: 'Jest测试', link: '/Jest/'},
       { 
         text: '全栈', 
@@ -38,7 +40,8 @@ module.exports = {
         items: [
           { text: 'node入门', link: '/node/' },
           { text: 'node博客后台', link: '/node-blog/' },
-          { text: 'node与RESTful', link: '/node-RESTful/' }
+          { text: 'node与RESTful', link: '/node-RESTful/' },
+          { text: 'koa专题',link: '/koa/'}
         ]
       },
       {

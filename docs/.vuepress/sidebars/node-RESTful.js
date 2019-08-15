@@ -52,5 +52,11 @@ module.exports = [
     children: [
       '/node-RESTful/eight_userinformation'
     ]
+  },
+  {
+    title: '关注和粉丝',
+    children: [
+      '/node-RESTful/nine_attentionfan'
+    ]
   }
 ]
