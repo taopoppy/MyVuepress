@@ -58,5 +58,12 @@ module.exports = [
     children: [
       '/node-RESTful/nine_attentionfan'
     ]
+  },
+  {
+    title: '话题相关',
+    children: [
+      '/node-RESTful/ten_topic1',
+      '/node-RESTful/ten_topic2'
+    ]
   }
 ]
