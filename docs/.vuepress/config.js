@@ -7,7 +7,7 @@ const FlutterSidebar = require('./sidebars/Flutter')
 const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
 const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle')
 const jestSidebar = require('./sidebars/jest')
-
+const AlgorithmSidebar = require('./sidebars/Algorithm')
 module.exports = {
   title: 'TaoPoppy',
   description: '陶振川',
@@ -83,6 +83,7 @@ module.exports = {
     lastUpdated: 'Last Updated', // string | boolean
     sidebar: {
       '/construct/': constructSidebar,
+      '/Algorithm/': AlgorithmSidebar,
       '/Flutter/': FlutterSidebar,
       '/node-RESTful/': nodeRESTfulSidebar,
       '/typescript/': typescriptSidebar,

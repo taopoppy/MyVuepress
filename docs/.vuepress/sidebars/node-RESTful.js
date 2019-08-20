@@ -63,7 +63,32 @@ module.exports = [
     title: '话题相关',
     children: [
       '/node-RESTful/ten_topic1',
-      '/node-RESTful/ten_topic2'
+      '/node-RESTful/ten_topic2',
+      '/node-RESTful/ten_topic3'
+    ]
+  },
+  {
+    title: '问题相关',
+    children: [
+      '/node-RESTful/eleven_questions',
+    ]
+  },
+  {
+    title: '答案相关',
+    children: [
+      '/node-RESTful/twelve_answer',
+    ]
+  },
+  {
+    title: '评论相关',
+    children: [
+      '/node-RESTful/thirteen_comment',
+    ]
+  },
+  {
+    title: '部署上线',
+    children: [
+      '/node-RESTful/fourteen_arrangement',
     ]
   }
 ]
