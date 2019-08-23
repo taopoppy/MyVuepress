@@ -149,6 +149,181 @@ class AnswersCtl {
 module.exports = new AnswersCtl();
 ```
 ## 互斥关系踩/赞接口
-我们下面来实现互斥关系的踩和赞的答案接口设计和实现
+我们下面来实现互斥关系的踩和赞的答案接口设计和实现,关于互斥接口有6个接口，分别是<font color=#3eaf7c>踩</font>和<font color=#3eaf7c>赞</font>，然后是<font color=#3eaf7c>取消赞</font>和<font color=#3eaf7c>取消踩</font>，最后是<font color=#3eaf7c>获取用户赞过的答案列表</font>和<font color=#3eaf7c>用户踩过的答案列表</font>，除了这6个接口我们还要重点实现的一个功能是互斥关系，就是如果已经踩了一个答案，在赞的时候要同时取消踩，反过来也一样
+### 1. 设计数据库Schema
+我们需要在用户的`Schema`下面增加两个列表，分别是赞过的答案列表和踩过的答案列表，除此之外我们还要在答案的`Schema`当中添加一个投票数的字段，记录赞或者踩的数量。所以我们先在`model/users.js`当中添加字段：
+```javascript
+  // 赞过的答案列表
+  likingAnswers: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+    select: false
+  },
+
+  // 踩过的答案列表
+  dislikingAnswers: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+    select: false
+  }
+```
+然后在`model/answers.js`当中添加字段：
+```javascript
+  // 被赞过的投票数
+  voteCount: { type: Number, required: true, default: 0 }
+```
+### 2. 实现接口
+我们到`controller/users.js`当中去添加这样6个控制器：
+```javascript
+  /**
+   * 赞过的答案列表
+   */
+  async listLikingAnswers(ctx) {
+    const user = await User.findById(ctx.params.id).select('+likingAnswers').populate('likingAnswers')
+    if(!user) { ctx.throw(404,'用户不存在') }
+    ctx.body = user.likingAnswers
+  }
+  /**
+   * 赞一个答案
+   */
+  async likeAnswer(ctx,next) {
+    const me = await User.findById(ctx.state.user._id).select('+likingAnswers')
+    if(!me.likingAnswers.map(id => id.toString()).includes(ctx.params.id)){
+      me.likingAnswers.push(ctx.params.id)  // 1. 把赞过的答案添加到用户赞过的答案列表中
+      me.save()
+      await Answer.findByIdAndUpdate(ctx.params.id,{ $inc: { voteCount: 1 }}) // 2. 赞的投票数加1
+    }
+    ctx.status = 204
+    await next()
+  }
+  /**
+   * 取消赞一个答案
+   */
+  async unlikeAnswer(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+likingAnswers')
+    const index = me.likingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if(index > -1){
+      me.likingAnswers.splice(index,1) // 1. 将答案从用户赞的答案列表中删除
+      me.save()
+      await Answer.findByIdAndUpdate(ctx.params.id,{ $inc: { voteCount: -1 }}) // 2. 答案赞的投票数减1
+    }
+    ctx.status = 204
+  }
+  /**
+   * 踩过的答案列表
+   */
+  async listDisLikingAnswers(ctx) {
+    const user = await User.findById(ctx.params.id).select('+dislikingAnswers').populate('dislikingAnswers')
+    if(!user) { ctx.throw(404,'用户不存在') }
+    ctx.body = user.dislikingAnswers
+  }
+  /**
+   * 踩一个答案
+   */
+  async dislikeAnswer(ctx,next) {
+    const me = await User.findById(ctx.state.user._id).select('+dislikingAnswers')
+    if(!me.dislikingAnswers.map(id => id.toString()).includes(ctx.params.id)){
+      me.dislikingAnswers.push(ctx.params.id)  // 1. 把踩过的答案添加到用户赞过的答案列表中
+      me.save()
+    }
+    ctx.status = 204
+    await next()
+  }
+  /**
+   * 取消踩一个答案
+   */
+  async undislikeAnswer(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+dislikingAnswers')
+    const index = me.dislikingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if(index > -1){
+      me.dislikingAnswers.splice(index,1) // 1. 将答案从用户踩的答案列表中删除
+      me.save()
+    }
+    ctx.status = 204
+  }
+```
+上述我们特别要注意的一个`mongoose`的用法是`$inc: { voteCount: -1 }`表示增加的意思，具体的用法说明到[mongoose中文网](http://www.mongoosejs.net/)查看，最后我们来修改一下路由,到`route/users.js`当中添加路由
+```javascript
+// 赞的三个接口
+router.get('/:id/likingAnswers', listLikingAnswers)
+router.put('/likingAnswers/:id', auth, checkAnswerExist, likeAnswer, undislikeAnswer)
+router.delete('/likingAnswers/:id', auth, checkAnswerExist, unlikeAnswer)
+// 踩的三个接口
+router.get('/:id/dislikingAnswers', listDisLikingAnswers)
+router.put('/dislikingAnswers/:id', auth, checkAnswerExist, dislikeAnswer, unlikeAnswer)
+router.delete('/dislikingAnswers/:id', auth, checkAnswerExist, undislikeAnswer)
+```
+注意的是：在赞和踩分别的三个接口中`get`方法中的路由参数`id`是用户的`id`，而`put`和`delete`方法对应的路由参数的`id`是答案的`id`，不要搞混淆了，其中<font color=#3eaf7c>赞和踩的互斥关系</font>我们也有所体现，可以看到在赞和踩的`put`方法中我们有两个控制器，如果是赞，我们先赞然后再取消踩，如果是踩，我们先踩然后取消赞。
+
+因为上述代码的检查答案存在的逻辑只是单纯看答案是否存在，但是我们之前在`controllers/answers.js`当中写的`checkAnswerExist`是要将答案和路由中的`questionId`匹配的，我们也去修改一下它，在`controllers/answers.js`中修改`checkAnswerExist`中间件
+```javascript
+  /**
+   * 校验答案是否存在
+   */
+  async checkAnswerExist(ctx,next) {
+    const answer = await Answer.findById(ctx.params.id).select('+answerer')
+    if(!answer) { ctx.throw(404, '答案不存在') }
+    // 只有在删改查的时候才会去检查路由是否包含此逻辑，其余赞和踩单纯只检查答案的存在性是不含此逻辑的
+    if(ctx.params.questionId && answer.questionId !== ctx.params.questionId){
+      ctx.throw(404, '该问题下不存在此答案')
+    }
+    ctx.state.answer = answer  // 将答案保存在state当中
+    await next()
+  }
+```
 
 ## 收藏答案接口
+这里有三个接口我们需要实现，<font color=#3eaf7c>收藏答案</font>，<font color=#3eaf7c>取消收藏答案</font>，<font color=#3eaf7c>用户的收藏答案的列表</font>，我们这里有一个<font color=#3eaf7c>RESTful</font>的最佳实践：<font color=#3eaf7c>在url中使用资源名称而不是动词</font>
+
+### 1. 设计Schema
+首先到`model/users.js`当中设计收藏列表的属性：
+```javascript
+  // 收藏的答案
+  collectingAnswers: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+    select: false
+  }
+```
+
+### 2. 实现接口
+基本上这三个接口和上面我们写的赞或者踩的三个接口差不多，我们只需要粘贴复制然后修改一下即可，我们到`controller/users.js`当中添加三个控制器：
+```javascript
+  /**
+   * 收藏的答案列表
+   */
+  async listCollectingAnswers(ctx) {
+    const user = await User.findById(ctx.params.id).select('+collectingAnswers').populate('collectingAnswers')
+    if(!user) { ctx.throw(404,'用户不存在') }
+    ctx.body = user.collectingAnswers
+  }
+  /**
+   * 收藏一个答案
+   */
+  async collectAnswer(ctx,next) {
+    const me = await User.findById(ctx.state.user._id).select('+collectingAnswers')
+    if(!me.collectingAnswers.map(id => id.toString()).includes(ctx.params.id)){
+      me.collectingAnswers.push(ctx.params.id)  // 把收藏的答案添加到用户收藏过的答案列表中
+      me.save()
+    }
+    ctx.status = 204
+    await next()
+  }
+  /**
+   * 取消收藏一个答案
+   */
+  async uncollectAnswer(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+collectingAnswers')
+    const index = me.collectingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if(index > -1){
+      me.collectingAnswers.splice(index,1) // 1将答案从用户收藏的答案列表中删除
+      me.save()
+    }
+    ctx.status = 204
+  }
+```
+然后我们到路由当中注册,我们到`routes/uesrs.js`当中添加三个路由：
+```javascript
+// 收藏的三个接口
+router.get('/:id/collectingAnswers', listCollectingAnswers)
+router.put('/collectingAnswers/:id', auth, checkAnswerExist, collectAnswer)
+router.delete('/collectingAnswers/:id', auth, checkAnswerExist, uncollectAnswer)
+```
+最后我们到`postman`当中去测试，这样我们整个答案模块的内容就到此为止，我们最后要说的就是评论模块，是比较复杂的数据库设计，希望大家认真巩固之前的知识。
