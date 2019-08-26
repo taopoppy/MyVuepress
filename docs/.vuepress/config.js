@@ -29,7 +29,7 @@ module.exports = {
       { text: 'Flutter', link: '/Flutter/'},
       { text: '算法世界', link: '/Algorithm/'},
       { text: '小程序', 
-        item: [
+        items: [
           { text: '微信小程序入门和云开发', link: '/WeiXin/' },
           { text: '微信小程序云开发实战', link: '/WeiXin—Combat/' }
         ]
