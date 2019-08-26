@@ -8,6 +8,7 @@ const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
 const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle')
 const jestSidebar = require('./sidebars/jest')
 const AlgorithmSidebar = require('./sidebars/Algorithm')
+const WeiXinSidebar = require('./sidebars/WeiXin')
 module.exports = {
   title: 'TaoPoppy',
   description: '陶振川',
@@ -27,7 +28,12 @@ module.exports = {
       { text: '构建网站', link: '/construct/'},
       { text: 'Flutter', link: '/Flutter/'},
       { text: '算法世界', link: '/Algorithm/'},
-      { text: '小程序', link: '/WeiXin/'},
+      { text: '小程序', 
+        item: [
+          { text: '微信小程序入门和云开发', link: '/WeiXin/' },
+          { text: '微信小程序云开发实战', link: '/WeiXin—Combat/' }
+        ]
+      },
       { text: 'Jest测试', link: '/Jest/'},
       { 
         text: '全栈', 
@@ -92,6 +98,7 @@ module.exports = {
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
+      '/WeiXin/':WeiXinSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
