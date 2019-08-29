@@ -20,7 +20,9 @@ module.exports = [
   {
     title: '案例',
     children: [
-      
+      '/WeiXin/example_vant',
+      '/WeiXin/example_comment',
+      '/WeiXin/example_shangxian'
     ]
   }
 ]
