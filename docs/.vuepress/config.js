@@ -9,6 +9,8 @@ const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle
 const jestSidebar = require('./sidebars/jest')
 const AlgorithmSidebar = require('./sidebars/Algorithm')
 const WeiXinSidebar = require('./sidebars/WeiXin')
+const WeiXinCombatSidebar = require('./sidebars/WeiXinCombat')
+
 module.exports = {
   title: 'TaoPoppy',
   description: '陶振川',
@@ -31,7 +33,7 @@ module.exports = {
       { text: '小程序', 
         items: [
           { text: '微信小程序入门和云开发', link: '/WeiXin/' },
-          { text: '微信小程序云开发实战', link: '/WeiXin—Combat/' }
+          { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' }
         ]
       },
       { text: 'Jest测试', link: '/Jest/'},
@@ -99,6 +101,7 @@ module.exports = {
       '/Front-end/': FrontendSidebar,
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
       '/WeiXin/':WeiXinSidebar,
+      '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
