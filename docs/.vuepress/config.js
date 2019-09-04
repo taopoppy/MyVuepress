@@ -10,6 +10,7 @@ const jestSidebar = require('./sidebars/jest')
 const AlgorithmSidebar = require('./sidebars/Algorithm')
 const WeiXinSidebar = require('./sidebars/WeiXin')
 const WeiXinCombatSidebar = require('./sidebars/WeiXinCombat')
+const nodeSidebar = require('./sidebars/node')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -102,6 +103,7 @@ module.exports = {
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
       '/WeiXin/':WeiXinSidebar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,
+      '/node/': nodeSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
