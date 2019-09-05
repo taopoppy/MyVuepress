@@ -5,11 +5,12 @@ module.exports = [
     title: '什么是node',
     children: [
      '/node/one_whatNode',
+     '/node/one_eventLoop',
      '/node/one_betterNode',
     ]
   },
   {
-    title: 'node怎么执行的',
+    title: '模块和核心',
     children: [
     ]
   }
