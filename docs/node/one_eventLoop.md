@@ -66,8 +66,11 @@ Node端事件循环中的异步队列也是这两种：`macro`（宏任务）队
 ## process.nextTick
 这个函数其实是独立于`Event Loop`之外的，它有一个自己的队列，当每个阶段完成后，如果存在`nextTick`队列，就会清空队列中的所有回调函数，并且优先于其他`microtask`执行。
 
+总是你使用了`process.nextTick`后，里面的回调函数会放在当前执行队列的末尾去执行。
+
 ## Node与浏览器的Event Loop差异
 <img :src="$withBase('/node_brower_eventLoop.png')" alt="node队列">
+
 + <font color=#3eaf7c>浏览器环境下，microtask的任务队列是每个macrotask执行完之后执行。</font>
 + <font color=#3eaf7c>而在Node.js中，microtask会在事件循环的各个阶段之间执行，也就是一个阶段执行完毕，就会去执行microtask队列的任务。 </font>
 
@@ -87,7 +90,7 @@ setTimeout(()=>{
 }, 0)
 ```
 ### 1.浏览器的运行过程
-在浏览器的运算结果是：`timer1` => `promise1` => `timer2` => `promise2`
+在浏览器的运算结果是：<font color=#CC99CD>timer1 => promise1 => timer2 => promise2</font>
 <img :src="$withBase('/brower_event_process.gif')" alt="浏览器的执行过程">
 
 ### 2. Node的运行过程
@@ -176,14 +179,53 @@ console.log('end')
 
 开始将整个程序作为宏任务开始执行，先打印出`start`，然后将`setTimeout 1`和`setTimeout 2`放入`timer Queue`,将`text1`放入`I/O callback Queue`当中，将`promise 1`和`promise 2`放入`microtask Queue`当中，然后打印出`end`
 
+打印出的结果如下：
++ `start`
++ `end`
+
 此时各个队列情况如下：
 + <font color=#3eaf7c>microtask Queue</font>: `promise 1`、`promise 2`
 + <font color=#3eaf7c>timer macrotask Queue</font>: `setTimeout 1`、`setTimeout 2`
 + <font color=#3eaf7c>I/O callback macrotask Queue</font>：`text1`
 
 <font color=#CC99CD>**2. 第二次事件循环**</font>
+
 + 先清空`microtask Queue`,打印出`promise 1`和`promise 2`
-+ 进入`timer`阶段：
++ 进入`timer`阶段：执行上一次循环当中`timer macrotask Queue`当中的`setTimeout 1`的回调函数，打印出`setTimeout 1`,同时将`promise 3`放入到了`microtask Queue`,因为`node11`版本变化的原因，因为我们在`timer`阶段执行了`setTimeout 1`,属于<font color=#3eaf7c>setTimeout</font>宏任务，所以立马执行了`microtask Queue`中的`promise 3`，打印出`promise 3`
++ 然后回到`timer`阶段执行后面的宏任务`setTimeout 2`，执行它的回调函数，先打印`setTimeout 2`，然后将`promise 4`，`promise 5`,`promise 6`放入`microtask Queue`,然后将`text2`放入了`I/O callback macrotask Queue`当中，特别要注意为什么`setTimeout 3`没有立刻放在`timer macrotask Queue`当中，因为它是延迟一秒的
++ 刚才执行了`setTimeout 2`,它也属于<font color=#3eaf7c>setTimeout</font>宏任务，所以立刻执行了`microtask Queue`中的所有任务，打印出`promise 4`，`promise 5`,`promise 6`
++ 然后进入`I/O callback`阶段，因为当前`I/O callback macrotask Queue`有两个任务，所以分别执行他们的回调函数，打印出`text1`和`text2`
++ 然后跳过`idle prepare`阶段，因为没有这个阶段干的事，进入`poll`阶段就很复杂了，因为此时会回到`timer`阶段，但是我们当前不能完全确定`setTimeout 3`是否在`timer Queue`当中，如果经过前面的`timer`和`I/O callback`阶段后，一秒早过去了，那么此时`setTimeout 3`就在`timer Queue`当中，如果还没有到一秒，好了，直接到下一个事件循环当中
+
+打印出的结果如下：
++ `promise 1`
++ `promise 2`
++ `setTimeout 1`
++ `promise 3`
++ `setTimeout 2`
++ `promise 4`
++ `promise 5`
++ `promise 6`
++ `text1`
++ `text2`
+
+此时各个队列情况如下：
++ <font color=#3eaf7c>microtask Queue</font>: 空
++ <font color=#3eaf7c>timer macrotask Queue</font>: `setTimeout 3`（应该有了）
++ <font color=#3eaf7c>I/O callback macrotask Queue</font>：空
+
+<font color=#CC99CD>**3. 第三次事件循环**</font>
+
++ 先清空上一次循环遗留的`microtask Queue`,因为没有，所以跳过。
++ 进入`timer`阶段，执行`setTimeout 3`的回调，打印出`setTimeout 3`,然后将`promise 7`和`promise 8`放入了`microtask Queue`当中
++ 因为`setTimeout 3`也属于<font color=#3eaf7c>setTimeout</font>宏任务，所以立刻执行了`microtask Queue`当中的`promise 7`和`promise 8`,打印出`promise 7`和`promise 8`
+
+打印出的结果如下：
++ `setTimeout 3`
++ `promise 7`
++ `promise 8`
+
+
 
 **参考资料**
 + [浏览器与Node的事件循环(Event Loop)有何区别?](https://juejin.im/post/5c337ae06fb9a049bc4cd218#heading-13)
