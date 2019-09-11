@@ -17,6 +17,7 @@ module.exports = [
   {
     title: '异步和流程',
     children: [
+      '/node/three_asyncControl'
     ]
   }
 ]
