@@ -44,6 +44,91 @@
 
 无论是`Ajax`还是`Node`,都是借助<font color=#3eaf7c>中间层</font>来进行实际操作的，在使用的时候无须过多关注中间层之后的操作就能完成功能开发，这就是`Node`的特点，能够以最小的成本获取高性能，只需要专注写代码即可。
 
+### 3. 异步好处和问题
+虽然`node`当中也有很多同步的`API`,但是同步和异步的写法造成的结果也很大：
++ 同步方式更容易理解，但是会造成线程阻塞，无法最大限度的利用系统资源
++ 异步方式需要嵌套回调，即使代码写的非常规范也不容易理解和维护，但是它能够<font color=#3eaf7c>并行执行</font>，同时处理更多任务，效率更高
+
+但是异步的通常最大的问题就是： <font color=#CC99CD>执行结果不是我们想要的，或者我们理想状态的结果</font>，因为异步执行的结果具有一定的不确定性，所以如何提高可控性是开发人员要解决的问题，也是`Node`当中最难的点。所以你可以看到关于流程控制的技术再不断的更新和发展，下面我们就会去从最基础的`node`自带的异步写法开始了解，最后到更好的异步流程写法，让`node`工程师在异步的世界中如鱼得水。
+
+
 ## node自带的异步写法
+`node`当中有两种事件处理的方式，分别是<font color=#3eaf7c>callback（回调）</font>和<font color=#3eaf7c>EventEmitter（事件发射器）</font>，这里我们先要说的就是<font color=#CC99CD>callback采用的是错误优先的回调方式，EventEmitter采用的是事件驱动当中的事件发射器</font>
+
+### 1. callback
+因为`callback`采用的是错误优先的回调方式，而这种方式只需要注意两条规则即可：
++ 回调函数的第一个参数返回的是`error`对象，如果错误发生，该对象会作为第一个参数返回，如果执行正常，一般的做法是将`error`返回`null`
++ 回调函数的第二个参数返回的是所有成功响应的响应结果数据，如果结果正常，那么参数`err`就会被设置为`null`,并在第二个参数上面返回正确结果
+
+我们知道<font color=#CC99CD>异常处理实际上是异步流程控制当中最难的部分</font>，异常主要分为<font color=#3eaf7c>系统错误</font>和<font color=#3eaf7c>程序员错误</font>，系统错误包括请求超时，系统内存不足，远程连接服务失败等等，一般需要搭配系统监控等辅助软件解决。而程序员错误产生的原因比较复杂，比如咋异步调用的时候没有使用回调，无法读取`undefined`对象的属性，在高并发的场合使用了同步阻塞代码等等，但是这些错误可以通过<font color=#CC99CD>书写合适的错误处理代码，启动日志服务，记录错误</font>的方法来修改和避免错误，下面我们来举个例子说明怎么书写合适的错误处理代码：
+```javascript
+const fs = require('fs')
+function readJSON(filePath,callback) {
+  fs.readFile(filePath, function(err,data){
+    callback(JSON.parse(data))
+  })
+}
+```
+上面这种错误的示例告诉我们有两种错误需要我们通过书写合适的代码去监控和处理，分别是<font color=#3eaf7c> 回调函数中错误对象err </font>和<font color=#3eaf7c> 运行时错误 </font>，而我们的解决方法也很简单：
++ <font color=#CC99CD>模块应该暴露错误优先的回调接口</font>：或者说我们在回调函数中应该先考虑错误对象`err`存在的情况 
++ <font color=#CC99CD>多去增加异常捕获的写法</font>：按照程序一定会出错的方向去考虑怎么写异常捕获，多使用`try-catch`和短路操作运算符来避免错误发生导致程序奔溃的情况
+
+然后我们来看上面的例子会发生什么错误，首先没有对`err`进行错误处理，导致如果`err`对象存在的时候，`data`就是`null`,而`JSON.parse`无法将字符串转化成为对象的时候就会抛出异常，所以我们既要对回调函数当中的错误对象优先处理，还要考虑程序本身可能会发生的运行时错误：
+```javascript
+const fs = require('fs')
+function readJSON(filePath,callback) {
+  fs.readFile(filePath, function(err,data){
+    // 优先处理回调函数中的err对象
+    if(err) {
+      return callback(null)
+    }
+    // 使用try-catch捕获JSON解析的错误
+    try {
+      parseJson = JSON.parse(data)
+    } catch (error) {
+      return callback(error)
+    }
+    // 一切正常的时候我们直接调用回调函数
+    return callback(parseJson)
+  })
+}
+```
+
+### 2. EventEmitter
+**1. EventEmitter入门**
+事件模块是`Node.js`内置的对观察者模式的实现，通过`EventEmitter`属性提供一个构造函数，这个构造函数的示例中具有两个常用的方法，其中`on`方法可以用来监听指定事件，并处罚回调函数，另外一个`emit`方法可以用来发布事件。我们来看一个简单的代码：
+```javascript
+const EventEmitter = require('events')
+const observer = new EventEmitter()
+
+observer.on('topic', function () {
+  console.log('topic has occured! ')
+})
+
+function main() {
+  console.log('start')
+  observer.emit('public topic')
+  console.log('end')
+}
+main() // start; topic has occured ; end
+```
+`EventEmitter`可以理解为`发布/订阅`模式，`topic`是主题，`observer`首先通过`on`方法进行注册，对`topic`事件进行订阅，当`observer`调用`emit`方法时，所有通过`on`注册该`topic`事件的回调函数都会被调用。上述代码也表明，`EventEmitter`对象的事件触发和监听是同步的，即只有在事件的回调函数是异步的情况下，函数`emit`才会被触发执行
+
+**2. EventEmitter相关用法**
+`events`模块只提供了一个对象：`events.EventEmitter`，而`EventEmitter`的核心部分就是对事件触发和事件监听功能的封装，遇到错误时，会触发`error`事件，当增加一个监听者的时候，会触发`newListener`事件，移除一个监听者会触发`removeListener`事件，总之该对象提供了很多方法和属性，具体请查看[官网](http://nodejs.cn/api/events.html#events_event_newlistener)
+
+`Node.js`允许同一个事件最多指定10个回调函数，可以通过`.setMaxListeners(20)`或者`.setMaxListeners(Infinity)`
+
+`once`方法回调函数只会被触发一次，而在`on`方法当中会被触发多次，而且执行该方法会返回一个`EventEmitter`对象，因此可以链式加载监听函数
+
+获取监听器信息是通过`.listeners`方法实现的，改方法接受一个事件名称作为参数，返回由该事件所有回调函数组成的数组
+
+### 3. 风格选择
+通过上述我们对`callback`和`EventEmitter`写法的分析可以看出：
++ <font color=#3eaf7c>采用回调函数的写法，代码可读性很强，是参数同步语义化的传统思路</font>
++ <font color=#3eaf7c>EventEmitter写法语义更清晰，可以帮助学习者非常容易理解异步原理</font>
+
+但是要注意，两种写法都能实现相同的功能，现实当中选择什么样的风格也许取决于个人爱好或者公司规定，但是从单纯使用的角度来讲：<font color=#CC99CD> API推荐使用错误优先（callback）的回调方式，和Node.js SDK风格保持一致是最好的。但是在同一个对象当中，使用EventEmitter解耦可以合理利用集成，使局部代码可读性更强 </font>
 
 ## 更好的异步流程
+这一小节的内容非常多，我们会在下面的两个章节[异步流程初探](https://www.taopoppy.cn/node/three_asyncPreliminary.html)和[异步流程重点解析](https://www.taopoppy.cn/node/three_asyncDepth.html)当中深刻讲解异步的东西。
