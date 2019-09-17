@@ -96,6 +96,7 @@ function readJSON(filePath,callback) {
 
 ### 2. EventEmitter
 **1. EventEmitter入门**
+
 事件模块是`Node.js`内置的对观察者模式的实现，通过`EventEmitter`属性提供一个构造函数，这个构造函数的示例中具有两个常用的方法，其中`on`方法可以用来监听指定事件，并处罚回调函数，另外一个`emit`方法可以用来发布事件。我们来看一个简单的代码：
 ```javascript
 const EventEmitter = require('events')
@@ -115,6 +116,7 @@ main() // start; topic has occured ; end
 `EventEmitter`可以理解为`发布/订阅`模式，`topic`是主题，`observer`首先通过`on`方法进行注册，对`topic`事件进行订阅，当`observer`调用`emit`方法时，所有通过`on`注册该`topic`事件的回调函数都会被调用。上述代码也表明，`EventEmitter`对象的事件触发和监听是同步的，即只有在事件的回调函数是异步的情况下，函数`emit`才会被触发执行
 
 **2. EventEmitter相关用法**
+
 `events`模块只提供了一个对象：`events.EventEmitter`，而`EventEmitter`的核心部分就是对事件触发和事件监听功能的封装，遇到错误时，会触发`error`事件，当增加一个监听者的时候，会触发`newListener`事件，移除一个监听者会触发`removeListener`事件，总之该对象提供了很多方法和属性，具体请查看[官网](http://nodejs.cn/api/events.html#events_event_newlistener)
 
 `Node.js`允许同一个事件最多指定10个回调函数，可以通过`.setMaxListeners(20)`或者`.setMaxListeners(Infinity)`

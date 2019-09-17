@@ -19,7 +19,8 @@ module.exports = [
     children: [
       '/node/three_asyncControl',
       '/node/three_asyncPreliminary',
-      '/node/three_asyncDepth'
+      '/node/three_asyncDepth',
+      '/node/three_asyncDepth2'
     ]
   }
 ]
