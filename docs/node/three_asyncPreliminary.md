@@ -79,6 +79,19 @@ hello('./package.json').then(data=> {
 
 而`Promise`是在异步调用外层包了两层，一层`Promise`，一层函数，然后把异步调用的结果包裹在`Promise`的状态中，然后把`Promise`作为函数返回结果，那么异步调用的代码在函数的定义当中，异步结果的处理放在了函数外面的`then`函数当中，从写法上确实根本性的让两者分离。所以`Promise`的核心就是：<font color=#CC99CD>将回调函数中的结果延时到then函数里处理或者交给catch全局异常处理</font>
 
+当然`Promise`还在回调地狱基础上改进一个大的方面就是：<font color=#CC99CD>不让回调里的return和throw变成摆设</font>，如下代码：
+```javascript
+try {
+  fs.readFile('./package.json',function(err,fileContent) {
+    if(!!err) { throw Error(err) }
+    return fileContent
+  })
+}catch(e){
+  // do something with you error
+}
+```
+首先异步调用的回调函数当中写`return`是没有用的，因为没有人能接受到，其次`try-catch`是捕获同步代码的错误的，你在异步代码的回调当中抛出错误，是`try-catch`捕获不到的，因为错误会被抛到主线程当中，然后程序就挂掉了。
+
 **3. 链式和状态**
 
 如果我们约定每个函数的返回值都是`Promise`对象，那么函数的链式调用就是一种递归的变种思想的应用，只要是`Promise`对象，就可以控制状态并支持`then`方法，将无限个`Promise`对象链接在一起。
@@ -96,7 +109,7 @@ Promise.prototype.then = function(sucess,fail) {
 + fail: <font color=#3eaf7c>rejected状态的回调函数</font>
 但是通常我们只会传一个回调函数，不传错误的回调函数，因为使用`catch`来捕获异常比通过`fail`函数进行处理更加可控。而且从上述代码看到了：`then`返回值是`this`对象，这就是为什么可以链式调用的原因，每个方法返回的都是`this`对象，那么久能继续调用`this`对象上的函数并形成链式写法了
 
-关于`Promise`的状态我们也要说明一下，一个`Promise`对象必须处于<font color=#3eaf7c>pending</font>、<font color=#3eaf7c>fulfilled</font>、<font color=#3eaf7c>rejected</font>三者状态之一，切遵循这样一种原则：<font color=#CC99CD>从pending状态可以转化到fulfilled或者rejected状态，但这属于不可逆状态切换，且fulfilled和rejected状态之间不能切换</font>
+关于`Promise`的状态我们也要说明一下，一个`Promise`对象必须处于<font color=#3eaf7c>pending</font>、<font color=#3eaf7c>fulfilled</font>、<font color=#3eaf7c>rejected</font>三者状态之一，切遵循这样一种原则：<font color=#CC99CD>从pending状态可以转化到fulfilled或者rejected状态，但这属于不可逆状态切换，且fulfilled和rejected状态之间不能切换</font>,虽然已经知道这三种状态，但是没有公开的`API`来查询内部的状态
 
 <img :src="$withBase('/promise_status.png')" alt="promise状态">
 
