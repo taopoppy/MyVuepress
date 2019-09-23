@@ -5,13 +5,14 @@ module.exports = [
     title: '本质与机制',
     children: [
      '/node/one_whatNode',
-     '/node/one_betterNode',
      '/node/one_eventLoop',
     ]
   },
   {
-    title: '模块和核心',
+    title: '架构和功能',
     children: [
+      '/node/two_microService',
+      '/node/two_betterNode',
     ]
   },
   {
@@ -24,5 +25,10 @@ module.exports = [
       '/node/three_asyncDepth_await1',
       '/node/three_asyncDepth_await2'
     ]
-  }
+  },
+  {
+    title: '模块和核心',
+    children: [
+    ]
+  },
 ]
