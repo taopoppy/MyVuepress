@@ -173,7 +173,7 @@ async function asyncF() {
   }
   ```
   
-<font color=#1E90FF>**③ await本质**</font>
+<font color=#1E90FF>**② await本质**</font>
 
 从上面我们列出的这么多代码来看，`await`的本质就是`.then`方法的语法糖，事实上，`async/await`其实会翻译成`promise`与`then`回调。每次我们使用`await`，解释器会创建一个`promise`然后把`async`函数中的后续代码（也就是书写在`await`后面的代码）放到`then`回调里，并被计划在`promise`完成之后执行。所以下面两段代码是等价的：
 ```javascript

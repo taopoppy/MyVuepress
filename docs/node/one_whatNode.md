@@ -11,6 +11,8 @@
 这也印证了万维网之父Tim-Berners-Lee的那句话： 
 + <font color=#CC99CD>任何可以使用JavaScript实现的应用，最终都用JavaScript实现</font>
 
+所以当你使用`node`时间久了你就会有这样一种感觉：<font color=#1E90FF>前端工程师在Chrome里写JavaScript控制浏览器，Node.js让你用类似的方式来控制整个计算机</font>
+
 ## node概述
 在官网有段关于`node`的描述如下：
 

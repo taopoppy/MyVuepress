@@ -6,13 +6,12 @@ module.exports = [
     children: [
      '/node/one_whatNode',
      '/node/one_eventLoop',
+     '/node/one_betterNode'
     ]
   },
   {
-    title: '架构和功能',
+    title: '模块和核心',
     children: [
-      '/node/two_microService',
-      '/node/two_betterNode',
     ]
   },
   {
@@ -27,8 +26,9 @@ module.exports = [
     ]
   },
   {
-    title: '模块和核心',
+    title: '实战和开发',
     children: [
+      '/node/four_combat_introduce',
     ]
-  },
+  }
 ]
