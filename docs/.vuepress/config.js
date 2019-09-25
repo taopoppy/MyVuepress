@@ -50,7 +50,7 @@ module.exports = {
           { text: 'node入门', link: '/node/' },
           { text: 'node博客后台', link: '/node-blog/' },
           { text: 'node与RESTful', link: '/node-RESTful/' },
-          { text: 'koa专题',link: '/koa/'}
+          { text: 'node微服务',link: '/node-microService/'}
         ]
       },
       {

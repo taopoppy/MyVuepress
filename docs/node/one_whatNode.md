@@ -57,7 +57,7 @@
   多端应用将`API`接口开发推向了浪尖，各种风格的接口开发琳琅满目，比如<font color=#3eaf7c>GitHub V3版的RESTful API</font>、 <font color=#3eaf7c>微博API的自定义约定</font>，包括最新的<font color=#3eaf7c>GraphQL</font>。但是大型工程当中的`API`比较复杂，<font color=#3eaf7c>因此在后端的API接口开发上封装一层专门供前端使用的 API Proxy是很有必要的</font>。所以这个在后面我们也会讲。
 
 + <font color=#CC99CD>构建RPC服务</font>
-  `RPC协议服务`也叫做远程过程调用，常见的做法就是将数据库访问返回的数据以`TCP`形式传输给调用方，在协议和传输上有明显的优势，比如像著名的`RPC`服务有`Java`版本的`Dubbo`。
+  `RPC协议服务`也叫做远程过程调用，常见的做法就是将数据库访问返回的数据以`TCP`形式传输给调用方，在协议和传输上有明显的优势，比如像著名的`RPC`服务有`Java`版本的`Dubbo`。`Google`出品的跨语言`RPC`库`gRPC`,当然`Node`实现的`RPC`库也有很多，例如使用纯粹用`Node`实现的`DNode`,微服务工具集`Seneca`,跨语言的`gRPC`客户端，可以看出`Node`在微服务下的使用场景也是非常多的。
 
 + <font color=#CC99CD>前后端分离</font>
   前端分离的应用场景有：<font color=#3eaf7c>前端页面静态化（page static）</font>、<font color=#3eaf7c>前端页面服务化（PAAS）</font>、<font color=#3eaf7c>服务端渲染（SSR）</font>、<font color=#3eaf7c>渐进式Web应用（PWA）</font>
