@@ -26,3 +26,7 @@
 + [教你用node从零搭建一套微服务系统（三）](https://www.jianshu.com/p/3927fb8c506a)
 + [教你用node从零搭建一套微服务系统（四）](https://www.jianshu.com/p/0b4a203b60cd)
 + [nodejs微服务框架解决方案](https://juejin.im/post/5b0ac94651882538b304c436)
+
+**参考资料（<font color=#CC99CD>Tars.js</font>）**
++ [TarsCloud / Tars.js(码云)](https://gitee.com/TarsCloud/Tars.js)
++ [TarsCloud / Tars.js(github)](https://github.com/TarsCloud/Tars)

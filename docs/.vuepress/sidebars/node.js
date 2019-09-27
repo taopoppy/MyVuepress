@@ -12,6 +12,10 @@ module.exports = [
   {
     title: '模块和核心',
     children: [
+      '/node/two_module_commonjs',
+      '/node/two_module_introduce',
+      '/node/two_module_fs',
+      '/node/two_mudule_stream'
     ]
   },
   {

@@ -11,6 +11,7 @@ const AlgorithmSidebar = require('./sidebars/Algorithm')
 const WeiXinSidebar = require('./sidebars/WeiXin')
 const WeiXinCombatSidebar = require('./sidebars/WeiXinCombat')
 const nodeSidebar = require('./sidebars/node')
+const nodeGraphQLSidebar = require('./sidebars/node-GraphQL')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -48,8 +49,9 @@ module.exports = {
         text: 'node',
         items: [
           { text: 'node入门', link: '/node/' },
-          { text: 'node博客后台', link: '/node-blog/' },
           { text: 'node与RESTful', link: '/node-RESTful/' },
+          { text: 'node与GraphQL', link: '/node-GraphQL/'}, 
+          { text: 'node博客后台', link: '/node-blog/' },
           { text: 'node微服务',link: '/node-microService/'}
         ]
       },
@@ -104,6 +106,7 @@ module.exports = {
       '/WeiXin/':WeiXinSidebar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
+      '/node-GraphQL/': nodeGraphQLSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
