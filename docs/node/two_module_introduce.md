@@ -10,7 +10,7 @@
   }
   ```
 + 所以你会看到，所以我们平时理解的这些全局对象，其中上述的<font color=#CC99CD>exports</font>、<font color=#CC99CD>require</font>、<font color=#CC99CD>module</font>、<font color=#CC99CD>__firename</font>、<font color=#CC99CD>__dirname</font>这个五个对象是通过作为函数参数的方式传入进入模块内部的。
-+ 如果你能够深入到源码当中你就能看到模块被执行的时候`Node.js`的源码做了两件事。<font color=#1E90FF>保证顶层的变量只在模块内部起作用</font>和<font color=#1E90FF>帮助提供一些全局查找的变量（上述那5个）</font>
++ 如果你能够深入到源码当中你就能看到模块被执行的时候`Node.js`的源码做了两件事。<font color=#1E90FF> 保证顶层的变量只在模块内部起作用(变量的作用域限制在本地而不会暴露到全局) </font>和<font color=#1E90FF>帮助提供一些全局查找的变量（上述那5个）</font>
 
 其实在源码当中的这种包裹非常简单：
 ```javascript
@@ -178,10 +178,41 @@ Module._load = function(request, parent, isMain) {
   return module.exports;
 };
 ```
+上面这个源码是`Node`加载模块直接会调用的函数，但是在里面很多其他的函数我们需要单独拿出来理解，但是单独拿出来讲会让你理解的思路不清晰，所以我们这里给出一幅图，让你清楚的看到每个函数到底在干什么：<font color=#d14>加载模块是从require函数开始的，require函数当中返回的是Module._load函数结果，所以我们从Module._load入手看看整个加载过程是怎么样的</font>
+<img :src="$withBase('/node_how_module_load.png')" alt="node模块加载机制">
+
+而图中最后一步关于`NativeModule.prototype.compile`源码我们在本节最开始就已经说明，整个关于`Node`加载模块的机制和流程大致就是如此
 
 ## 全局对象
+之前我们说模块有两种写法，一种是基于`CommonJS`规范编写的，第二种就是<font color=#CC99CD>全局对象的写法</font>，<font color=#3eaf7c>全局对象就是无须引用就可以直接使用的对象</font>，当然我们也要注意全局对象和`global`关键字之间的区别
 
-## 模块扩展
+内置对象大致能够分为5大类：
+
+<font color=#1E90FF>**① 为模块包装而提供的全局对象**</font> 
+
+我们在之前已经说过，模块的加载和运行都是在`Node`当中进行包装的，包装成为一个函数，而<font color=#CC99CD>exports</font>、<font color=#CC99CD>require</font>、<font color=#CC99CD>module</font>、<font color=#CC99CD>__fileName</font>、<font color=#CC99CD>__dirname</font>这5个内置对象是作为参数而传入到模块当中的，或者说这5个都是为了模块包装而提供的内置对象
+
+<font color=#1E90FF>**② 内置的process对象**</font>  
+
+`process`这个模块我们会在后面单独拿出来讲，<font color=#CC99CD>作为核心模块，它可以对当前Node的各种信息进行绑定，使用它是个明智的选择</font>
+
+<font color=#1E90FF>**③ 控制台Console模块**</font> 
+
+`console`这个模块在`javascript`浏览器和`Node`当中是不一样的实现，因为`Node`是要在终端输出，`console`模块是在源码的`lib/internal/bootstrap_node.js`当中被绑定为全局对象的
+
+<font color=#1E90FF>**④ EventLoop相关API**</font>
+
+这一类基本上就是`SetTimeout`、`SetInterval`、`SetImmediate`和对应的`clear`方法的实现
+
+<font color=#1E90FF>**⑤ Buffer数据类型和全局对象global**</font>
+
+`Buffer`我们会在后面单独拉出来讲，`global`对象，<font color=#CC99CD>主要用来扩展变量和方法</font>，比如我们经常使用下面的代码来判断是否开启日志和打印日志
+```javascript
+global.debug = false
+global.log = console.log
+```
+但是也不能滥用这个全局对象，因为如果你不是很懂`Node`的话，`global`关键字的位置使用不准确就会带来代码的混乱。
+
 
 **参考资料**
 + [node的模块机制](https://juejin.im/post/5cde5ad76fb9a07ee565ecd9)
