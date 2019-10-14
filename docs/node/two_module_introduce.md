@@ -109,7 +109,9 @@ Module {
 <font color=#CC99CD>&nbsp;&nbsp;&nbsp;&nbsp;this.fileName = null</font>  
 <font color=#CC99CD>&nbsp;&nbsp;&nbsp;&nbsp;this.loaded = false</font>  
 <font color=#CC99CD>&nbsp;&nbsp;&nbsp;&nbsp;this.children = []</font>  
-<font color=#CC99CD>}</font>  
+<font color=#CC99CD>}</font> 
+
+<font color=#b14>所以模块在被包装的时候所传递的module参数就是模块本身，而模块本身不包含你在这个文件所写的代码的，模块执行的时候是根据模块id来读取的你编写的代码的，然后拼接好成为字符串，依靠V8底层的C++代码来识别和执行整个字符串的</font>
 
 <font color=#1E90FF>**② 模块的加载和缓存机制**</font>
 
@@ -183,36 +185,8 @@ Module._load = function(request, parent, isMain) {
 
 而图中最后一步关于`NativeModule.prototype.compile`源码我们在本节最开始就已经说明，整个关于`Node`加载模块的机制和流程大致就是如此
 
-## 全局对象
-之前我们说模块有两种写法，一种是基于`CommonJS`规范编写的，第二种就是<font color=#CC99CD>全局对象的写法</font>，<font color=#3eaf7c>全局对象就是无须引用就可以直接使用的对象</font>，当然我们也要注意全局对象和`global`关键字之间的区别
-
-内置对象大致能够分为5大类：
-
-<font color=#1E90FF>**① 为模块包装而提供的全局对象**</font> 
-
-我们在之前已经说过，模块的加载和运行都是在`Node`当中进行包装的，包装成为一个函数，而<font color=#CC99CD>exports</font>、<font color=#CC99CD>require</font>、<font color=#CC99CD>module</font>、<font color=#CC99CD>__fileName</font>、<font color=#CC99CD>__dirname</font>这5个内置对象是作为参数而传入到模块当中的，或者说这5个都是为了模块包装而提供的内置对象
-
-<font color=#1E90FF>**② 内置的process对象**</font>  
-
-`process`这个模块我们会在后面单独拿出来讲，<font color=#CC99CD>作为核心模块，它可以对当前Node的各种信息进行绑定，使用它是个明智的选择</font>
-
-<font color=#1E90FF>**③ 控制台Console模块**</font> 
-
-`console`这个模块在`javascript`浏览器和`Node`当中是不一样的实现，因为`Node`是要在终端输出，`console`模块是在源码的`lib/internal/bootstrap_node.js`当中被绑定为全局对象的
-
-<font color=#1E90FF>**④ EventLoop相关API**</font>
-
-这一类基本上就是`SetTimeout`、`SetInterval`、`SetImmediate`和对应的`clear`方法的实现
-
-<font color=#1E90FF>**⑤ Buffer数据类型和全局对象global**</font>
-
-`Buffer`我们会在后面单独拉出来讲，`global`对象，<font color=#CC99CD>主要用来扩展变量和方法</font>，比如我们经常使用下面的代码来判断是否开启日志和打印日志
-```javascript
-global.debug = false
-global.log = console.log
-```
-但是也不能滥用这个全局对象，因为如果你不是很懂`Node`的话，`global`关键字的位置使用不准确就会带来代码的混乱。
-
+## 模块扩展
+关于模块扩展的内容涉及到`C++`的知识，我们在这里就不做过多的介绍，小编也没有到精通`C++`地步，所以关于这方面的知识我们后续如果有机会再回头补充。
 
 **参考资料**
 + [node的模块机制](https://juejin.im/post/5cde5ad76fb9a07ee565ecd9)

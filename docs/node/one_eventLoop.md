@@ -66,7 +66,42 @@ Node端事件循环中的异步队列也是这两种：`macro`（宏任务）队
 ## process.nextTick
 这个函数其实是独立于`Event Loop`之外的，它有一个自己的队列，当每个阶段完成后，如果存在`nextTick`队列，就会清空队列中的所有回调函数，并且优先于其他`microtask`执行。
 
-总是你使用了`process.nextTick`后，里面的回调函数会放在当前执行队列的末尾去执行。
++ <font color=#bl4>执行机制</font>：`process.nextTick`是用于在事件循环的下一次循环中调用回调函数的，将一个函数推迟到代码执行的下一个同步方法执行完毕，或异步事件回调函数开始执行时再执行
++ <font color=#bl4>执行原理</font>：`Node`每一次循环都是一个`tick`，每次`tick`，`Chrome V8`都会从时间队列当中取所有事件依次处理。遇到`nextTick`事件，将其加入事件队尾，等待下一次`tick`到来的时候执行
+  <img :src="$withBase('/node_process_nextTick.png')" alt="process_nextTick的执行原理">
+
+我们来演示一下：
+```javascript
+console.log(1)
+Promise.resolve().then(() => {
+  console.log('promise one'))
+})
+process.nextTick(() => {
+  console.log('nextTick one')
+})
+
+setTimeout(() => {
+  process.nextTick(() => {
+    console.log('nextTick two')
+  })
+  console.log(3)
+  Promise.resolve().then(()=> {
+    console.log('promise two')
+  })
+  console.log(4)
+}, 3);
+```
+执行结果是：
+```javascript
+1
+nextTick one
+promise one
+3
+4
+nextTick two
+promise two
+```
+如果你不知道为什么结果是这样，先不用着急，看完后面的内容然后再回头看这个程序的执行结果，你就会一目了然。
 
 ## Node与浏览器的Event Loop差异
 <img :src="$withBase('/node_brower_eventLoop.png')" alt="node队列">

@@ -14,8 +14,12 @@ module.exports = [
     children: [
       '/node/two_module_commonjs',
       '/node/two_module_introduce',
-      '/node/two_module_fs',
-      '/node/two_mudule_stream'
+      '/node/two_module_globalobj',
+      '/node/two_module_buffer',
+      '/node/two_module_stream',
+      '/node/two_module_http',
+      '/node/two_module_process',
+      '/node/two_module_fs'
     ]
   },
   {

@@ -19,7 +19,7 @@
 
 `CommonJS`和`Node.js`的区别主要体现在`module.exports`对象的具体实现上
 + 原生`Node.js`当中，`module.exports`是真正的特殊对象，也是真正的对外暴露接口，在`CommonJS`没有出现以前，也没有`exports`这种东西
-+ 在`CommonJS`规范当中,规定`exports`对象是暴露接口的对象，所以`Node`为了遵循规定但是又不修改自身`module.exports`的基础上，额外增加了将`exports`关键字绑定到了`module.exports`对象上的默认操作，说白了就`exports`默认指向了`module.exports`导出的对象。
++ 在`CommonJS`规范当中,规定`exports`对象是暴露接口的对象，所以`Node`为了遵循规定但是又不修改自身`module.exports`的基础上，额外增加了将`exports`关键字绑定到了`module.exports`对象上的默认操作，说白了就`exports`默认指向了`module.exports`导出的对象。这就是为什么`Node`在包装模块的时候将`exports`作为参数的原因，默认将规范添加了进来。
 + 两者同时存在时，以`module.exports`为准，因为`module.exports`的实际含义是一个完全预先构造的对象，但是`exports`可以手动被我们篡改指向，这就是很多讲师在给`Node`初学者解释两者区别最常用的一句话：<font color=#CC99CD>exports在没有改变指向的时候是module.exports的代替品</font> ，这句话是没有错的，但是我想你听了我上面的解释，你一定会有更深刻的理解。
 
 ## 核心
@@ -69,6 +69,8 @@
 而在`CommonJS Moudules1.0`当中有说明，<font color=#CC99CD>在这种情况下，require返回的对象必须至少包含此外部模块在调用require函数之前就已经准备完毕的输出</font>，这种解决模块间的循环引用的策略称为<font color=#CC99CD>模块缓存策略</font>
 
 上述策略的意图也很简单，就是说`a.js`引用的其他模块`b.js`和`c.js`，这两者就相当于包含在`a.js`的外部模块，那么`require('a.js')`的时候一定会先运行`b.js`和`c.js`，光运行也不行，在`b.js`和`c.js`当中的`module.exports`上面必须存在有效的输出，才叫做准备完毕的输出。
+
+我们还要避免的一种写法就是：<font color=#3eaf7c>A模块引用了B模块，B模块也引用了A模块</font>，这种循环引用遵循的规则是这样：<font color=#CC99CD>一旦出现某个模块被循环加载，就只输出已经执行的部分，还未执行的部分不会输出</font>。
 
 ## 拓展
 实际上，无论什么时候我们在`Node`当中讲任何知识点都会和前端联系起来，也并不是因为`Node`本身就是前端的一部分，而是前端在发展的过程当中越来越依赖`Node`模块。所有由`CommonJS`规范我们就会拓展前端模块化的东西。我们会简单介绍一下`AMD`和`CMD`,重点放在`ES6`模块以及它和`CommonJS`规范的对比。
@@ -125,7 +127,7 @@ function test(ele) {
 上述说了这么多，我们还是要真正来总结一下整个流程:
 + `CommonJS`加载的是一个对象（即module.exports属性），该对象只有在脚本运行完才会生成,流程如下：
   + <font color=#1E90FF>本部模块（简称a）在运行时加载外部模块（简称b）</font>（<font color=#CC99CD>重点</font>）
-  + <font color=#1E90FF>外部模块（b）整体被运行，通过exports生成最终对象，同时还被缓存</font>
+  + <font color=#1E90FF>外部模块（b）整体被运行，通过exports生成最终对象，同时还被缓存</font>（<font color=#b14>Node通过require函数加载外部模块的过程我们会在下一小节详细说明</font>）
   + <font color=#1E90FF>本部模块（a）加载完毕外部模块（b）后拷贝外部模块（b）生成的最终对象</font>（<font color=#CC99CD>重点</font>）
   + <font color=#1E90FF>导致本部模块（a）中的require函数执行完最终获得的是一个值拷贝</font>
   + <font color=#1E90FF>这个值拷贝表现在栈中就是一个变量的值是一个值类型</font>
@@ -140,10 +142,28 @@ function test(ele) {
 
   /*************** b.js**********************/
   const { count, add } = require('./a.js')
-  console.log(count)     //0
+  console.log(count)     // 0
   add();
-  console.log(count)     //0
+  console.log(count)     // 0
+
+  /*************** c.js**********************/
+  const obj = require('./a.js')
+  console.log(obj.count)     // 0
+  obj.add();
+  console.log(obj.count)     // 1
   ```
+  有些小伙伴会疑惑为啥不同的引用写法会造成不同，`c.js`很好理解，因为`obj`这个变量存的和`a.js`导出对象一样的堆中地址，所以操作是相互影响的，但是`b.js`这种解构写法类似于下面这样：
+  ```javascript
+  const obj = require('./a.js')
+  const count = obj.count
+  const add = obj.add
+  console.log(obj.count)     // 0
+  console.log(count)         // 0
+  add();
+  console.log(obj.count)     // 1
+  console.log(count)         // 0
+  ```
+  显然这里`count`虽然和`obj.count`的值一样，但是`add`操作的是`obj`里面的`count`,外面的`count`是不会受影响的。那我们再来看一个例子：
   ```javascript
   /*************** a.js**********************/
   let count = { num: 0 } // count是个引用值类型
