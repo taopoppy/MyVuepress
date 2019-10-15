@@ -12,6 +12,7 @@ const WeiXinSidebar = require('./sidebars/WeiXin')
 const WeiXinCombatSidebar = require('./sidebars/WeiXinCombat')
 const nodeSidebar = require('./sidebars/node')
 const nodeGraphQLSidebar = require('./sidebars/node-GraphQL')
+const nodeWeiboSidebar = require('./sidebars/node-weibo')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -38,7 +39,12 @@ module.exports = {
           { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' }
         ]
       },
-      { text: 'Jest测试', link: '/Jest/'},
+      { text: '工具系列', 
+        items: [
+          { text: 'Jest', link: '/Jest/'},
+          { text: 'Webpack',link: '/Webpack/'} 
+        ]
+      },
       { 
         text: '全栈', 
         items: [
@@ -52,6 +58,7 @@ module.exports = {
           { text: 'node与RESTful', link: '/node-RESTful/' },
           { text: 'node与GraphQL', link: '/node-GraphQL/'}, 
           { text: 'node博客后台', link: '/node-blog/' },
+          { text: 'node实战微博', link: '/node-weibo/'},
           { text: 'node微服务',link: '/node-microService/'}
         ]
       },
@@ -97,6 +104,7 @@ module.exports = {
       '/Algorithm/': AlgorithmSidebar,
       '/Flutter/': FlutterSidebar,
       '/node-RESTful/': nodeRESTfulSidebar,
+      '/node-weibo/':nodeWeiboSidebar,
       '/typescript/': typescriptSidebar,
       '/Jest/': jestSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,

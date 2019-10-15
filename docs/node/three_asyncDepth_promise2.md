@@ -11,3 +11,4 @@
 7. [Promise深度学习---我のPromise/A+实现](https://juejin.im/post/5a59e78ff265da3e3e33ba6e)
 8. [深入 Promise(一)——Promise 实现详解 ](https://juejin.im/entry/58a10aa61b69e60059d1d2af)
 9. [【第1738期】100 行代码实现 Promises/A+ 规范](https://mp.weixin.qq.com/s/Yrwe2x6HukfqJZM6HkmRcw)
+10. [Promise的秘密（Promise原理解析以及实现）](https://juejin.im/post/5d9ffb3df265da5b6c4bb91c)

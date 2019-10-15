@@ -34,9 +34,16 @@ module.exports = [
     ]
   },
   {
+    title:'测试和工具',
+    children: [
+      '/node/four_test_one',
+      '/node/four_array_module'
+    ]
+  },
+  {
     title: '实战和开发',
     children: [
-      '/node/four_combat_introduce',
+      '/node/five_combat_introduce',
     ]
-  }
+  },  
 ]
