@@ -211,8 +211,141 @@ for (let i = 0; i < buf1.length; i+=5) {
 + <font color=#CC99CD>原理</font>：将`Buffer`实例写入`StringDecoder`实例时，将使用内部缓冲区来确保已解码的字符串不包含任何不完整的多字节字符。 它们保存在缓冲区中，直到下一次调用 `stringDecoder.write()`或调用`stringDecoder.end()`为止
 
 ## Buffer的内存机制
+在[Nodejs 中的 内存管理和 V8 垃圾回收机制](https://www.nodejs.red/#/nodejs/memory) 一节主要讲解了在`Node.js`的垃圾回收中主要使用`V8`来管理，但是并没有提到`Buffer`类型的数据是如何回收的，下面让我们来了解`Buffer`的内存回收机制。
+
+由于`Buffer`需要处理的是大量的二进制数据，假如用一点就向系统去申请，则会造成频繁的向系统申请内存调用，<font color=#DD1144>所以 Buffer 所占用的内存不再由V8分配，而是在 Node.js的C++层面完成申请，在JavaScript中进行内存分配。因此，这部分内存我们称之为堆外内存</font> 。
+### 1. 内存分配原理
+<font color=#DD1144>Node.js 采用了 slab 机制进行预先申请、事后分配，是一种动态的管理机制</font>。
+
+使用`Buffer.alloc(size)`传入一个指定的`size`就会申请一块固定大小的内存区域，`slab`具有如下三种状态：
++ <font color=#3eaf7c>full</font> ：完全分配状态
++ <font color=#3eaf7c>partial</font> ：部分分配状态
++ <font color=#3eaf7c>empty</font> ：没有被分配状态
+
+<font color=#DD1144>Node.js 以 8KB 为界限来区分是小对象还是大对象</font>，在 buffer.js 中可以看到以下代码
+```javascript
+Buffer.poolSize = 8 * 1024; // 102 行，Node.js 版本为 v10.x
+```
+在`Buffer`初识一节里有提到过`Buffer`在创建时大小已经被确定且是无法调整的 到这里应该就明白了。
+
+### 2.对象分配
+以下代码示例，在加载时直接调用了`createPool()`相当于直接初始化了一个 8 KB 的内存空间，这样在第一次进行内存分配时也会变得更高效。另外在初始化的同时还初始化了一个新的变量`poolOffset = 0`这个变量会记录已经使用了多少字节。
+```javascript
+Buffer.poolSize = 8 * 1024;
+var poolSize, poolOffset, allocPool;
+
+... // 中间代码省略
+
+function createPool() {
+  poolSize = Buffer.poolSize;
+  allocPool = createUnsafeArrayBuffer(poolSize);
+  poolOffset = 0;
+}
+createPool(); // 129 行
+```
+此时，新构造的`slab`如下所示：
+<img :src="$withBase('/node_buffer_neicun_one.png')" alt="buffer内存">
+
+如果是分配一个2048的`Buffer`对象：
+```javascript
+Buffer.alloc(2*2048)
+```
+那么当前的`slab`内存是这样：
+<img :src="$withBase('/node_buffer_neicun_two.png')" alt="buffer内存">  
+
+那么这个分配过程是怎样的呢？让我们再看`buffer.js`另外一个核心的方法`allocate(size)`
+```javascript
+// https://github.com/nodejs/node/blob/v10.x/lib/buffer.js#L318
+function allocate(size) {
+  if (size <= 0) {
+    return new FastBuffer();
+  }
+
+  // 当分配的空间小于 Buffer.poolSize 向右移位，这里得出来的结果为 4KB
+  if (size < (Buffer.poolSize >>> 1)) {
+    if (size > (poolSize - poolOffset))
+      createPool();
+    var b = new FastBuffer(allocPool, poolOffset, size);
+    poolOffset += size; // 已使用空间累加
+    alignPool(); // 8 字节内存对齐处理
+    return b;
+  } else { // C++ 层面申请
+    return createUnsafeBuffer(size);
+  }
+}
+```
+### 内存分配总结
++ 在初次加载时就会初始化 1 个 8KB 的内存空间，`buffer.js`源码有体现
++ 根据申请的内存大小分为 小 Buffer 对象 和 大 Buffer 对象
++ 小`Buffer`情况，会继续判断这个`slab`空间是否足够
+  + 如果空间足够就去使用剩余空间同时更新`slab`分配状态，偏移量会增加
+  + 如果空间不足，`slab`空间不足，就会去创建一个新的`slab`空间用来分配
++ 大`Buffer`情况，则会直接走`createUnsafeBuffer(size)`函数
++ 不论是小`Buffer` 对象还是大`Buffer`对象，内存分配是在`C++`层面完成，内存管理在`JavaScript`层面，最终还是可以被`V8`的垃圾回收标记所回收。
+
 ## Buffer的应用场景
+### 1. I/O 操作
+关于`I/O`可以是文件或网络`I/O`，以下为通过流的方式将`input.txt`的信息读取出来之后写入到`output.txt`文件，关于`Stream`与`Buffer`的关系不明白的在回头看看
+```javascript
+const fs = require('fs');
+
+const inputStream = fs.createReadStream('input.txt'); // 创建可读流
+const outputStream = fs.createWriteStream('output.txt'); // 创建可写流
+
+inputStream.pipe(outputStream); // 管道读写
+```
+<font color=#DD1144>在 Stream 中我们是不需要手动去创建自己的缓冲区，在 Node.js 的流中将会自动创建。</font>
+
+
+### 2. zlib.js
+`zlib.js`为`Node.js`的核心库之一，其利用了缓冲区（Buffer）的功能来操作二进制数据流，提供了压缩或解压功能。关于`zlib`核心模块我们后面也会深入了解
+
+### 3. 加解密
+在一些加解密算法中会遇到使用`Buffer`，例如 `crypto.createCipheriv` 的第二个参数`key`为`String`或`Buffer`类型，如果是`Buffer`类型，就用到了本篇我们讲解的内容，以下做了一个简单的加密示例，重点使用了`Buffer.alloc()`初始化一个实例（这个上面有介绍），之后使用了`fill`方法做了填充，这里重点在看下这个方法的使用。
+**buf.fill(value[, offset[, end]][, encoding])**
++ value: 第一个参数为要填充的内容
++ offset: 偏移量，填充的起始位置
++ end: 结束填充 buf 的偏移量
++ encoding: 编码集
+
+以下为`Cipher`的对称加密`Demo`
+```javascript
+
+const crypto = require('crypto');
+const [key, iv, algorithm, encoding, cipherEncoding] = [
+    'a123456789', '', 'aes-128-ecb', 'utf8', 'base64'
+];
+
+const handleKey = key => {
+    const bytes = Buffer.alloc(16); // 初始化一个 Buffer 实例，每一项都用 00 填充
+    console.log(bytes); // <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
+    bytes.fill(key, 0, 10) // 填充
+    console.log(bytes); // <Buffer 61 31 32 33 34 35 36 37 38 39 00 00 00 00 00 00>
+
+    return bytes;
+}
+
+let cipher = crypto.createCipheriv(algorithm, handleKey(key), iv);
+let crypted = cipher.update('Node.js 技术栈', encoding, cipherEncoding);
+    crypted += cipher.final(cipherEncoding);
+
+console.log(crypted) // jE0ODwuKN6iaKFKqd3RF4xFZkOpasy8WfIDl8tRC5t0=
+```
+
 ## Buffer拓展
+### 1. Buffer和Cache的区别
++ 缓冲（Buffer）是用于处理二进制流数据，将数据缓冲起来，它是<font color=#DD1144>临时性</font>的，对于流式数据，会采用缓冲区将数据临时存储起来，等缓冲到一定的大小之后在存入硬盘中。视频播放器就是一个经典的例子，有时你会看到一个缓冲的图标，这意味着此时这一组缓冲区并未填满，当数据到达填满缓冲区并且被处理之后，此时缓冲图标消失，你可以看到一些图像数据。
+
++ 缓存（Cache）我们可以看作是一个中间层，它可以是<font color=#DD1144>永久性</font>的将热点数据进行缓存，使得访问速度更快，例如我们通过 Memory、Redis 等将数据从硬盘或其它第三方接口中请求过来进行缓存，目的就是将数据存于内存的缓存区中，这样对同一个资源进行访问，速度会更快，也是性能优化一个重要的点。
+
+### 2. Buffer与String比较
+在`HTTP`传输中传输的是二进制数据，那么如果使用`Buffer`和`String`情况如下：
++ 接口如果直接返回的字符串，这时候 HTTP 在传输之前会先将字符串转换为`Buffer`类型，以二进制数据传输，通过流（Stream）的方式一点点返回到客户端。
++ 但是直接返回`Buffer`类型，则少了每次的转换操作，对于性能也是有提升的。
+
+<font color=#1E90FF>所以在一些Web 应用中，对于静态数据可以预先转为 Buffer 进行传输，可以有效减少 CPU 的重复使用（重复的字符串转 Buffer 操作）</font>
+
+
 **参考资料**
 
 1. [Node.js 中的缓冲区（Buffer）究竟是什么？](https://juejin.im/post/5d3a3b8ff265da1b8d166323)

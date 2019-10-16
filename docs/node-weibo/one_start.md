@@ -1,61 +1,84 @@
 # 开始项目
 
-我们在这个项目中要做什么？ - <font color=#CC99CD>koa2从零模仿新浪微博</font>
+## 项目创建
+<font color=#1E90FF>**① 安装koa-generator**</font>
 
-哪些部分？ - <font color=#CC99CD>技术选型，知识点串讲，开发微博，总结最佳实践</font>
+`koa-generator`是用来搭建`koa2`项目的一个脚手架，我们直接到[npm官网](https://www.npmjs.com/package/koa-generator)上去找到全局安装命令并在任意目录下执行即可：
+```javascript
+npm install -g koa-generator
+```
 
-技术？ - <font color=#1E90FF>koa2</font>、<font color=#1E90FF>ejs</font>、<font color=#1E90FF>mysql</font>、<font color=#1E90FF>sequelize</font>、<font color=#1E90FF>redis</font>、<font color=#1E90FF>session</font>、<font color=#1E90FF>jest</font>、<font color=#1E90FF>jwt</font>
+<font color=#1E90FF>**② 创建项目**</font>
 
-这样的实战有什么意义，对于初级工程师，其实最缺乏的就是架构上的东西，而架构上的东西并没有办法通过文章或者教科书来系统的学习，只有在复杂的项目当中演练和学习，学习<font color=#DD1144>怎么给系统做设计，分层，抽离等等</font>
+因为全局安装了脚手架，现在我们的命令行当中就有`koa2`这个命令了，因为我们需要通过`ejs`模块引擎来渲染前端页面，所以我们的创建命令如下：
+```javascript
+koa2 -e koa2-weibo-code
+```
 
-下面这个是我们项目的架构，希望你在整个项目完成之后返回来看看这个图，看看从中学到了什么：
+接着它会提示你要进入目录并且安装依赖，我们就继续执行命令：
+```javascript
+cd koa2-weibo-code && npm install
+```
 
-<img :src="$withBase('/node_weibo_jiagou.png')" alt="微博的架构">
+如果网络比较差，建议使用`cnpm`或者在后面添加淘宝镜像参数，命令如下：
+```javascript
+npm install --registry=https://registry.npm.taobao.org
+```
 
-项目开发安排：  
-<font color=#1E90FF>**① 技术选型**</font>  
+## 目录讲解
+```javascript
++ bin
+  + WWW  // 启动文件
++ node_modules   // 依赖文件夹
++ public // 静态资源文件夹
+  + images
+  + javascripts
+  + stylesheets
++ routes // 路由文件夹
+  + index.js
+  + users.js
++ views  // ejs模板文件夹
+  + error.ejs
+  + index.ejs
++ app.js  // 实际启动文件
++ package-lock.json // 包锁文件
++ package.json // 包管理配置文件
+```
 
-+ 框架
-+ 存储和缓存
-+ 用户认证
+## 提交代码和迭代
+下面所有的命令我们都在刚才创建的`koa2-weibo-code`项目文件中执行
+<font color=#1E90FF>**① 初始化一个git仓库**</font>  
+```javascript
+git init
+```
 
-<font color=#1E90FF>**② 知识点串讲**</font>
+<font color=#1E90FF>**② 添加远程仓库源**</font>  
+```javascript
+git remote add origin git@e.coding.net:taopoppy/koa2-weibo-code.git
+```
 
-+ koa2和ejs
-+ mysql和sequelize
-+ redis
-+ session和jwt
-+ jwt单元测试
-+ eslint和inspect debug
+添加完成可以使用`git status`来查看本地仓库的状态
 
-<font color=#1E90FF>**③ 技术方案设计**</font>
+<font color=#1E90FF>**③ 拉取远程仓库内容**</font>  
+```javascript
+git pull origin master
+```
+拉取后就会将远程仓库中的`.gitIgnore`或者`READM.md`拉取到本地，当然取决于你在`github`或者`coding.net`上面的创建方式了。
 
-+ 架构设计
-+ 接口和路由
-+ 数据表和存储模型
+<font color=#1E90FF>**④ 提交**</font>  
+```javascript
+git add .
+git commit -m "init project"
+git push origin master
+```
 
-<font color=#1E90FF>**④ 功能开发**</font>
-
-+ 用户： 登录，注册，用户设置，粉丝和关注
-+ 微博： 发布。列表（首页，个人主页，广场页）
-+ @功能： @某人，回复，接收 @到我的消息
-
-<font color=#1E90FF>**⑤ 线上环境**</font>
-
-+ pm2和多进程
-+ nginx和反向代理
-+ 日志
-
-<font color=#1E90FF>**⑥ 总结最佳实践**</font>
-
-+ 项目结构
-+ 错误处理
-+ 代码风格
-+ 质量保证
-+ 安全
-+ 线上环境
-
-你的收获：
-+ node.js真正的实战项目，koa2和周边工具的使用
-+ 系统设计，分层思路，接口设计思路，数据建模思路
-+ node最佳实践，对标实际开发工作
+## 完善其他
+下面讲两个需要注意的问题：
++ 第一个就是如果你从远程拉取下来的是`.gitIgnore`,你只需要添加`README.md`文件即可，如果拉取的是`README.md`，你需要自己添加`.gitIgnore`文件
++ 下载`cross-env`用于设置环境变量的插件
+  ```javascript
+  npm i cross-env -D
+  ```
+  然后在`package.json`当中修改启动命令： 
+  + `"dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon bin/www"`,
+  + `"prd": "cross-env NODE_ENV=production pm2 start bin/www"`,
