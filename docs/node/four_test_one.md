@@ -1,5 +1,12 @@
 # node测试概述
 
+本章开始我们将学习一些：
++ 测试工具的具体使用
++ 关于模块的小工具的编写和测试
++ 如何发布npm包
++ 将写一个静态资源服务器和爬虫工具
+
+
 **参考资料**
 1. [mocha](https://www.javascriptcn.com/read-32357.html)
 2. [mocha中文网](https://mochajs.cn/#getting-started)

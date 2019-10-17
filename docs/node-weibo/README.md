@@ -90,3 +90,14 @@
 
 + <font color=#3eaf7c>redis</font>：缓存数据库的最佳选择，没有别的
 + <font color=#3eaf7c>jest</font>：单元测试最广泛和最佳的选择
+
+## 提交规范
++ 重构提交标识：
+  ```javascript
+  git commit -m 'refactor: 调整目录结构'
+  ```
++ 新功能增加：
+  ```javascript
+  git commit -m 'feat: 路由的演示'
+  ```
+  
