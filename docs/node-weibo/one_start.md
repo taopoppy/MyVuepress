@@ -26,7 +26,7 @@ npm install --registry=https://registry.npm.taobao.org
 ```
 
 ## 提交代码和迭代
-下面所有的命令我们都在刚才创建的`koa2-weibo-code`项目文件中执行
+下面所有的命令我们都在刚才创建的`koa2-weibo-code`项目文件中执行  
 <font color=#1E90FF>**① 初始化一个git仓库**</font>  
 ```javascript
 git init

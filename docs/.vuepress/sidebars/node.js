@@ -46,10 +46,4 @@ module.exports = [
       
     ]
   },
-  {
-    title: '实战和开发',
-    children: [
-      '/node/six_combat_introduce',
-    ]
-  },  
 ]
