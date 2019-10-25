@@ -97,3 +97,4 @@
 2. [leonardomso](https://github.com/stephentian/33-js-concepts)
 3. [前端一万小时](https://juejin.im/post/5ce4171ff265da1bd04eb4f3#heading-5)
 4. [刘小夕的博客](https://juejin.im/user/5c6256596fb9a049bd42c770)
+5. [JS 原生面经从初级到高级【近1.5W字】](https://juejin.im/post/5daeefc8e51d4524f007fb15)
