@@ -4,7 +4,14 @@ module.exports = [
   {
     title: '技术预研',
     children: [
-      '/node-BFF/bff_one_yuyan',
+      '/node-BFF/bff_one_yuyan_module',
+      '/node-BFF/bff_one_yuyan_async',
     ]
   },
+  {
+    title: '实战演练',
+    children: [
+
+    ]
+  }
 ]
