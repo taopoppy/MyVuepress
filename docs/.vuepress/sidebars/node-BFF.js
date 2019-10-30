@@ -6,7 +6,8 @@ module.exports = [
     children: [
       '/node-BFF/bff_one_yuyan_module',
       '/node-BFF/bff_one_yuyan_async',
-      '/node-BFF/bff_one_yuyan_http'
+      '/node-BFF/bff_one_yuyan_http',
+      '/node-BFF/bff_one_yuyan_rpc'
     ]
   },
   {
