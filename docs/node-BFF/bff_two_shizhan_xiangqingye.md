@@ -266,3 +266,132 @@ module.exports = createTemplate
 ```
 
 ## 详情页面的虚拟后台开发
+```javascript
+// detail.js
+const fs = require('fs')
+const protobuf = require('protocol-buffers');
+const schemas = protobuf(
+    fs.readFileSync(`${__dirname}/../2.detail/detail.proto`)
+);
+
+// 假数据
+const columnData = require('./mockdata/column')
+
+/**
+ * 服务端的编解包逻辑
+ */
+const server = require('./lib/geeknode-rpc-server')(schemas.ColumnRequest, schemas.ColumnResponse);
+
+server.createServer((request, response) => {
+        // 因为都是假数据，这里就没有使用栏目id。真实项目会拿这个columnid去请求数据库
+        const columnid = request.body;
+
+        // 直接返回假数据
+        response.end({
+            column: columnData[0],
+            recommendColumns: [columnData[1], columnData[2]]
+        });
+    })
+    .listen(4000, ()=> {
+        console.log('rpc server listened: 4000')
+    });
+```
+```javascript
+// geeknode-rpc-server.js
+const RPC = require('./rpc-server');
+
+/**
+ * 因为所有服务用的包头格式都一样，不一样的只有protobuf协议，所以这里可以将这段逻辑封成一个模块
+ * 
+ * 日常做项目的时候一定要注意把重复代码做封装
+ */
+module.exports = function (protobufRequestSchema, protobufResponseSchema) {
+    return new RPC({
+        // 解码请求包
+        decodeRequest(buffer) {
+            const seq = buffer.readUInt32BE();
+
+            return {
+                seq: seq,
+                result: protobufRequestSchema.decode(buffer.slice(8))
+            }
+        },
+        // 判断请求包是不是接收完成
+        isCompleteRequest(buffer) {
+            const bodyLength = buffer.readUInt32BE(4);
+
+            return 8 + bodyLength
+        },
+        // 编码返回包
+        encodeResponse(data, seq) {
+            const body = protobufResponseSchema.encode(data);
+
+            const head = Buffer.alloc(8);
+            head.writeUInt32BE(seq);
+            head.writeUInt32BE(body.length, 4);
+
+            return Buffer.concat([head, body]);
+        }
+    })
+}
+```
+```javascript
+// rpc-server.js
+// 'use strict';
+// const debug = require("debug")('easysock-server');
+const net = require("net");
+
+module.exports = class RPC {
+    constructor({ encodeResponse, decodeRequest, isCompleteRequest }) {
+        this.encodeResponse = encodeResponse;
+        this.decodeRequest = decodeRequest;
+        this.isCompleteRequest = isCompleteRequest;
+    }
+
+    createServer(callback) {
+        let buffer = null;
+
+        const tcpServer = net.createServer((socket) => {
+
+            socket.on('data', (data) => {
+                buffer = (buffer && buffer.length > 0) ?
+                    Buffer.concat([buffer, data]) : // 有遗留数据才做拼接操作
+                    data;
+
+                let checkLength = null;
+                while (buffer && (checkLength = this.isCompleteRequest(buffer))) {
+                    let requestBuffer = null;
+                    if (checkLength == buffer.length) {
+                        requestBuffer = buffer;
+                        buffer = null;
+
+                    } else {
+                        requestBuffer = buffer.slice(0, checkLength);
+                        buffer = buffer.slice(checkLength);
+                    }
+
+                    const request = this.decodeRequest(requestBuffer);
+                    callback(
+                        { // request
+                            body: request.result,
+                            socket
+                        },
+                        { // response
+                            end: (data) => {
+                                const buffer = this.encodeResponse(data, request.seq)
+                                socket.write(buffer);
+                            }
+                        }
+                    );
+                }
+            })
+        });
+
+        return {
+            listen() {
+                tcpServer.listen.apply(tcpServer, arguments)
+            }
+        }
+    }
+}
+```

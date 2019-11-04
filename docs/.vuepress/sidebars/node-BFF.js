@@ -14,7 +14,8 @@ module.exports = [
     title: '实战演练',
     children: [
       '/node-BFF/bff_two_shizhan_xiazaiye',
-      '/node-BFF/bff_two_shizhan_xiangqingye'
+      '/node-BFF/bff_two_shizhan_xiangqingye',
+      '/node-BFF/bff_two_shizhan_bofangye'
     ]
   }
 ]

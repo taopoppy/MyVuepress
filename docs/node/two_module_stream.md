@@ -6,6 +6,7 @@
 <font color=#1E90FF>A stream is an abstract interface for working with streaming data in Node.js. The stream module provides an API for implementing the stream interface.There are many stream objects provided by Node.js. For instance, a request to an HTTP server and process.stdout are both stream instances.Streams can be readable, writable, or both. All streams are instances of EventEmitter.The stream module is useful for creating new types of stream instances. It is usually not necessary to use the stream module to consume streams.</font>
 
 上述的意思就是：在`node`当中`stream`是一种处理流数据的抽象接口，`stream`模块提供了一系列实现流的API,在`node`当中提供了很多关于流的对象，比如 `http`服务器的请求和`process.stdout`标准输出都是流的实例，流失可读的，可写的，同时也可以是可读写的，所有的流都是`EventEmitter`的实例。下面有一幅图来表示: <font color=#DD1144>stream是如何让数据流动起来的</font>：
+
 <img :src="$withBase('/node_stream_introduce.png')" alt="stream是什么">
 
 <font color=#CC99CD>stream不是node.js独有的概念，而是一个操作系统最基本的操作方式，只不过node.js有API支持这种操作方式。linux命令的|就是stream</font>。
