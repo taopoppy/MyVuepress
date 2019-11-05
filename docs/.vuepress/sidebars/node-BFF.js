@@ -15,7 +15,8 @@ module.exports = [
     children: [
       '/node-BFF/bff_two_shizhan_xiazaiye',
       '/node-BFF/bff_two_shizhan_xiangqingye',
-      '/node-BFF/bff_two_shizhan_bofangye'
+      '/node-BFF/bff_two_shizhan_bofangye',
+      '/node-BFF/bff_two_shizhan_liebiaoye'
     ]
   }
 ]

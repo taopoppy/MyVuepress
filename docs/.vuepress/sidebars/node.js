@@ -17,7 +17,6 @@ module.exports = [
       '/node/two_module_globalobj',
       '/node/two_module_buffer',
       '/node/two_module_stream',
-      '/node/two_module_stream2',
       '/node/two_module_events',
       '/node/two_module_http',
       '/node/two_module_net',
