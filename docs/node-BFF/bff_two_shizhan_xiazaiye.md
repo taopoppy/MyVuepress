@@ -39,3 +39,10 @@ app.listen(3000)
 可以看的出，下载页的开发很简单，几个中间件的使用我们在这里也不做太多的解释。
 
 当我们写好的时候，我们访问的时候访问的`URL`如下：`localhost:3000/download/`（如果少了最后一个反斜杠，访问`localhost:3000/download`，就会造成css加载不成功的结果）
+这里我们来把后面几个页面的访问地址都放在这里：
++ <font color=#3eaf7c>http://localhost:3000/download/</font>
++ <font color=#3eaf7c>http://localhost:3000/detail/?columnid=1</font>
++ <font color=#3eaf7c>http://localhost:3000/play/</font>
++ <font color=#3eaf7c>http://localhost:3000/list/</font>
+
+所有实战的项目的源码地址：[https://github.com/geektime-geekbang/geek-nodejs/tree/master/chapter3](https://github.com/geektime-geekbang/geek-nodejs/tree/master/chapter3)
