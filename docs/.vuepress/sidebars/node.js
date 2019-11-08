@@ -22,7 +22,8 @@ module.exports = [
       '/node/two_module_net',
       '/node/two_module_process',
       '/node/two_module_fs',
-      '/node/two_module_vm'
+      '/node/two_module_vm',
+      '/node/two_module_v8'
     ]
   },
   {
