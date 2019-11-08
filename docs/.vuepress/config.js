@@ -73,31 +73,55 @@ module.exports = {
         ]
       },
       {
+        text: 'react',
+        items: [
+          { text: 'React实战进阶', link: '/react-jinjie/'},
+          { text: 'React开发简书项目', link: '/react-junior/' },
+          { text: 'React实战大众点评WebApp', link: '/react-dazhong/'},
+          { text: 'React去哪儿网火车票PWA', link: '/react-quna/'},
+          { text: 'React服务器渲染原理解析', link: '/react-ssr/'},
+          { text: 'React+Next.js+Koa2', link: '/react-next/' },
+          { text: 'React源码深度解析', link: '/react-yuanma/'}
+        ]
+      },
+      {
+        text: 'vue',
+        items: [
+          { text: 'Vue开发实战', link: '/vue-shizhan/' },
+          { text: 'Vue2.5开发去哪儿网App', link: '/vue-quna/'},
+          { text: 'Get全栈技能打造商城系统', link: '/vue-shagncheng/' },
+          { text: 'Vue 实战商业级读书WebApp', link: '/vue-dushu/'},
+          { text: 'Vue服务端渲染原理解析', link: '/vue-ssr/' },
+          { text: 'Vue全家桶+SSR+Koa2', link: '/vue-nuxt/' },
+          { text: 'Vue.js源码全方位深入解析', link: '/vue-yuanma/' }
+        ]
+      },
+      {
         text: '前端系列',
         items: [
           { text: '前端架构', link: '/Front-end/' },
         ]
       },
       // 下来列表产生分组
-      {
-        text: '学习',
-        items: [
-          {
-            text: '前端',
-            items: [
-              { text: 'language', link: '/language/' },
-              { text: 'react', link: '/react/' }
-            ]
-          },
-          {
-            text: '后端',
-            items: [
-              { text: 'node', link: '/language/chinese' },
-              { text: 'Go', link: '/language/japanese' }
-            ]
-          }
-        ]
-      }
+      // {
+      //   text: '学习',
+      //   items: [
+      //     {
+      //       text: '前端',
+      //       items: [
+      //         { text: 'language', link: '/language/' },
+      //         { text: 'react', link: '/react/' }
+      //       ]
+      //     },
+      //     {
+      //       text: '后端',
+      //       items: [
+      //         { text: 'node', link: '/language/chinese' },
+      //         { text: 'Go', link: '/language/japanese' }
+      //       ]
+      //     }
+      //   ]
+      // }
     ],
     sidebarDepth: 3,
     lastUpdated: 'Last Updated', // string | boolean
