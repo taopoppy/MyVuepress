@@ -14,6 +14,8 @@ const nodeSidebar = require('./sidebars/node')
 const nodeGraphQLSidebar = require('./sidebars/node-GraphQL')
 const nodeWeiboSidebar = require('./sidebars/node-weibo')
 const nodeBFFSidebar = require('./sidebars/node-BFF')
+const reactJinJieSidebar = require('./sidebars/react-jinjie')
+const vueShiZhanSidebar = require('./sidebars/vue-shizhan')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -134,6 +136,8 @@ module.exports = {
       '/node-BFF/': nodeBFFSidebar,
       '/typescript/': typescriptSidebar,
       '/Jest/': jestSidebar,
+      '/react-jinjie/': reactJinJieSidebar,
+      '/vue-shizhan/': vueShiZhanSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
