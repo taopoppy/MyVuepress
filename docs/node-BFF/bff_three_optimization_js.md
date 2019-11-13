@@ -58,7 +58,58 @@ const leak = []
 
 
 ## 多进程优化
+### 1. node中的进程和线程
+在进行多进程优化之前，还是要明确一下进程和线程的概念
++ <font color=#DD1144>进程</font>（类似于公司）
+  + 操作系统挂载运行程序员的单元
+  + 拥有一些独立的资源，如内存等
++ <font color=#DD1144>线程</font>（类似于职工）
+  + 进行运算调度的单元
+  + 进程内的线程共享进程内的资源
 
+在`node`当中，和进程线程分不开的一个东西叫做事件循环，我们来讲一下两者的关系：
++ <font color=#1E90FF>主线程运行v8与javascript</font> 
++ <font color=#1E90FF>多个子线程(libuv提供)通过事件循环被调度</font>   
+
+上述可能理解起来比较生涩，我们可以继续借用公司和员工的例子来理解：<font color=#1E90FF>主线程相当于公司里面的的老板，其他子线程相当于公司职员，js主线程老板通过事件循环给其他线程员工分发任务</font>，但是虽然这样的机制已经很好了，但是保不齐老板的事情依旧很多，而且<font color=#1E90FF>js主线程只有一个线程，也只能用到cpu一个核</font>。所以这种情况还是会造成cpu的浪费，所以`node`提供了子进程和子线程，让其在别的`cpu`上也跑一个`javascript`环境，这种情况就相当于一个集团了。如图所示：
+<img :src="$withBase('/node_bff_youhua_process.png')" alt="多进程">
+
+### 2. node中的子进程和子线程
+然后我们学习一下子进程的创建和使用：
+```javascript
+// index.js
+const cp = require('child_process')
+// 创建子进程，以child.js为入口文件
+const child_process = cp.fork(__dirname + '/child.js')
+
+// 父进程给子进程发送消息
+child_process.send('haha')
+
+// 父进程监听子进程发来的消息 
+child_process.on('message',(str)=> {
+  console.log('parent',str)
+})
+```
+```javascript
+// child.js
+// 子进程监听父进程发来的消息
+process.on('message',(str)=>{
+	console.log('child',str)
+	// 子进程给父进程发送消息
+	process.send('hehe')
+})
+```
+通过这样创建子进程的方式，`node`可以将一些任务进行分发到别的进程中去计算和实现，避免单个进程任务过多和`cpu`浪费的现象
+
+子进程的概念也在`node`10版本后面提出来了，当你的程序需要很多的`cpu`计算，那么<font color=#DD1144>Worker Threads</font>是很有用的，但是实际上`node`当中的事件循环和非阻塞I/O已经能很好的解决并发问题了，而且子进程已经能够充分使用`cpu`了，除非你很明确的需要子线程，而不是子进程，那么`Worker Threads`就派上用场了。
+
+### 3.cluster模块
+`cluster`内置模块是`Node`官方特地为了网络服务而设计的，通过它我们可以快速的创建一个多核能力的网络服务程序。
+
+我们在上面已经讲了子进程和父进程之间的通信能力很强大，那么能不能通过这种全面的通信能力来将`http`服务的能力分发出去？含义如下：
+<img :src="$withBase('/node_bff_youhua_cluster.png')" alt="">
+
+正如上面图中所示，使用`cluster`内置模块可以很方便的来帮助我们进行多进程的优化，所以我们将在下一小节[cluster与进程守护管理](https://www.taopoppy.cn/node-BFF/bff_three_optimization_cluster.html)当中使用`cluster`来实战一波。
 
 ## 优化总结
 <font color=#1E90FF>**① 计算**</font>  
@@ -78,7 +129,7 @@ const leak = []
 
 <font color=#1E90FF>**③ 进程**</font>
 
-
++ <font color=#DD1144>使用cluster模块进行进程优化</font>
 
 **参考资料**
 

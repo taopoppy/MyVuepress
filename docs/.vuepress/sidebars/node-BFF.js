@@ -23,7 +23,8 @@ module.exports = [
     title:'性能调优篇',
     children: [
       '/node-BFF/bff_three_optimization_http',
-      '/node-BFF/bff_three_optimization_js'
+      '/node-BFF/bff_three_optimization_js',
+      '/node-BFF/bff_three_optimization_cluster'
     ]
   },
   {
