@@ -34,7 +34,8 @@ module.exports = [
       '/node/three_asyncDepth_promise1',
       '/node/three_asyncDepth_promise2',
       '/node/three_asyncDepth_await1',
-      '/node/three_asyncDepth_await2'
+      '/node/three_asyncDepth_await2',
+      '/node/three_asyncDepth_await3'
     ]
   },
   {
