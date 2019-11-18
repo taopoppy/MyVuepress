@@ -110,7 +110,30 @@ module.exports = {
 ```
 
 ## SourceMap
+### 1. 相关配置
+首先我们来说`sourceMap`的概念：<font color=#1E90FF>sourceMap是一种映射关系，它知道开发文件中的代码和打包后的代码之间的映射关系，通过生成ma文件帮助我们在打包后文件运行存错的提示映射到原始开发文件错误对应的具体地方，提高开发改错效率</font>
 
+通过在`webpack.config.js`文件当中进行配置<font color=#DD1144>devtool</font>这个属性来配置`sourceMap`的相关属性，这个属性的配置选项有很多，还能自由通过添加前缀的方式来组合选项：
++ <font color=#3eaf7c>inline</font>：将生成的映射map文件放在生成的`js`文件中
++ <font color=#3eaf7c>cheap</font>：错误提示只精确到行，不精确到列,只负责业务错误，不负责`loader`打包错误。
++ <font color=#3eaf7c>module</font>：配置不光涉及到业务代码，`loader`相关的第三方模块的代码也考虑在内。
++ <font color=#3eaf7c>eval</font>：通过`eval`的语法将代码和文件之间做了映射关系，效率最高
+
+### 2. 最佳实践
++ 开发环境:
+	```javascript
+	module.exports = {
+		mode: 'development',
+  	    devtool: 'cheap-module-eval-source-map',
+	}
+	```
++ 生产环境：
+	```javascript
+	module.exports = {
+		mode: 'production',
+		devtool: 'cheap-module-source-map',
+	}
+	```
 
 **参考资料**
 

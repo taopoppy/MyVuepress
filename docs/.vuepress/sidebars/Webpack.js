@@ -13,7 +13,8 @@ module.exports = [
     children: [
       '/Webpack/webpack_two_loader',
       '/Webpack/webpack_two_plugins',
-      '/Webpack/webpack_two_webserver'
+      '/Webpack/webpack_two_webserver',
+      '/Webpack/webpack_two_babel_es6'
     ]
   }
 ]
