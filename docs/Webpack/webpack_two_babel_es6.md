@@ -33,7 +33,7 @@ module.exports = {
 
 <font color=#1E90FF>**③ babel配置**</font>
 
-创建`.babelrc`文件，并在里面进行配置,这种配置和直接在`webpack.config.js`当中添加`options`属性是一样的。如果你有更多关于`babel`的配置，
+创建`.babelrc`文件，并在里面进行配置,这种配置和直接在`webpack.config.js`当中添加`options`属性是一样的。如果你有更多关于`babel`的配置，你还是像下面这样创建`.babelrc`文件，然后将所有的配置都写进去。
 ```javascript
 // .babelrc
 {
@@ -82,13 +82,13 @@ arr.map(item => {
 module.exports = {
 	module: {
 		rules: [
-			{
+      		{
 				test: /\.js$/,
-        exclude: /node_modules/,
-        loader: "babel-loader",
-        options: {
-          presets: [
-            ["@babel/preset-env",{
+        		exclude: /node_modules/,
+				loader: "babel-loader",
+				options: {
+					presets: [
+						["@babel/preset-env",{
 							useBuiltIns:'usage',  // 按需引入所需要的部分
 							targets: {           // 添加浏览器版本，低于这些浏览器版本就会去转义
 								edge: "17",
@@ -96,15 +96,15 @@ module.exports = {
 								chrome: "67",
 								safari: "11.1",
 							},
-            }]
-          ]
-        }
-      },
+						}]
+					]
+				}
+      		},
 		]
 	}
 }
 ```
-当然了，关于`babel`在`webpack`当中的使用呢，还是推荐写在`.babelrc`目录下面，这样在`webpack.config.js`当中就不用写`options`那一项了：
+当然了，关于`babel`在`webpack`当中的使用呢，还是推荐写在`.babelrc`目录下面，这样在`webpack.config.js`当中就不用写`options`那一项了：能让`webpack.config.js`看上去更简单一下。
 ```javascript
 // .babelrc
 {
@@ -125,6 +125,7 @@ module.exports = {
 ## 其他场景
 上面介绍的都是我们在业务代码时候的配置，但是实际上通过`@babel.polyfill`这种库在全局对象上添加对象来实现的，如果你写的是类库代码，关于`webpack`中的`babel`配置是不能像上面这样的，你需要使用`babel-plugin-transform-runtime`这种插件去配置，如果你有兴趣，可以自行研究一下。
 
+## Babel-React
 
 
 **参考资料**
