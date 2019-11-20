@@ -75,10 +75,10 @@ module.exports = {
 我们首先来说一个比较简单的东西，之前我们的代码是在`Entry`中是通过键值对的方式书写的，其实那个键就是我们打包后输出文件的<font color=#1E90FF>chunk name</font>,而且键值对的写法是一种完整的写法，可以有更简单的写法：
 ```javascript
 module.exports = {
-	 entry: './src/index.js',
-	 output: {
-		 path: path.resolve(__dirname, 'dist')
-	 }
+	entry: './src/index.js',
+	output: {
+		path: path.resolve(__dirname, 'dist')
+	}
 }
 ```
 上面这样写法就是当我们只有一个入口的时候最简单的写法，在`entry`中默认的键名就是`main`,相应的在`output`当中默认的`filename`也就是`main.js`。
@@ -87,7 +87,7 @@ module.exports = {
 但是当我们如果有多个入口文件的话，我们就需要完整的书写配置：
 ```javascript
 module.exports = {
-	entry: {
+  entry: {
     main: './src/index.js',
     sub: './src/entry.js'
   },
