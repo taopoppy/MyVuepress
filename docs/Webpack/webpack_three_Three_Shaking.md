@@ -169,7 +169,7 @@ module.exports = {
 	output: {
     //publicPath: 'http://cdn.com.cn',
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, '../dist') // 这里打包路径稍做修改
   }
 }
 ```

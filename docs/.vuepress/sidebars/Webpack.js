@@ -21,7 +21,9 @@ module.exports = [
   {
     title: 'Webpack高级概念',
     children: [
-      '/Webpack/webpack_three_Three_Shaking'
+      '/Webpack/webpack_three_Three_Shaking',
+      '/Webpack/webpack_three_Code_Splitting',
+      '/Webpack/webpack_three_Lazy_Loading'
     ]
   }
 ]
