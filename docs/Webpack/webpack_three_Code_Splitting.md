@@ -187,6 +187,7 @@ module.exports = {
 
 所以到目前为止，基本上`splitChunks`的默认配置就搞定了，最难的还是同步代码的配置，因为`chunks`和`cacheGroups`两个配置是相互起作用的。也就是`chunks`中配置了同步代码分割有效，但是至于具体对同步代码怎么分割，还要走到`cacheGroups`的配置才知道分割的流程。
 
+## CSS-Code-Spliting
 
 **参考文档**
 

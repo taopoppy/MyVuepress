@@ -23,7 +23,8 @@ module.exports = [
     children: [
       '/Webpack/webpack_three_Three_Shaking',
       '/Webpack/webpack_three_Code_Splitting',
-      '/Webpack/webpack_three_Lazy_Loading'
+      '/Webpack/webpack_three_Lazy_Loading',
+      '/Webpack/webpack_three_Shimming'
     ]
   }
 ]

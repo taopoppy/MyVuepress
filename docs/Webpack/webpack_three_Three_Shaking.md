@@ -63,7 +63,7 @@ module.exports = {
 
 虽然我们在开发环境下这样配置了，但实际打包后的`js`代码并没有真正剔除没有引用的代码，<font color=#1E90FF>只是在做了Tree-Shaking的文件附近注释了一些说明而已，毕竟开发环境剔除了某些代码会对调试有影响，包括sourceMap的映射也会出现一些问题</font>
 
-## 生产环境
+## production: Tree-shaking
 而对于生产环境，其实当`mode`的值为`production`的时候，我们是不用在`webpack.config.js`当中去配置`optimiazation`的，但是在`package.json`中的配置我们依旧要保留，如果所有模块都要做`Tree-Shaking`，就按照下面这样配置即可：
 ```javascript
 // package.json
