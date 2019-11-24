@@ -122,9 +122,73 @@ document.addEventListener('click', ()=> {
 接着我们到浏览器上看看效果：
 <img :src="$withBase('/webpack_three_prefetching.png')" alt="prefetch加载">
 
-可以很清楚的看到，代码使用率没有发生大的改变，在首屏需要的`main.js`和`index.html`加载完毕后，<font color=#DD1144>利用空闲的时间花了26ms加载了click.js，并且保存在浏览器的内存当中，当我们真正点击发生交互的时候，click.js直接从内存中拿了出来，所以只花了1ms</font>。<font color=#1E90FF>假如没有prefetching，发生点击交互的时候一定要花26ms</font>。在复杂的项目当中，利用`Prefetching`的特性可以大大优化交互速率。而且更重要的一点就是：<font color=#DD1144>在项目优化的时候，我们不应该只把眼光放在缓存中来优化项目，更重要的是挺高代码的利用率来优化项目</font>,既然说到了缓存，下面我们就来说一下缓存
+可以很清楚的看到，代码使用率没有发生大的改变，在首屏需要的`main.js`和`index.html`加载完毕后，<font color=#DD1144>利用空闲的时间花了26ms加载了click.js，并且保存在浏览器的内存当中，当我们真正点击发生交互的时候，click.js直接从内存中拿了出来，所以只花了1ms</font>。<font color=#1E90FF>假如没有prefetching，发生点击交互的时候一定要花26ms</font>。在复杂的项目当中，利用`Prefetching`的特性可以大大优化交互速率。而且更重要的一点就是：<font color=#DD1144>在项目优化的时候，我们不应该只把眼光放在缓存中来优化项目，更重要的是挺高代码的利用率来优化项目</font>,所以我们下面的一小节会说浏览器缓存。
+
+## Code-Splitting&&Lazy-Loading
+在说浏览器缓存之前，我们还是来清楚的分解一下`lazy-Loading`和`Code-splitting`两者的关系，虽然他们名字不一样，但是关系很密切：我们采用的`webpack`配置是`webpack.common.js`的同步异步都支持的模式：
+```javascript
+// webpack.common.js
+optimization: {
+    splitChunks: {
+      chunks: "all",
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          // name: 'vendors'
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    }
+  },
+```
+<img :src="$withBase('/webpack_three_codeSplit&lazyLoad.png')" alt="懒加载和代码分割">
+
+<font color=#1E90FF>**① 同步分割**</font>
+
+同步分割在首屏加载就加载了<font color=#1E90FF>index.html</font>、<font color=#1E90FF>vendors~main.js</font>、<font color=#1E90FF>main.js</font>这个是按照顺序加载的，但是实际上`vendors~main.js`是和交互相关的代码，所以并不是首屏展示的时候需要的代码，这就导致了`main.js`的代码使用率才有`30%`
+
+<font color=#1E90FF>**② 异步分割(preloading)**</font>
+
+异步分割的的写法如上展示，首屏只加载了<font color=#1E90FF>index.html</font>、<font color=#1E90FF>main.js</font>,代码利用率高达`81.2%`，点击屏幕进行交互，才开始加载`vendors~lodash.js`和`click.js`文件。
+
+<font color=#1E90FF>**③ Prefetching**</font>
+
+`Prefetching`的配置只需要添加魔法注释即可，首屏在加载<font color=#1E90FF>index.html</font>、<font color=#1E90FF>main.js</font>就完成了展示，但是利用首屏完成和你点击屏幕的这段空闲时间进行了加载，<font color=#1E90FF>所以你点击屏幕的时候vendors~main.js和click.js还会加载一次，但是因为空闲时加载了一次已经存在了缓存，所以点击交互的时候加载就直接从缓存里拿现成的，交互速度更快</font>，<font color=#DD1144>所以prefetching在首屏代码利用率和preloading保持一致的情况下提高了交互速率</font>
 
 ## Browser-Caching
+我们之前打包出来的文件名字都是固定的，那么问题就来了，比如我们现在打包的文件上传到了服务器，我们第一次请求没有问题，但是此时服务器修改文件，打包出来的文件名依旧没有变，那么浏览器就会去拿缓存中的值，不会知道你的内容发生了变化，所以对于这样的问题，<font color=#DD1144>开发环境我们其实不用管，因为会开启服务器调试，但是生产环境我们需要下面这样配置</font>：
+```javascript
+// webpack.prod.js
+module.exports = {
+  output: {
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
+  }
+}
+```
+根据内容的不同，生成不同的哈希值，这样请求的文件名称变了，浏览器就不能直接从缓存中取文件，必须到服务器上拿新的文件来，这就是`[contenthash]`这个占位符的作用。所以这样的修改也同样适用我们在`css`代码分割里那个`MiniCssExtractPlugin`插件的配置：
+```javascript
+// webpack.common.js
+module.exports = {
+	plugins: [
+	  new MiniCssExtractPlugin({
+    	filename: '[name].[contenthash].css',
+  		chunkFilename: '[name].[contenthash].css'
+	  })
+	]
+}
+```
 
 **参考资料**
 

@@ -188,6 +188,125 @@ module.exports = {
 所以到目前为止，基本上`splitChunks`的默认配置就搞定了，最难的还是同步代码的配置，因为`chunks`和`cacheGroups`两个配置是相互起作用的。也就是`chunks`中配置了同步代码分割有效，但是至于具体对同步代码怎么分割，还要走到`cacheGroups`的配置才知道分割的流程。
 
 ## CSS-Code-Spliting
+首先我们先讲一个知识点，就是关于在`webpack.config.js`当中的`chunkFilename`的配置，它和`fileName`有什么区别？<font color=#DD1144>区别就是入口文件打包后的命名方式走的fileName的命名路线，而其他chunk或者其他在入口文件中引入的文件打包后走的是chunkFilename的命名路线</font>
+
+对于`css`代码的分割我们使用的是：<font color=#1E90FF>MiniCssExtractPlugin</font>   
+首先先下载我们的这个插件：
+```javascript
+npm install --save-dev mini-css-extract-plugin
+```
+因为这个插件在在之前是不支持`HMR`的，所以我们只会在`webpack.prod.js`当中进行配置，但是现在已经支持了，所以我们直接去修改`webpack.common.js`当中的内容：
+```javascript
+// webpack.common.js
+const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // 引入插件
+module.exports = {
+	module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,   // 替换style-loader
+            options: {
+              publicPath: '../' // webpack.output中的publicPath存在才有效
+            },
+          },
+          { 
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              modules: true
+            } 
+          },
+          'sass-loader',
+					'postcss-loader',
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader, // 替换style-loader
+            options: {
+              publicPath: '../' // webpack.output中的publicPath存在才有效
+            },
+          },
+          'css-loader',
+          'postcss-loader'
+        ]
+      }
+    ]
+	},
+	plugins: [
+    new MiniCssExtractPlugin({ // 引用插件
+      filename: '[name].css', // 被index.html直接引入的命名方式
+      chunkFilename: '[name].chunk.css', // 间接被引入的命名方式
+    })
+  ],
+  optimization: {
+    usedExports: true,  // 开发和生产我们都配置Tree-shaking
+  },
+	output: {
+    //publicPath: 'http://cdn.com.cn',
+    filename: '[name].js',
+    chunkFilename: '[name].chunk.js',
+    path: path.resolve(__dirname, '../dist')
+  }
+}
+```
+然后修改一下`package.json`中的内容：
+```json
+{
+  "sideEffects": [
+    "*.css"
+  ],
+}
+```
+基本上这样配置就算完成了，为了检验这样配置的结果，我们在`src`当中写了一些代码：
+```javascript
+// index.js
+import './style.css'
+document.addEventListener('click',async ()=> {
+	await import(/*webpackChunkName:"style"*/'./style1.css')
+	const element = document.createElement('div')
+	element.innerHTML = 'taopoppy'
+	document.body.appendChild(element)
+})
+```
+```css
+/*style.css*/
+body {
+	font-size: 100px;
+}
+```
+```css
+/*style1.css*/
+body {
+	background: yellow;
+}
+```
+这样进行打包后生成的文件如下：
++ <font color=#3eaf7c>index.html</font>
++ <font color=#3eaf7c>main.css</font>
++ <font color=#3eaf7c>main.js</font>
++ <font color=#3eaf7c>style.chunk.css</font>
++ <font color=#3eaf7c>style.chunk.js</font>
+
+首先<font color=#1E90FF>main.css</font>是走的`MiniCssExtractPlugin`插件中的`filename`的命名配置，因为`style.css`是直接在`index.js`直接引入的，`main`是入口文件的键值，最终表现在`index.html`当中也是以`<link href="main.css" rel="stylesheet">`的方式存在，而<font color=#1E90FF>style.chunk.css</font>是因为`style1.css`文件是被间接引入的，所以走的是`MiniCssExtractPlugin`插件中的`chunkFilename`的命名配置，是通过`style.chunk.js`最终添加的，而`style.chunk.js`是因为使用了异步导入`css`的语法，按照`webpack.output`中的`chunkFilename`的命名方式生成的。
+
+明白了文件命名的规则，我们还需要知道`style-loader + css-loader`和`MiniCssExtractPlugin-loader + css-loader`的区别，<font color=#DD1144>前者是将样式打包进入js文件，然后以style的方式嵌入页面，而后者是将样式统一打包到同一个css文件，单独分离出来，以link标签的形式嵌入页面进行资源http请求</font>
+
+最后呢，因为`webpack`按照上面的方式对`css`文件是不压缩的，所以我们使用另一个插件对生产环境下分离出来的的`css`进行压缩：
+```javascript
+// webpack.prod.js
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'); // 引入插件
+
+const prodConfig = {
+  optimization: {
+    minimizer: [new OptimizeCSSAssetsPlugin({})],  // 使用插件
+  },
+}
+```
 
 **参考文档**
 
