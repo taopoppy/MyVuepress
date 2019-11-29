@@ -166,6 +166,7 @@ export default {
 }
 </style>
 ```
+<img :src="$withBase('/vuessr_vue_loader_vue_module_liucheng.png')" alt="module原理图">
 
 这样的好处有下面几种：
 + <font color=#1E90FF>能生成组件内部独有的css样式名称，按照localIdentName: '[path]-[name]-[hash:base64:5]'的配置是不可能产生命名冲突的</font>
@@ -220,3 +221,122 @@ export default {
 ```
 
 ## eslint&editorconfig
+首先下载一系列的插件：
+```javascript
+npm i eslint@4.16.0 eslint-config-standard@11.0.0-beta.0 eslint-plugin-import@2.8.0 eslint-plugin-node@5.2.1 eslint-plugin-promise@3.6.0 eslint-plugin-standard@3.0.1 -D --registry=https://registry.npm.taobao.org
+```
+因为我们的`eslint`不能直接识别`.vue`文件中的`javascript`，所以我们必须要下载其他的插件来帮助我们识别：
+```javascript
+npm install eslint-plugin-html@4.0.1 -D --registry=https://registry.npm.taobao.org
+```
+然后我们创建一个文件`.eslintrc`,配置相应的内容：
+```javascript
+// .eslintrc
+{
+	"extends": "standard",
+	"plugins": [
+		"html"
+	]
+}
+```
+上面的配置：
++ 其中`"extends": "standard"`的意思就是我们`eslint`检查语法的规范是根据之前下载的那个包文件`eslint-config-standard`，而这个规则第三方包又依赖了`eslint-plugin-import`、`eslint-plugin-node`、`eslint-plugin-promise`、`eslint-plugin-standard`这四个包
++ 而`"plugins": ["html"]`是配置了`eslint-plugin-html`这个包，可以帮助我们识别`.vue`当中的`javascript`语法。
+
+然后我们现在就能使用`eslint`来检查了,只不过我们要去`package.json`添加两个命令：
+```javascript
+// package.json
+{
+	"script": {
+		"lint": "eslint --ext .js --ext .jsx --ext .vue client/",
+		"lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue client/"
+	}
+}
+```
++ <font color=#3eaf7c>lint</font>: 这个命令是我们检查`client`文件下面所有以`js`、`jsx`、`vue`为后缀的文件
++ <font color=#3eaf7c>lint-fix</font>: 这个命令是帮助我们修复通过`npm run lint`检查出来的问题，我们可以通过`npm run lint-fix`这个命令去修复。
+
+### 1. 立即修复
+但是通过上面的这种方法我们觉得比较麻烦，我们希望能在上面的基础上在边写代码的时候就能提示我们，这样能够快速定位，毕竟是我们刚写的代码。我们首先去下载插件：
+```javascript
+npm i eslint-loader@1.9.0 babel-eslint@8.2.1 -D --registry=https://registry.npm.taobao.org
+```
+然后我们修改`.eslintrc`中的配置：
+```javascript
+// .eslintrc
+{
+	"parser": "babel-eslint"
+}
+```
+这个是因为我们在`webpack`开发中有的会通过`babel`进行转义，而转义后的代码就不太符合`eslint`的规则，所以我们需要这个配置来解决这个问题。然后我们到`webpack.config.base.js`当中配置一个`loader`:
+```javascript
+// webpack.config.base.js
+module.exports = {
+	module: {
+		rules: [
+			{
+				test: /\.(vue|js|jsx)$/,
+				loader: 'eslint-loader',
+				exclude: /node_modules/,
+				enforce: 'pre'
+			},
+		]
+	}
+}
+```
+<font color=#1E90FF>这样配置的意思就是说当我们在用不同的loader去打包不同的文件之前，先用eslint-loader去这些文件进行检测，检测通过，再用不同的真正的loader去打包，所以enforce这个配置就是这个功能，如果你不配置这个属性就会有冲突，比如对于vue你又用了eslint-loader又用了vue-loader，webpack就不知道先后顺序了</font>
+
+这样配置之后，我们启动`npm run dev`,在每次修改并保存的时候，`eslint`都能立即帮我们查找错误，我们也可以快速在边写代码的时候边规范代码，也是对自己书写代码的规范性上有了显著的提高。
+
+### 2. 统一编辑规则
+我们下面要来配置<font color=#DD1144>editorconfig</font>：<font color=#1E90FF>editorconfig的作用是规范不同编辑器的规范，因为不同的编辑器默认有不同的设置，比如vscode中默认的tab是4，webstorm默认tab是2，那么同一个项目在不同编辑器打开就是不同的样式，而且比如说eslint默认tab是2,你在webstorm中打开eslint就不会报错，而在vscode中打开就全是错误，因为vscode的tab和eslint的tab设置不同</font>
+
+如果我们使用的`vscode`,我们需要在`vscode`中安装一下`editorconfig for vscode`,然后我们在项目中创建一个`.editorconfig`配置文件
+```javascript
+// .editorconfig
+root = true  
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+```
++ <font color=#3eaf7c>root</font>: 检查目录到此设置为顶级
++ <font color=#3eaf7c>charset</font>：编码方式
++ <font color=#3eaf7c>end_of_line</font>：每行以`lf`结尾，`windows`默认`clf`结尾的，而`Mac`和`linux`是以`lf`结尾的，需要统一
++ <font color=#3eaf7c>indent_size</font>: `tab`的空格数量
++ <font color=#3eaf7c>indent_style</font>: 间距以空格为单位
++ <font color=#3eaf7c>insert_final_newline</font>: 文件的最后自动添加一行
++ <font color=#3eaf7c>trim_trailing_whitespace</font>：去除每行最后多余的空格
+
+配置这个对开发效率有提高么，有的。<font color=#1E90FF>之前不是说边写代码边修改代码规范性么，现在有了editorconfig，会自动帮我们去做一些符合代码规范的操作，我们的注意力就能全部集中在代码的逻辑了，而不用在代码的规范了</font>，<font color=#DD1144>因为将代码规范的操作交给了editorconfig,代码规范的检查交给了eslint，整个流程就是：</font>
+```javascript
+ 程序员      editorconfig        eslint
+   ↓     ->       ↓        ->      ↓
+编写code       规范code          检查code
+```
+
+### 3. precommit
+在真实的开发当中，我们是需要提交代码到`git`的，我们需要在`git commit`这个命令执行的时候先去执行校验代码规范的操作，如果不通过，就没有办法向远程提交，所以我们必须先将项目目录进行`git init`的操作，然后再执行下面的操作，顺序不能错。
+
+然后我们安装插件：
+```javascript
+npm install husky@0.14.3
+```
+然后到`package.json`中配置这个`precommit`,有两种配置方法。第一种如下
+```javascript
+// package.json
+"precommit":"npm run lint"
+```
+这种就是在`git commit`提交的时候去检查错误，一旦检查出错误，就不提交。
+
+第二种如下：
+```javascript
+// package.json
+"precommit":"npm run lint-fix"
+```
+这种是在`git commit`提交之前先去修复错误，然后提交。<font color=#1E90FF>我个人还是推荐第一种，保险起见</font>
