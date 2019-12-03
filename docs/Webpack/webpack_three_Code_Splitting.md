@@ -146,6 +146,12 @@ module.exports = {
 					test: /[\\/]node_modules[\\/]/,
 					priority: -10
 				},
+				// lodash: {
+				// 	test: /[\\/]lodash[\\/]/,
+				// 	priority: -5,
+				// 	name: 'lodash'
+				// },
+				// 有些时候如果将node_modules中的使用到的第三方包都打包到vendors~main体积很大，可以将想lodash比较占体积的第三方包单独拿出来打包。这种是同步的分割方式，异步需要魔法注释
 				default: {
 					minChunks: 2,
 					priority: -20,

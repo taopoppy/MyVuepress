@@ -189,6 +189,17 @@ module.exports = {
 	]
 }
 ```
+另外有的老版本的`webpack`重新打包后的两个哈希值一样的，这个是因为`webpack`有关于在浏览器中连接模块一些相关的代码，它如果被缓存成为一样的也会导致打包出来的哈希值一样，所以我们这里一定要配置下面的内容，<font color=#DD1144>因为这个内容和单独分离webpack也有关系</font>：
+```javascript
+// webpack.common.js
+module.exports = {
+  optimization: {
+    runtimeChunk: {
+      name: 'runtime'
+    },
+  }
+}
+```
 
 **参考资料**
 

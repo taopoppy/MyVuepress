@@ -26,5 +26,14 @@ module.exports = [
       '/Webpack/webpack_three_Lazy_Loading',
       '/Webpack/webpack_three_summary'
     ]
+  },
+  {
+    title: 'Webpack实战演练',
+    children: [
+      '/Webpack/webpack_four_pwa_typescript',
+      '/Webpack/webpack_four_webpackdevserber', 
+      '/Webpack/webpack_four_eslint',
+      '/Webpack/webpack_four_optimization'
+    ]
   }
 ]
