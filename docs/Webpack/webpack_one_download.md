@@ -54,6 +54,7 @@ module.exports = {
 
 这里有个问题，为什么能直接在命令行中使用`webpack`的命令，计算机为什么能识别它？
 + <font color=#DD1144>这就是webpack-cli的作用：能让我们在命令行中正确的使用webpack命令</font>
++ 在新版本的`webpack`中将在命令行中运行`webpack`命令相关的代码移动到了`webpack-cli`
 
 ## 浅析打包出的内容
 当我们执行打包命令，会在命令行当中输入以下结果，我们来分析以下结果的含义：

@@ -250,3 +250,76 @@ files.forEach(file => {
 通过命令来生成相关的打包文件，利用工具来检查打包过程的各个细节。这个我们在之前也有详细的介绍。这里就不多赘述。
 
 ## 多页面打包
+多页面打包是一个比较简单的东西，<font color=#DD1144>本质上就是在配置多个entry和多个HtmlWebpackPlugin插件而已</font>
+
+比如我们现在有两个`js`文件都要通过同一个模板来渲染，并且打包到`dist`是两个`html`文件，我们先来写两个`js`文件：
+```javascript
+// index.js
+import React, { Component } from 'react'
+import ReactDom from 'react-dom'
+import _ from 'lodash'
+class App extends Component {
+	render() {
+		return (
+			<div>
+				<div>{_.join(['this','is','taopoppy'], ' ')}</div>
+			</div>
+		)
+	}
+}
+ReactDom.render(<App />, document.getElementById('root'))
+```
+```javascript
+// list.js
+import React, { Component } from 'react'
+import ReactDom from 'react-dom'
+class List extends Component {
+	render() {
+		return (
+			<div>
+				<div>this is listPage</div>
+			</div>
+		)
+	}
+}
+ReactDom.render(<List />, document.getElementById('root'))
+```
+然后我们配置`webpack.common.js`:
+```javascript
+// webpack.common.js
+module.exports = {
+  entry: {
+    main: './src/index.js',
+    list: './src/list.js'
+	},
+	plugins: [
+    new HtmlWebpackPlugin({
+      template:'src/index.html',
+      filename: 'index.html', // 最终在dist生成一个index.html的文件
+      chunks: ['runtime','vendors','main'] // 里面加载的js文件有runtime.[hash].js,vendors.dll.js,main.[hash].js
+    }),
+    new HtmlWebpackPlugin({
+      template:'src/index.html',
+      filename: 'list.html',// 最终在dist生成list.html的文件
+      chunks: ['runtime','vendors','list'] // 里面加载的js文件有runtime.[hash].js,vendors.dll.js,list.[hash].js
+    }),
+	]
+}
+```
+实现上面的配置就可以了，这里无非就要<font color=#1E90FF>多些几个HtmlWebpackPlugin的插件和其中的配置而已</font>,这里特别要注意，<font color=#1E90FF>vendors.dll.js文件在html中的加载不是通过HtmlWebpackPlugin插件中的chunks配置加进去的，而是通过之前我们使用的AddAssetHtmlWebpackPlugin插件加进去的，因为有一部分的第三方包我们会通过dllPlugin的配置提前打包一次，他们是通过AddAssetHtmlWebpackPlugin插件加到html文件中的，而还有一部分引入的第三方包我们没有在webpack.dll.js的入口中配置，按照splitChunks的配置还会打包到vendors这个chunks当中，所以还需要通过在HtmlWebpackPlugin的chunks属性数组值中添加vendors才能使用</font> 
+
+但是如果页面多起来了的话，我们就不用在`plugins`中逐个写`HtmlWebpackPlugin`插件了，可以通过写一段逻辑代码循环向`plugins`数组中添加`HtmlWebpackPlugin`插件：
+```javascript
+// webpack.common.js
+Object.keys(entry).forEach(item => {
+	plugins.push(
+		new HtmlWebpackPlugin({
+      template:'src/index.html',
+      filename: `${item}.html`,
+      chunks: ['runtime','vendors',`${item}`]
+	)
+})
+```
+
+**参考资料**
+1. [https://www.webpackjs.com/guides/build-performance/](https://www.webpackjs.com/guides/build-performance/)

@@ -45,6 +45,30 @@ module.exports = {
 ```javascript
 npm install @babel/preset-env --save-dev
 ```
+不过会有这样的警告：
+```javascript
+WARNING: We noticed you're using the `useBuiltIns` option without declaring a core-js version. Currently, we assume version 2.x when no version is passed. Since this default version will likely change in future versions of Babel, we recommend explicitly setting the core-js version you are using via the `corejs` option.
+
+You should also be sure that the version you pass to the `corejs` option matches the version specified in your `package.json`'s `dependencies` section. If it doesn't, you need to
+run one of the following commands:
+
+  npm install --save core-js@2    npm install --save core-js@3
+  yarn add core-js@2              yarn add core-js@3
+```
+我们要做的就是首先`npm install --save core-js@3`，然后在`.babelrc`文件中表明`corejs`的版本即可：
+```javascript
+// .babelrc
+{
+  "presets": [
+    ["@babel/preset-env",
+      {	
+        "corejs": "3", // 标明core.js的版本即可
+      }
+    ],
+  ]
+}
+```
+
 
 ## 对象添加
 实际上经过上面的一顿操作，并没有完整的说将`ES6`转换成为了`ES5`，为什么？<font color=#1E90FF>ES6比ES5多的不仅仅是语法的东西，还有很多关键字，变量，对象是无法通过语法转化起效果的，我们需要将这些缺失的东西补充到低版本的浏览器里</font>
@@ -139,11 +163,15 @@ You should also be sure that the version you pass to the `corejs` option matches
 ## Babel-React
 作为前端人员，相信对`JSX`语法并不陌生，`react`就是典型使用`JSX`语法的框架，那么`babel`对于`JSX`的语法也能够正确识别，那么我们就来打包使用`react`编写的代码
 
-<font color=#1E90FF>**① 安装react**</font>
+<font color=#1E90FF>**① 安装react和@babel/preset-react**</font>
 
 ```javascript
 npm install react react-dom --save
 ```
+```javascript
+npm install @babel/preset-react --save-dev
+```
+
 
 <font color=#1E90FF>**② 使用react**</font>
 

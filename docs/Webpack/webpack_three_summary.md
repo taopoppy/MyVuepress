@@ -35,7 +35,7 @@ module.exports = {
 	module: {
     rules: [
       {
-				test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: "babel-loader",
         // options相关的配置放在.babelrc文件下

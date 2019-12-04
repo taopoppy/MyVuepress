@@ -25,7 +25,7 @@ module.exports = {
   module: {
     rules: [
       {
-				test: /\.js$/,
+        test: /\.jsx?$/, // 对.js和.jsx都有效
         exclude: /node_modules/,  // node_modules下的文件不会做处理
         loader: "babel-loader",
         // options相关的配置放在.babelrc文件下
@@ -99,25 +99,25 @@ module.exports = {
 ```javascript
 // .babelrc
 {
-	"presets": [
-		[
-			"@babel/preset-env", // 负责将ES6装换成为ES5
-			{
-				"useBuiltIns":"usage",  // 按需对@babel/polyfill中的东西加载
-				"targets": {
-					"edge": "17",           // edge17以上的不用加载@babel/polyfill
-					"firefox": "60",        // firefox60以上的不用加载@babel/polyfill
-					"chrome": "67",         // chrome67以上的不用加载@babel/polyfill
-					"safari": "11.1"        // safari11.1以上的不用加载@babel/polyfill
-				}
-			}
-	  ],
-		[
-			"@babel/preset-react",
-			{
-				// 可以配置一些@babel/preset-react的参数
-			}
-		]
-	]
+  "presets": [
+    [
+      "@babel/preset-env", // 负责将ES6装换成为ES5
+      {
+        "useBuiltIns":"usage",  // 按需对@babel/polyfill中的东西加载
+        "targets": {
+          "edge": "17",           // edge17以上的不用加载@babel/polyfill
+          "firefox": "60",        // firefox60以上的不用加载@babel/polyfill
+          "chrome": "67",         // chrome67以上的不用加载@babel/polyfill
+          "safari": "11.1"        // safari11.1以上的不用加载@babel/polyfill
+        }
+      }
+    ],
+    [
+      "@babel/preset-react",
+      {
+        // 可以配置一些@babel/preset-react的参数
+      }
+    ]
+  ]
 }
 ```

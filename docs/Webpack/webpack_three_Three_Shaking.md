@@ -72,6 +72,15 @@ module.exports = {
 	"sideEffects": false
 }
 ```
+但是我建议还是在`webpack.config.js`中显式的去配置`optimization`，方便自己学习和理解，同时这个属性里还有很多能配置的东西，我们后面都会用到，所以这里写上最好：
+```javascript
+// webpack.config.js
+module.exports = {
+  optimization: {
+    usedExports: true
+  },
+}
+```
 如果你有其他的文件模块不需要，或者不能做`Tree-Shaking`,你就将它写在`sideEffects`当中，此时`sideEffects`的值就是包含这些不做`Tree-Shaking`的文件类型数组。
 
 ## Dev&Pro区分打包
@@ -104,7 +113,7 @@ module.exports = {
 	module: {
     rules: [
       {
-				test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: "babel-loader",
         // options相关的配置放在.babelrc文件下
