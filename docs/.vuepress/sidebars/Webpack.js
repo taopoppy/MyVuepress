@@ -9,7 +9,7 @@ module.exports = [
     ]
   },
   {
-    title:'Webpack核心概念',
+    title:'Webpack核心配置',
     children: [
       '/Webpack/webpack_two_loader',
       '/Webpack/webpack_two_plugins',
@@ -19,7 +19,7 @@ module.exports = [
     ]
   },
   {
-    title: 'Webpack高级概念',
+    title: 'Webpack高级配置',
     children: [
       '/Webpack/webpack_three_Three_Shaking',
       '/Webpack/webpack_three_Code_Splitting',
@@ -28,7 +28,7 @@ module.exports = [
     ]
   },
   {
-    title: 'Webpack实战演练',
+    title: 'Webpack实战配置',
     children: [
       '/Webpack/webpack_four_pwa_typescript',
       '/Webpack/webpack_four_webpackdevserber', 
@@ -39,7 +39,15 @@ module.exports = [
   {
     title: 'Webpack底层原理',
     children: [
-      '/Webpack/webpack_five_writeloader'
+      '/Webpack/webpack_five_writeloader',
+      '/Webpack/webpack_five_writewebpack',
+      '/Webpack/webpack_five_jiaoshoujia'
+    ]
+  },
+  {
+    title: 'Webpack实战演练',
+    children: [
+      
     ]
   }
 ]
