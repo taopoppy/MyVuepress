@@ -79,25 +79,25 @@ module.exports = {
       {
         text: 'react',
         items: [
-          { text: 'React实战进阶', link: '/react-jinjie/'},
-          { text: 'React开发简书项目', link: '/react-junior/' },
-          { text: 'React实战大众点评WebApp', link: '/react-dazhong/'},
-          { text: 'React去哪儿网火车票PWA', link: '/react-quna/'},
+          // { text: 'React实战进阶', link: '/react-jinjie/'},
+          // { text: 'React开发简书项目', link: '/react-junior/' },
+          // { text: 'React实战大众点评WebApp', link: '/react-dazhong/'},
+          // { text: 'React去哪儿网火车票PWA', link: '/react-quna/'},
           { text: 'React服务器渲染原理解析', link: '/react-ssr/'},
-          { text: 'React+Next.js+Koa2', link: '/react-next/' },
-          { text: 'React源码深度解析', link: '/react-yuanma/'}
+          // { text: 'React+Next.js+Koa2', link: '/react-next/' },
+          // { text: 'React源码深度解析', link: '/react-yuanma/'}
         ]
       },
       {
         text: 'vue',
         items: [
-          { text: 'Vue开发实战', link: '/vue-shizhan/' },
-          { text: 'Vue2.5开发去哪儿网App', link: '/vue-quna/'},
-          { text: 'Get全栈技能打造商城系统', link: '/vue-shagncheng/' },
-          { text: 'Vue 实战商业级读书WebApp', link: '/vue-dushu/'},
+          // { text: 'Vue开发实战', link: '/vue-shizhan/' },
+          // { text: 'Vue2.5开发去哪儿网App', link: '/vue-quna/'},
+          // { text: 'Get全栈技能打造商城系统', link: '/vue-shagncheng/' },
+          // { text: 'Vue 实战商业级读书WebApp', link: '/vue-dushu/'},
           { text: 'Vue服务端渲染原理解析', link: '/vue-ssr/' },
-          { text: 'Vue全家桶+SSR+Koa2', link: '/vue-nuxt/' },
-          { text: 'Vue.js源码全方位深入解析', link: '/vue-yuanma/' }
+          // { text: 'Vue全家桶+SSR+Koa2', link: '/vue-nuxt/' },
+          // { text: 'Vue.js源码全方位深入解析', link: '/vue-yuanma/' }
         ]
       },
       {

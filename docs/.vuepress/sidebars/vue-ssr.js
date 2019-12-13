@@ -20,6 +20,15 @@ module.exports = [
     title: 'Vue核心知识',
     children: [
       '/vue-ssr/todo_three_vue_base',
+      '/vue-ssr/todo_three_vue_lifecycle',
+      '/vue-ssr/todo_three_vue_databind'
+    ]
+  },
+  {
+    title: 'Vue-Router和vuex',
+    children: [
+      '/vue-ssr/todo_four_vuex_base',
+      '/vue-ssr/todo_four_vuex_yuanma'
     ]
   }
 ]
