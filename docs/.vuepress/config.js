@@ -18,6 +18,8 @@ const reactJinJieSidebar = require('./sidebars/react-jinjie')
 const vueShiZhanSidebar = require('./sidebars/vue-shizhan')
 const WebpackSidebar = require('./sidebars/Webpack')
 const vueSSRSidebar = require('./sidebars/vue-ssr')
+const goSidebar = require('./sidebars/go')
+const BeegoSidebar = require('./sidebars/Beego')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -54,6 +56,13 @@ module.exports = {
         text: '全栈', 
         items: [
           { text: '朋友圈', link: '/Full-Stack-FriendCircle/'}
+        ]
+      },
+      {
+        text: 'Go',
+        items: [
+          { text: 'go语言入门', link: '/go/' },
+          { text: 'Beego框架入门', link: '/Beego/'}
         ]
       },
       { 
@@ -149,6 +158,8 @@ module.exports = {
       '/WeiXin/':WeiXinSidebar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
+      '/go/': goSidebar,
+      '/Beego/': BeegoSidebar,
       '/node-GraphQL/': nodeGraphQLSidebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式

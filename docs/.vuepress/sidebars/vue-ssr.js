@@ -21,7 +21,11 @@ module.exports = [
     children: [
       '/vue-ssr/todo_three_vue_base',
       '/vue-ssr/todo_three_vue_lifecycle',
-      '/vue-ssr/todo_three_vue_databind'
+      '/vue-ssr/todo_three_vue_databind',
+      '/vue-ssr/todo_three_vue_instruction',
+      '/vue-ssr/todo_three_vue_component_base',
+      '/vue-ssr/todo_three_vue_component_intermediate',
+      '/vue-ssr/todo_three_vue_component_advanced'
     ]
   },
   {
