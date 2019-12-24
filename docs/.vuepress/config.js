@@ -20,6 +20,7 @@ const WebpackSidebar = require('./sidebars/Webpack')
 const vueSSRSidebar = require('./sidebars/vue-ssr')
 const goSidebar = require('./sidebars/go')
 const BeegoSidebar = require('./sidebars/Beego')
+const gocoreSiderbar = require('./sidebars/go-core')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -61,7 +62,8 @@ module.exports = {
       {
         text: 'Go',
         items: [
-          { text: 'go语言入门', link: '/go/' },
+          { text: 'go语言入门实践', link: '/go/' },
+          { text: 'go语言核心详解', link: '/go-core/'},
           { text: 'Beego框架入门', link: '/Beego/'}
         ]
       },
@@ -159,6 +161,7 @@ module.exports = {
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
+      '/go-core/': gocoreSiderbar,
       '/Beego/': BeegoSidebar,
       '/node-GraphQL/': nodeGraphQLSidebar,
       '/react/':[
