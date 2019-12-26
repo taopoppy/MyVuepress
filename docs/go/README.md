@@ -67,3 +67,8 @@ go get -v golang.org/x/tools/cmd/goimports
 	+ `vscode`虽然没有创建项目的能力，但是有扩展提示，但是使用了`go`语言，它会提示你去下载`go`文件的相关扩展。
 	+ <font color=#1E90FF>然后我们启动项目都需要使用go run hello.go这样的命令</font>
 	+ 另外`go.mod`在`vs code`也需要使用命令行手动生成：<font color=#DD1144>go mod init learngo</font>，`learngo`是名字，你可以自己取。
+
+**参考资料**
+
+1. [Go语言四十二章经](https://github.com/ffhelicopter/Go42/blob/master/SUMMARY.md)
+2. [Google资深工程师深度讲解Go语言](https://coding.imooc.com/class/chapter/180.html#Anchor)

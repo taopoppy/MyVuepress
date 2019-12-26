@@ -203,5 +203,144 @@ s2 = s2[:len(s2)-1]               // 删除尾部       [4 6] 2 4
 
 ## Map
 ### 1. Map的概念
+`Map`是键值对的一种数据结构的集合，在`go`语言中我们来说明一下对于`key`和`value`都有哪些注意点：
++ <font color=#3eaf7c>map使用哈希表，key必须可以比较相等</font>
++ <font color=#1E90FF>除了slice，map，function的内建类型都可以作为key，因为这三个没法判断相等</font>
++ <font color=#DD1144>Struct类型不包含slice，map，funciton也可以作为key</font>  
+
+<font color=#1E90FF>**① 定义Map**</font>
+
+我们来看一下在`go`语言中最简答的`Map`,<font color=#DD1144>基本上方括号中就是key键的类型，方括号外面是value值</font>
+```go
+// 定义包含初始值的map
+m :=map[string] string {
+	"name": "taopoppy",
+	"age":"23",
+	"school": "first high school"
+}
+
+// 定义空值map
+m2 := make(map[string] int)   // map[]
+var m3 map[string] int        // nil
+```
++ <font color=#1E90FF>常见的map的定义方式有map[key]value 或者map[key1]map[key2]value</font>,后者属于一种复合的`map`,也就是`map`中每个`key`对应的又是一个`map`
++ <font color=#DD1144>定义空值Map的两种方法如上所示，只不过通过make方法定义出来的是空值map[]，通过var关键字定义出来的是nil</font>
++ <font color=#1E90FF>go语言中的nil和别的语言不一样，可以参与运算，所以nil在map[]基本在运算的时候可以混用</font>
+
+<font color=#1E90FF>**② Map的遍历**</font>
+
+```go
+for key, value := range m {
+	fmt.Printf("key: %s; value: %s\n", key, value)
+}
+```
+关于`Map`的遍历没有什么好说的，`range`关键字我们之前也都用的不爱用了，但是这里要注意一个特别的点：<font color=#DD1144>map这里是哈希map，每次遍历出来的顺序都是无序的</font>
+
+<font color=#1E90FF>**③ 获取Map值**</font>
+
+```go
+m :=map[string] string {
+	"name": "taopoppy",
+	"age":"23",
+	"school": "first high school"
+}
+name, ok := m["name"] // "taopoppy", true
+sex, ok :=m["sex"] // 空的字符串 ,false
+```
+可以很清楚的看到：
++ <font color=#DD1144>对于map中没有的key值也能取出值来，并不会直接报错，只不过取出来的值是默认value类型的空值，对于string就是空的字符串，对于int就是0</font>
++ <font color=#1E90FF>那既然任何key都能取到值，怎么判断key到底在没在map中呢，可以去获取第二个返回值来判断</font>，如下代码：
+```go
+if name, ok := m["name"]; ok {
+	fmt.Println(name)
+} else {
+	fmt.Println("key值不存在")
+}
+```
+
+<font color=#1E90FF>**④ 删除Map值**</font>
+
+```go
+m :=map[string] string {
+	"name": "taopoppy",
+	"age":"23",
+	"school": "first high school"
+}
+fmt.Println(len(m)) // 3
+delete(m, "name")   // 删除map中的name这个key
+fmt.Println(len(m)) // 2
+```
+通过`delete`函数来对某个`map`进行某个键的删除。然后呢通过`len`函数来获取`map`中键值对的数量。
+
 ### 2. 最长无重复的字串
+```go
+func lengthOfNonRepeatingSubStr(s string) int {
+	lastOccurred := make(map[rune] int)
+	start := 0
+	maxLength := 0
+	for i, ch := range []rune(s) {
+		if lastI, ok := lastOccurred[ch]; ok && lastI >= start {
+			start = lastI + 1
+		}
+		if i-start+1 > maxLength {
+			maxLength = i - start + 1
+		}
+		lastOccurred[ch] = i
+	}
+	return maxLength
+}
+func main() {
+	fmt.Println(lengthOfNonRepeatingSubStr("sersdscdrs")) // 4
+}
+```
+
 ### 3. 字符和字符串处理
+通过上面这个最长无重复的字串，我们发现还是不能很好的适应中文，那么对于`go`语言来讲，适应国际化最重要的一个点就是<font color=#DD1144>rune</font>,<font color=#1E90FF>rune实际上就是一个4字节的整数</font>，我们来看一个例子：
+```go
+func main() {
+	s := "Yes我爱慕课网!"    // UTF-8
+  fmt.Println(len(s))      // 19字节（4个英文字母（4*1） + 5个中文字母（5*3））
+	
+	for _, b := range []byte(s) { // 转换为byte
+		fmt.Printf("%X ", b)
+		// 59 65 73 E6 88 91 E7 88 B1 E6 85 95 E8 AF BE E7 BD 91 21
+	}
+
+	fmt.Println()
+	for i, ch := range s { // ch is a rune[int32]
+		fmt.Printf("(%d %X) ", i, ch)
+		// (0 59) (1 65) (2 73) (3 6211) (6 7231) (9 6155) (12 8BFE) (15 7F51) (18 21)
+	}
+
+	fmt.Println()
+	for i, ch := range []rune(s) {
+		fmt.Printf("(%d %c) ", i, ch)
+		// (0 Y) (1 e) (2 s) (3 我) (4 爱) (5 慕) (6 课) (7 网) (8 !)
+	}
+}
+```
+我们很清楚的看到，对字符串`s`进行`range`后，返回值`i`实际上是每个字符在编码的起始位置，<font color=#1E90FF>而ch就是个rune类型，每个字符都是先经过utf8编码保存在内存中，range字符串拿到的utf-8的编码先经过utg-8解码，再转化成为unicode，最后放在rune这个4字节的类型当中</font>
+
+实际上关于`utf-8`我们还有一些库可以使用：
+```go
+	s := "Yes我爱慕课网!"    // UTF-8
+	fmt.Println("Rune count: ", utf8.RuneCountInString(s)) // 9
+
+	bytes := []byte(s)  // 转化为byte结构的（十进制的）
+	fmt.Println(bytes)  // [89 101 115 230 136 145 231 136 177 230 133 149 232 175 190 231 189 145 33]
+	for len(bytes) > 0 {
+		ch, size := utf8.DecodeRune(bytes)
+		bytes = bytes[size:]
+		fmt.Printf("%c ", ch) // Y e s 我 爱 慕 课 网 !
+	}
+```
++ <font color=#3eaf7c>utf8.RuneCountInString</font>:帮助我们看字符串中有几个字符（英文字母和中文汉字都算一个字符）
++ <font color=#3eaf7c>utf8.DecodeRune</font>：解码成为`rune`结构
+
+<font color=#DD1144>总结</font>：
+<img :src="$withBase('/go_one_utf8_unicode.png')" alt="">
+
++ <font color=#1E90FF>使用range比遍历pos，rune对</font>
++ <font color=#1E90FF>使用utf8.RuneCountInString获得字符数量</font>
++ <font color=#1E90FF>使用len获得字节长度</font>
++ <font color=#1E90FF>使用[]byte获得字节</font>
