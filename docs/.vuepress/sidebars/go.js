@@ -4,7 +4,6 @@ module.exports = [
   {
     title:'Go语言基础语法',
     children: [
-      '/go/go_one_dependent',
       '/go/go_one_introduce',
       '/go/go_one_container',
       '/go/go_one_struct',
