@@ -9,7 +9,14 @@ module.exports = [
       '/go/go_one_struct',
       '/go/go_one_interface',
       '/go/go_one_functioncode',
-      '/go/go_one_errorhand'
+      '/go/go_one_errorhand',
+      '/go/go_one_test'
+    ]
+  },
+  {
+    title: 'Go核心语法夯实',
+    children: [
+      
     ]
   }
 ]
