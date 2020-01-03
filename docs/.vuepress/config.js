@@ -63,7 +63,7 @@ module.exports = {
         text: 'Go',
         items: [
           { text: 'go语言入门实践', link: '/go/' },
-          { text: 'go语言核心详解', link: '/go-core/'},
+          { text: 'go编程核心详解', link: '/go-core/'},
           { text: 'Beego框架入门', link: '/Beego/'}
         ]
       },

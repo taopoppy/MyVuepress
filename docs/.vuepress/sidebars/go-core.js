@@ -2,9 +2,15 @@
 module.exports = [
   '/go-core/',
   {
-		title:'Go语言学习前奏',
+		title:'Go核心语法夯实',
     children: [
 			
+    ]
+  },
+  {
+    title:'Go并发核心详解',
+    children: [
+      
     ]
   }
 ]

@@ -10,11 +10,14 @@ module.exports = [
       '/go/go_one_interface',
       '/go/go_one_functioncode',
       '/go/go_one_errorhand',
-      '/go/go_one_test'
+      '/go/go_one_test',
+      '/go/go_one_goroutine',
+      '/go/go_one_channel',
+      '/go/go_one_channel1'
     ]
   },
   {
-    title: 'Go核心语法夯实',
+    title: 'Go语言爬虫实战',
     children: [
       
     ]
