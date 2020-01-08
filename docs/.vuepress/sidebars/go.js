@@ -12,8 +12,7 @@ module.exports = [
       '/go/go_one_errorhand',
       '/go/go_one_test',
       '/go/go_one_goroutine',
-      '/go/go_one_channel',
-      '/go/go_one_channel1'
+      '/go/go_one_channel'
     ]
   },
   {
