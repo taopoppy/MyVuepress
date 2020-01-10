@@ -130,7 +130,7 @@ String download(R r) {
 `Go`语言中的`duck typing`吸取了`python`和`C++`的灵活性，又可以实现像`java`中的类型检查。
 
 ## 接口的定义和实现
-在传统的面向对象中，<font color=#1E90FF>接口是由实现者定义的</font>，比尔说有个人写了一个`file`,然后关于`file`的可读可写都以接口的方式公布出来，任何人通过这个实现者实现的接口可以使用`file`可读可写的功能。但是，<font color=#DD1144>Go语言中接口是由使用者定义的</font>，就好比之前的鸭子类型中我们举的例子，小孩认为一个鸭子玩具是个鸭子，而一个厨师认为鸭子玩具并不是鸭子，因为不能吃，所以，是不是鸭子并不是由鸭子模型自己决定，而是由我们使用者定义的。
+在传统的面向对象中，<font color=#1E90FF>接口是由实现者定义的</font>，比如说有个人写了一个`file`,然后关于`file`的可读可写都以接口的方式公布出来，任何人通过这个实现者实现的接口可以使用`file`可读可写的功能。但是，<font color=#DD1144>Go语言中接口是由使用者定义的</font>，就好比之前的鸭子类型中我们举的例子，小孩认为一个鸭子玩具是个鸭子，而一个厨师认为鸭子玩具并不是鸭子，因为不能吃，所以，是不是鸭子并不是由鸭子模型自己决定，而是由我们使用者定义的。
 ```go
 // retriever/main.go
 
@@ -197,7 +197,7 @@ func main() {
 	r = mock.Retriever{Contents: "this is a fake imooccom"}
 	fmt.Printf("%T %v\n", r, r)  // mock.Retriever {this is a fake imooccom}
 	r = &real.Retriever{}
-	fmt.Printf("%T %v\n", r, r)  // mock.Retriever {this is a fake imooccom}
+	fmt.Printf("%T %v\n", r, r)  // *real.Retriever {this is a fake imooccom}
 }
 ```
 通过上面的打印，我们可以知道：<font color=#1E90FF>接口类型的变量中实际上肚子中包含两个值，一个是类型，一个是值，值可以是普通的值，也可以是指针</font>，<font color=#DD1144>但是千万不要去使用接口变量的地址，因为这个变量里本身就可以包含实现者的地址</font>

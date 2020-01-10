@@ -350,6 +350,7 @@ int main() {
 + <font color=#3eaf7c>引用传递</font>：传递的是一个指针，指针有唯一的一个变量的指向，所以`main`中的`a`和`pass_by_ref`中操作的是同一个`a`。
 
 那么`go`语言当中使用的是什么传递呢？<font color=#DD1144>Go语言只有值传递一种方式</font>，虽然听起来好像只有值传递，在参数的传递上面都要做拷贝，性能好像是很低，<font color=#1E90FF>但是Go有指针啊，我们下面就来看看Go语言中的指针和值传递是怎么配合的</font>
+
 <img :src="$withBase('/go_ont_zhizhen.png')" alt="指针类型">
 
 + <font color=#3eaf7c>普通的值传递如最上面所示，函数外部的a传入函数内部，但是两个a不是同一个变量或者属于内存的同一块区域</font>

@@ -240,6 +240,34 @@ func main() {
 }
 ```
 ## 使用Channel进行树的遍历
+```go
+func (node *Node) TraverseWithChannel() chan *Node {
+	out := make(chan *Node)  // 创建一个channel
+	go func() {
+		node.TraverseFunc(func(node *Node) {
+			out <- node  // 遍历到每个节点，都将这个节点送出去
+		})
+		close(out) // 遍历完就关闭
+	}()
+	return out
+}
+```
+然后我们在调用这个方法的时候，就通过执行这个函数拿到这个`channel`,并且接收通过这个`channel`送出来的节点就好，然后选出最大的节点的值：
+```go
+func main() {
+	...
+	// 关键代码如下
+	c := root.TraverseWithChannel()
+	maxNode := 0
+	for node := range c {
+		if node.Value > maxNode {
+			maxNode = node.Value
+		}
+	}
+	fmt.Println("Max node value:", maxNode)
+}
+```
+
 
 ## 使用select进行调度
 当我们对于多个`channel`同时进行接收，而且采用非阻塞的方式进行接收，就是谁先到谁显示，但是都会接收到：
