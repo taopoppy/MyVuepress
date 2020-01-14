@@ -299,8 +299,8 @@ func main() {
 ```go
 func main() {
 	s := "Yes我爱慕课网!"    // UTF-8
-  fmt.Println(len(s))      // 19字节（4个英文字母（4*1） + 5个中文字母（5*3））
-	
+	fmt.Println(len(s))      // 19字节（4个英文字母（4*1） + 5个中文字母（5*3））
+
 	for _, b := range []byte(s) { // 转换为byte
 		fmt.Printf("%X ", b)
 		// 59 65 73 E6 88 91 E7 88 B1 E6 85 95 E8 AF BE E7 BD 91 21

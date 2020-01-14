@@ -22,6 +22,8 @@ const goSidebar = require('./sidebars/go')
 const BeegoSidebar = require('./sidebars/Beego')
 const gocoreSiderbar = require('./sidebars/go-core')
 const goWebSidebar = require('./sidebars/go-web')
+const mysqlSidebar = require('./sidebars/Mysql')
+const protocolSidebar = require('./sidebars/protocol')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -40,8 +42,8 @@ module.exports = {
       { text: '首页', link: '/' },
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
-      { text: 'Flutter', link: '/Flutter/'},
-      { text: '算法世界', link: '/Algorithm/'},
+      //{ text: 'Flutter', link: '/Flutter/'},
+      //{ text: '算法世界', link: '/Algorithm/'},
       { text: '小程序', 
         items: [
           { text: '微信小程序入门和云开发', link: '/WeiXin/' },
@@ -114,6 +116,13 @@ module.exports = {
         ]
       },
       {
+        text: '后端系列',
+        items: [
+          { text: 'mysql', link: '/Mysql/' },
+          { text: '网络协议', link: '/Protocol/'}
+        ]
+      },
+      {
         text: '前端系列',
         items: [
           { text: '前端架构', link: '/Front-end/' },
@@ -163,6 +172,8 @@ module.exports = {
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
+      '/Mysql/': mysqlSidebar,
+      '/Protocol/': protocolSidebar,
       '/go-web/': goWebSidebar,
       '/go-core/': gocoreSiderbar,
       '/Beego/': BeegoSidebar,
