@@ -11,7 +11,8 @@ module.exports = [
   {
     title: '数据库建模',
     children: [
-      '/Mysql/mysql_two_design'
+      '/Mysql/mysql_two_design',
+      '/Mysql/mysql_two_physic'
     ]
   }
 ]

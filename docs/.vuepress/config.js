@@ -44,24 +44,24 @@ module.exports = {
       { text: '构建网站', link: '/construct/'},
       //{ text: 'Flutter', link: '/Flutter/'},
       //{ text: '算法世界', link: '/Algorithm/'},
-      { text: '小程序', 
-        items: [
-          { text: '微信小程序入门和云开发', link: '/WeiXin/' },
-          { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' }
-        ]
-      },
-      { text: '工具系列', 
+      // { text: '小程序',
+      //   items: [
+      //     { text: '微信小程序入门和云开发', link: '/WeiXin/' },
+      //     { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' }
+      //   ]
+      // },
+      { text: '工具系列',
         items: [
           { text: 'Jest', link: '/Jest/'},
-          { text: 'Webpack',link: '/Webpack/'} 
+          { text: 'Webpack',link: '/Webpack/'}
         ]
       },
-      { 
-        text: '全栈', 
-        items: [
-          { text: '朋友圈', link: '/Full-Stack-FriendCircle/'}
-        ]
-      },
+      // {
+      //   text: '全栈',
+      //   items: [
+      //     { text: '朋友圈', link: '/Full-Stack-FriendCircle/'}
+      //   ]
+      // },
       {
         text: 'Go',
         items: [
@@ -71,26 +71,26 @@ module.exports = {
           { text: 'Beego框架入门', link: '/Beego/'}
         ]
       },
-      { 
+      {
         text: 'node',
         items: [
           { text: 'node入门', link: '/node/' },
           { text: 'node与RESTful', link: '/node-RESTful/' },
-          { text: 'node与GraphQL', link: '/node-GraphQL/'}, 
+          { text: 'node与GraphQL', link: '/node-GraphQL/'},
           { text: 'node与BFF', link: '/node-BFF/'},
           { text: 'node博客后台', link: '/node-blog/' },
           { text: 'node实战微博', link: '/node-weibo/'},
           { text: 'node微服务',link: '/node-microService/'}
         ]
       },
-      {
-        text: 'TS系列',
-        items: [
-          { text: 'TypeScript入门', link: '/typescript/' },
-          { text: 'TS重构axios前置学习', link: '/typescript-axios-font/' },
-          { text: 'TS重构axios项目开发', link: '/typescript-axios/' }
-        ]
-      },
+      // {
+      //   text: 'TS系列',
+      //   items: [
+      //     { text: 'TypeScript入门', link: '/typescript/' },
+      //     { text: 'TS重构axios前置学习', link: '/typescript-axios-font/' },
+      //     { text: 'TS重构axios项目开发', link: '/typescript-axios/' }
+      //   ]
+      // },
       {
         text: 'react',
         items: [
@@ -118,8 +118,20 @@ module.exports = {
       {
         text: '后端系列',
         items: [
-          { text: 'mysql', link: '/Mysql/' },
-          { text: '网络协议', link: '/Protocol/'}
+          {
+            text: '数据库',
+            items: [
+              { text: 'mysql', link: '/Mysql/' },
+              { text: 'mysql-Architecture', link: '/Mysql-Architecture/'}
+            ]
+          },
+          {
+            text: '网络协议',
+            items: [
+              { text: 'protocol', link: '/Protocol/' },
+              { text: 'font-end-protocol', link: 'font-end-protocol' }
+            ]
+          }
         ]
       },
       {
@@ -128,26 +140,6 @@ module.exports = {
           { text: '前端架构', link: '/Front-end/' },
         ]
       },
-      // 下来列表产生分组
-      // {
-      //   text: '学习',
-      //   items: [
-      //     {
-      //       text: '前端',
-      //       items: [
-      //         { text: 'language', link: '/language/' },
-      //         { text: 'react', link: '/react/' }
-      //       ]
-      //     },
-      //     {
-      //       text: '后端',
-      //       items: [
-      //         { text: 'node', link: '/language/chinese' },
-      //         { text: 'Go', link: '/language/japanese' }
-      //       ]
-      //     }
-      //   ]
-      // }
     ],
     sidebarDepth: 3,
     lastUpdated: 'Last Updated', // string | boolean
