@@ -20,10 +20,11 @@ const WebpackSidebar = require('./sidebars/Webpack')
 const vueSSRSidebar = require('./sidebars/vue-ssr')
 const goSidebar = require('./sidebars/go')
 const BeegoSidebar = require('./sidebars/Beego')
-const gocoreSiderbar = require('./sidebars/go-core')
+const goConcurrentSiderbar = require('./sidebars/go-concurrent')
 const goWebSidebar = require('./sidebars/go-web')
 const mysqlSidebar = require('./sidebars/Mysql')
 const protocolSidebar = require('./sidebars/protocol')
+const goReptileSidebar = require('./sidebars/go-reptile')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -66,9 +67,10 @@ module.exports = {
         text: 'Go',
         items: [
           { text: 'go语言入门实践', link: '/go/' },
-          { text: 'go编程核心详解', link: '/go-core/'},
-          { text: 'go与web编程实战', link: '/go-web/'},
-          { text: 'Beego框架入门', link: '/Beego/'}
+          { text: 'go并发编程详解', link: '/go-concurrent/' },
+          { text: 'go与web编程实战', link: '/go-web/' },
+          { text: 'go爬虫编程实战', link: '/go-reptile/' },
+          { text: 'Beego框架入门', link: '/Beego/' }
         ]
       },
       {
@@ -164,10 +166,11 @@ module.exports = {
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
+      '/go-reptile/': goReptileSidebar,
       '/Mysql/': mysqlSidebar,
       '/Protocol/': protocolSidebar,
       '/go-web/': goWebSidebar,
-      '/go-core/': gocoreSiderbar,
+      '/go-concurrent/': goConcurrentSiderbar,
       '/Beego/': BeegoSidebar,
       '/node-GraphQL/': nodeGraphQLSidebar,
       '/react/':[

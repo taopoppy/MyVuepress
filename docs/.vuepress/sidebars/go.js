@@ -16,9 +16,20 @@ module.exports = [
     ]
   },
   {
-    title: 'Go语言爬虫实战',
+		title:'Go核心语法夯实',
     children: [
-      
+			'/go/gocore_one_learn'
+    ]
+  },
+  {
+    title:'Go标准库和实践',
+    children: [
+    ]
+  },
+  {
+    title: 'Go源码深度剖析',
+    children: [
     ]
   }
+
 ]

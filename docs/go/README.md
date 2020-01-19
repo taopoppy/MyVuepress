@@ -112,3 +112,6 @@ go build ./...
 
 1. [Go语言四十二章经](https://github.com/ffhelicopter/Go42/blob/master/SUMMARY.md)
 2. [Google资深工程师深度讲解Go语言](https://coding.imooc.com/class/chapter/180.html#Anchor)
+3. [深入解析Go](https://www.ctolib.com/docs/sfile/go-internals/index.html)
+4. [Go语言核心36讲](https://time.geekbang.org/column/intro/112)
+5. [Go语言标准库实践](https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter03/03.1.html)
