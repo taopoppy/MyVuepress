@@ -25,6 +25,7 @@ const goWebSidebar = require('./sidebars/go-web')
 const mysqlSidebar = require('./sidebars/Mysql')
 const protocolSidebar = require('./sidebars/protocol')
 const goReptileSidebar = require('./sidebars/go-reptile')
+const linuxSidebar = require('./sidebars/Linux')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -128,6 +129,13 @@ module.exports = {
             ]
           },
           {
+            text: 'linux操作系统',
+            items: [
+              { text: 'linux', link: '/Linux/' },
+              { text: 'linux-Architecture', link: '/Linux-Architecture/'}
+            ]
+          },
+          {
             text: '网络协议',
             items: [
               { text: 'protocol', link: '/Protocol/' },
@@ -166,6 +174,7 @@ module.exports = {
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
+      '/Linux/': linuxSidebar,
       '/go-reptile/': goReptileSidebar,
       '/Mysql/': mysqlSidebar,
       '/Protocol/': protocolSidebar,

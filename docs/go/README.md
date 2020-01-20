@@ -49,6 +49,14 @@ go get -v golang.org/x/tools/cmd/goimports
 
 ### 4. 配置IDE
 + <font color=#3eaf7c>GoLand</font>
+	+ `Goland`自身就包含`go`的插件和`file watcher`插件，所以我们不需要下载。我们打开`File/setting`查询修改`parameter hint`为`off`，取消参数提醒
+
+	<img :src="$withBase('/go_one_golandconifg1.png')" alt="配置1">
+
+	+ 并且查询修改`file watcher`,点击加号，添加`goimports`，然后点击`ok`即可，这样保存之后就能执行`goimports`之前那个下载的插件的功能了，格式化代码。
+
+	<img :src="$withBase('/go_one_golandconfig2.png')" alt="配置2">
+
 + <font color=#3eaf7c>idea + Go插件</font>
 	+ 如果你使用这种方式需要在打开编辑器的时候通过`configure/plugins`去下载`Go`的插件和`file watcher`插件，后者是能利用之前我们下载的`goimports`来在保存文件的时候去格式化代码的。然后创建这个项目的时候需要选择`Go Modules`，然后修`Proxy`为`https://goproxy.cn,direct`,然后创建一个项目。
 	+ 创建一个`hello`的文件，然后书写一段简单的代码：
