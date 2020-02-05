@@ -210,7 +210,7 @@ s2 = s2[:len(s2)-1]               // 删除尾部       [4 6] 2 4
 
 <font color=#1E90FF>**① 定义Map**</font>
 
-我们来看一下在`go`语言中最简答的`Map`,<font color=#DD1144>基本上方括号中就是key键的类型，方括号外面是value值</font>
+我们来看一下在`go`语言中最简单的`Map`,<font color=#DD1144>基本上方括号中就是key键的类型，方括号外面是value值</font>
 ```go
 // 定义包含初始值的map
 m :=map[string] string {

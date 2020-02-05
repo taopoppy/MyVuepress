@@ -224,7 +224,7 @@ func (node *Node) Traverse() {
 + 可以看到对于`package main`，我们将其放在一个单独的目录下`tree/entry/entry.go`，因为一个目录下只能有一个包名，对于其他使用`tree`包的文件直接放在`tree`目录下即可
 + 利用`CamlCase`和首字母大小写的方式对定义共有和私有方法，可以供别的地方使用
 + 对于同一个`tree`包，结构`Node`的方法可以分别写在不同的文件中
-+ <font color=#DD1144>对于go-lint有一些我们不需要的代码规范，我们希望通过在文件/首选项/设置中设置Go:Lint Tool为golangci-lint</font>
++ <font color=#DD1144>在VsCode中，对于go-lint有一些我们不需要的代码规范，我们希望通过在文件/首选项/设置中设置Go:Lint Tool为golangci-lint</font>
 
 ## 扩展已有类型
 如何扩充系统类型或者别人的类型：
