@@ -18,7 +18,9 @@ module.exports = [
   {
 		title:'Go核心语法夯实',
     children: [
-			'/go/gocore_one_learn'
+      '/go/gocore_one_learn',
+      '/go/gocore_one_project',
+      '/go/gocore_one_mod'
     ]
   },
   {
