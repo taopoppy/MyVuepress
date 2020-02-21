@@ -6,7 +6,8 @@ module.exports = [
     children: [
       '/Beego/beego_one_instruduce',
       '/Beego/beego_one_content',
-      '/Beego/beego_one_menumodule'
+      '/Beego/beego_one_menumodule',
+      '/Beego/beego_one_userController'
     ]
   },
   {
