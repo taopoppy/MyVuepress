@@ -26,6 +26,9 @@ const mysqlSidebar = require('./sidebars/Mysql')
 const protocolSidebar = require('./sidebars/protocol')
 const goReptileSidebar = require('./sidebars/go-reptile')
 const linuxSidebar = require('./sidebars/Linux')
+const prometheusSidebar = require('./sidebars/prometheus')
+
+
 
 module.exports = {
   title: 'TaoPoppy',
@@ -141,6 +144,12 @@ module.exports = {
               { text: 'protocol', link: '/Protocol/' },
               { text: 'font-end-protocol', link: 'font-end-protocol' }
             ]
+          },
+          {
+            text:'运维系统',
+            items: [
+              { text: 'prometheus',link: '/prometheus/'}
+            ]
           }
         ]
       },
@@ -178,6 +187,7 @@ module.exports = {
       '/go-reptile/': goReptileSidebar,
       '/Mysql/': mysqlSidebar,
       '/Protocol/': protocolSidebar,
+      '/prometheus/': prometheusSidebar,
       '/go-web/': goWebSidebar,
       '/go-concurrent/': goConcurrentSiderbar,
       '/Beego/': BeegoSidebar,
