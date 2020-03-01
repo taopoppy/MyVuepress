@@ -2,8 +2,9 @@
 module.exports = [
   '/go-reptile/',
   {
-		title:'Go语言爬虫实战',
+		title:'爬虫项目准备',
     children: [
+      '/go-reptile/reptile-algorithm'
     ]
 	},
 ]
