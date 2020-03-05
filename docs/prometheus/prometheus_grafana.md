@@ -57,3 +57,36 @@ LISTEN     0      128       [::]:3000                  [::]:*                   
 + <font color=#1E90FF>node_load5{job="prometheus"}</font>：表示在`prometheus.yml`中`job`选项为`prometheus`的机器的每5分钟记录的负载均衡
 
 ## Grafana图形展示Mysql监控数据
+### 1. Grafana修改配置安装模板
+在`Grafana`修改配置文件，并且下载安装`mysql`监控的<font color=#1E90FF>dashboard</font>,这个`dash`文件实际上就是定义好的图形图像的模板，包含了`json`文件，这些`json`文件可以看做开发人员开发的一个监控模板。
+
+所以我们需要先去修改`grafana`的配置文件，添加模板文件的存放路径：
+```go
+# vim /etc/grafana/grafana.ini
+```
+然后将下面的三行添加到最后：
+```go
+[dashboards.json]
+enabled = true
+path = /var/lib/grafana/dashboards
+```
+然后我们就可以安装`dashboard`然后对`grafana`重新启动：
+```go
+# cd /var/lib/grafana/
+# git clone https://github.com/percona/grafana-dashboards.git
+// 把戈隆下来项目中的模板全部放在我们定义的模板文件中
+# cp -r grafana-dashboards/dashboards/ /var/lib/grafana/
+# systemctl restart grafana-server
+```
+实际上上面的操作步骤就是将`https://github.com/percona/grafana-dashboards`这个项目中`dashboards`文件中的所有`json`文件全部放在`/var/lib/grafana/dashboards`当中，我们可以直接将项目下载到`windows`本地，然后上传到`/var/lib/grafana/dashboards`中，这样好像还快一点，而且等会上传`json`文件好像也要从本地上传。
+
+### 2. Grafana导入json文件
+重启了之后我们需要登录到之前的那个`Grafana`的`web`页面：
++ 点击左侧图标栏中的加号按钮，选择`import`
++ 选择<font color=#3eaf7c>Upload .json File</font>绿色的按钮
++ 上传`MySQL_Overview.json`,默认的名称就是`MySQL_Overview`,点击`Import`按钮保存。
++ 通常情况下，保存之后图形模板就能和数据库结合生成可视化的图像，但是之前我们设置的数据源的名称是`prometheus_data`
++ 将之前的`prometheus_data`数据源的名称修改为`Prometheus`,首字母要大写，重新保存。
++ 回到`dashboards`(点击左侧加号图标栏，选择DashBoards),选择`MySQL_Overview`的图形界面就能看到模板和数据正确结合的可视化界面了。
+
+要注意的是，可视化界面中显示的各种各样的信息就是我们在上传的`MySQL_Overview`这个`json`文件中定义的各种信息，都是别人已经定义好的，我们只需要拿来直接用即可

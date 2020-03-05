@@ -9,7 +9,7 @@
 # tar xf node_exporter-0.16.0.linux-amd64.tar.gz -C /usr/local/
 
 // 重命名
-# mv /usr/local/node_exporter-0.16.0.linux-amd64/ /usr/ local/node_exporter
+# mv /usr/local/node_exporter-0.16.0.linux-amd64/ /usr/local/node_exporter
 
 // 进入node_exporter查看文件
 # cd /usr/local/node_exporter
@@ -29,7 +29,7 @@
 [root@imooc node_exporter]# nohup: ignoring input and appending output to ‘nohup.out’
 ```
 特别注意：
-+ 如果启动异常，你可以到`nohup.out`重查看详情。
++ 如果启动异常，你可以到`nohup.out`重查看详情，在当前目录输入：`tail -fn 50 nohup.out`这个命令即可显示。
 + <font color=#DD1144>如果把启动node_exporter的终端给关闭，那么进程也会随之关闭，nohup就是帮助你解决这个问题，它能让当前命令启动的主程序永久执行</font>。
 
 当然为了确认启动的正确性，我们还是要查询一起端口的启动启动状态：
