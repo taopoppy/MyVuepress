@@ -27,8 +27,8 @@ const protocolSidebar = require('./sidebars/protocol')
 const goReptileSidebar = require('./sidebars/go-reptile')
 const linuxSidebar = require('./sidebars/Linux')
 const prometheusSidebar = require('./sidebars/prometheus')
-
-
+const blockchainSidebar = require('./sidebars/blockchain')
+const nodeBlockchainSidebar = require('./sidebars/nodeblockchain')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -159,6 +159,13 @@ module.exports = {
           { text: '前端架构', link: '/Front-end/' },
         ]
       },
+      {
+        text: '区块链',
+        items: [
+          { text: '深入浅区块链',link: '/blockchain/'},
+          { text: 'Node+React开发区块链', link:'/node-blockchain/'}
+        ]
+      }
     ],
     sidebarDepth: 3,
     lastUpdated: 'Last Updated', // string | boolean
@@ -183,6 +190,8 @@ module.exports = {
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
+      '/blockchain/': blockchainSidebar,
+      '/node-blockchain/': nodeBlockchainSidebar,
       '/Linux/': linuxSidebar,
       '/go-reptile/': goReptileSidebar,
       '/Mysql/': mysqlSidebar,
