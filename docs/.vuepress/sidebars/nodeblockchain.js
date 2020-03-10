@@ -4,7 +4,8 @@ module.exports = [
   {
     title:'区块链概念科普',
     children: [
-      '/node-blockchain/nodeblock_one_introduce'
+      '/node-blockchain/nodeblock_one_introduce',
+      '/node-blockchain/nodeblock_one_gainian'
     ]
   },
   {
