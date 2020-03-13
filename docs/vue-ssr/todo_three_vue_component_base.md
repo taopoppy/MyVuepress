@@ -137,7 +137,7 @@ computed: {
 + <font color=#3eaf7c>Vue.extend( options )</font>：使用基础`Vue`构造器，创建一个“子类”。参数是一个包含组件选项的对象。<font color=#1E90FF>需要注意在Vue.extend()中data必须是函数</font> 
 + <font color=#3eaf7c>extends</font>: 允许声明扩展另一个组件(可以是一个简单的选项对象或构造函数)，而无需使用`Vue.extend`。<font color=#1E90FF>这主要是为了便于扩展单文件组件</font>。
 
-<font color=#1E90FF>**① 用法（一）**</font>
+### 1. extend的用法一
 
 ```javascript
 const component = {
@@ -168,7 +168,7 @@ new CompVue({
 ```
 这种用法怎么理解呢？<font color=#1E90FF>首先使用Vue.extend方法去以component作为模板创建一个Vue的子类CompVue，通过CompVue来创建一个Vue的实例，其中data和生命周期相关的方法都会和模板中定义的进行合并，相同的的内容覆盖，不同的进行合并</font>，<font color=#1E90FF>但是特殊的就是这个props，它在书写的使用必须使用propsData来向模板component中传递值，如上代码所示</font>。
 
-<font color=#1E90FF>**② 用法（二）**</font>
+### 1. extend的用法二
 
 ```javascript
 const component = {
