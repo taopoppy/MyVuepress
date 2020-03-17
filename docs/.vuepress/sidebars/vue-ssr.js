@@ -31,6 +31,8 @@ module.exports = [
   {
     title: 'Vue-Router和vuex',
     children: [
+      '/vue-ssr/todo_four_vuerouter_base',
+      '/vue-ssr/todo_four_vuerouter_base1',
       '/vue-ssr/todo_four_vuex_base',
       '/vue-ssr/todo_four_vuex_base1',
       '/vue-ssr/todo_four_vuex_yuanma'
