@@ -4,7 +4,7 @@
 ## Vue中的原生指令
 
 ### 1. v-text
-更新元素的`textContent`。如果要更新部分的 `textContent`，需要使用`{{ Mustache }}`插值。
+更新元素的`textContent`。如果要更新部分的 `textContent`，需要使用插值。
 ```javascript
 // 插值语法
 new Vue({
@@ -63,8 +63,7 @@ new Vue({
   }
 })
 ```
-+ <font color=#1E90FF>当和 
-v-if一起使用时，v-for的优先级比v-if更高</font>
++ <font color=#1E90FF>当和v-if一起使用时，v-for的优先级比v-if更高</font>
 + <font color=#DD1144>在单纯的控制元素的显示和隐藏方面其实v-show会更加的高效，因为v-if会真实的动态增删节点，会引起整个DOM的重绘和排版，这会非常耗时</font>
 
 ### 5. v-for（核心）
@@ -141,6 +140,7 @@ new Vue({
 + <font color=#1E90FF>用在普通元素上时，只能监听原生 DOM 事件。用在自定义元素组件上时，也可以监听子组件触发的自定义事件。</font>
 + 在监听原生`DOM`事件时，方法以事件为唯一的参数。如果使用内联语句，语句可以访问一个`$event`属性：`v-on:click="handle('ok', $event)"`。
 + 从 2.4.0 开始，`v-on`同样支持不带参数绑定一个事件/监听器键值对的对象。注意当使用对象语法时，是不支持任何修饰器的。
+
 ```html
 <!-- 方法处理器 -->
 <button v-on:click="doThis"></button>
@@ -192,7 +192,7 @@ new Vue({
 ```javascript
 <custom-input v-bind:value="something" v-on:input="something = argument[0]" />
 ```
-<img :src="$withBase('/vuessr_vue_v-model.png')" alt="">
+<img :src="$withBase('/vuessr_vue_v-model.png')" alt="v-mode">
 
 所以根据图示，我们应该完全能理解，<font color=#1E90FF>在初始阶段，是something的值决定了input当中的value值。但当我们修改input中的value值的时候，并不是直接修改了value，会走这样一个间接的流程：会先触发事件修改something，而something的变动又影响了input中的value值，是一个典型的借刀杀人的案例</font>
 

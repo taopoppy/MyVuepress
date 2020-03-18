@@ -61,7 +61,7 @@ computed: {
 ### 2.getters和mapGetters
 <font color=#9400D3>**① 获取module内部的state**</font>
 
-要想在组件中使用`modules`中的`getters`中的数据，<font color=#1E90FF>比如使用namespaced：true将其规范化</font>：
+要想在组件中使用`modules`中的`getters`中的数据，<font color=#1E90FF>必须使用namespaced：true将其规范化</font>：
 ```javascript
 // client/store/store.js
 export default () => {
@@ -291,12 +291,12 @@ export default () => {
         namespaced: true,
         state: { text: 1},
         actions: {
-					// 提交全局的mutations方法updateCount
+          // 提交全局的mutations方法updateCount
           addCount ({state, commit, rootState}) {
             commit('updateCount', 59666, {root: true})
           },
-					// 提交B模块的mutations方法update_B_Text
-					add_B_Text ({state, commit, rootState}) {
+          // 提交B模块的mutations方法update_B_Text
+          add_B_Text ({state, commit, rootState}) {
             commit('b/update_B_Text', 88888, {root: true})
           }
         }

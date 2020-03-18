@@ -17,11 +17,11 @@ import Vue from 'vue'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-	// 项目初始化state中含有的数据
+  // 项目初始化state中含有的数据
   state: {
     count: 0
-	},
-	// 更新数据的方法
+  },
+  // 更新数据的方法
   mutations: {
     updateCount (state, num) {
       state.count = num
@@ -294,7 +294,7 @@ this.$store.commit('updateCount', num1, num2)
 this.$store.commit('updateCount', {num1, num2})
 ```
 
-另外，官网推荐我们在`mutations`当中去修改`state`，但是实际上可以直接在组件中通过`this.$store.state.count = 3`这种方式去修改，为了防止这种写法，我们可以在创建`Store`的时候配置<font color=#DD1144>strrct</font>属性：
+另外，官网推荐我们在`mutations`当中去修改`state`，但是实际上可以直接在组件中通过`this.$store.state.count = 3`这种方式去修改，为了防止这种写法，我们可以在创建`Store`的时候配置<font color=#DD1144>strict</font>属性：
 ```javascript
 // client/store/store.js
 let isDev = process.env.NODE_ENV === 'development'

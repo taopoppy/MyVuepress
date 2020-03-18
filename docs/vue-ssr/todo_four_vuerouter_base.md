@@ -77,6 +77,7 @@ new Vue({
 
 但是到这里我们的配置还没有生效，因为我们要到`client/app.vue`当中去修改一个东西：
 ```javascript
+// client/app.vue
   <!-- <todo></todo> -->
   <router-view/>
 ```
@@ -87,6 +88,7 @@ new Vue({
 <font color=#1E90FF>作为一个有服务端渲染的应用，我们不希望我们的路由当中存在#这种东西，也就是我们希望路由是localhost:8000/app,而不是localhost:8000/#/app，因为#通常作为定位的，而不是路由状态的记录，哈希路由是不会被搜索引擎解析的，所以我们之前就说过也改这个东西，所以我们要在配置路由的时候配置成为history形式的</font>：
 
 ```javascript
+// client/config/router.js
 export default () => {
   return new Router({
     routes,
@@ -125,6 +127,7 @@ const config = {
 
 这两个是用来配置我们在`router-link`中的选中和未选中的全局`class`的，<font color=#1E90FF>router-link本质是a标签，或者说链接标签，<font color=#DD1144>我们在页面上可点击的路由都用router-link来做，因为a标签中的href属性有利于做seo的，但是a标签本身是没有前端路由跳转的，router-link实际上是在a标签的基础上添加了事件，点击a标签，根据href属性采用Vue-router的api进行前端路由的跳转</font>，默认的class为router-link-exact-active router-link-active</font>，然后如果我们配置`linkExactActiveClass`和`linkActiveClass`,那么链接标签的`class`名称就会变成我们配置的了：
 ```javascript
+// client/config/router.js
 {
   linkActiveClass: 'active-link',
   linkExactActiveClass: 'exact-active-link'
