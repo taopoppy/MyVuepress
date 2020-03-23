@@ -37,5 +37,11 @@ module.exports = [
       '/vue-ssr/todo_four_vuex_base1',
       '/vue-ssr/todo_four_vuex_yuanma'
     ]
+  },
+  {
+    title: '服务端渲染',
+    children: [
+      '/vue-ssr/todo_five_vuessr_introduce'
+    ]
   }
 ]
