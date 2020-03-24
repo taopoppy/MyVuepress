@@ -200,7 +200,7 @@ const defaultPlugins = [
   <%- style %>
 </head>
 <body>
-  <%- appString %>
+  <div id="root"><%- appString %></div>
   <%- scripts %>
 </body>
 </html>
@@ -305,5 +305,5 @@ export default context => {
     "dev:server": "cross-env NODE_ENV=development node server/server.js"
   },
 }
-
 ```
+

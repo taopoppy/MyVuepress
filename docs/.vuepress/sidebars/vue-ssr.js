@@ -41,7 +41,8 @@ module.exports = [
   {
     title: '服务端渲染',
     children: [
-      '/vue-ssr/todo_five_vuessr_introduce'
+      '/vue-ssr/todo_five_vuessr_introduce',
+      '/vue-ssr/todo_five_vuessr_introduce2'
     ]
   }
 ]
