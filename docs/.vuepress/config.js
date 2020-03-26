@@ -29,6 +29,7 @@ const linuxSidebar = require('./sidebars/Linux')
 const prometheusSidebar = require('./sidebars/prometheus')
 const blockchainSidebar = require('./sidebars/blockchain')
 const nodeBlockchainSidebar = require('./sidebars/nodeblockchain')
+const vueInterviewSidebar = require('./sidebars/vueInterview')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -117,6 +118,7 @@ module.exports = {
           // { text: 'Get全栈技能打造商城系统', link: '/vue-shagncheng/' },
           // { text: 'Vue 实战商业级读书WebApp', link: '/vue-dushu/'},
           { text: 'Vue服务端渲染原理解析', link: '/vue-ssr/' },
+          { text: 'Vue面试指南', link: '/vue-interview/'}
           // { text: 'Vue全家桶+SSR+Koa2', link: '/vue-nuxt/' },
           // { text: 'Vue.js源码全方位深入解析', link: '/vue-yuanma/' }
         ]
@@ -179,6 +181,7 @@ module.exports = {
       '/typescript/': typescriptSidebar,
       '/Jest/': jestSidebar,
       '/vue-ssr/':vueSSRSidebar,
+      '/vue-interview/': vueInterviewSidebar,
       '/Webpack/': WebpackSidebar,
       '/react-jinjie/': reactJinJieSidebar,
       '/vue-shizhan/': vueShiZhanSidebar,
