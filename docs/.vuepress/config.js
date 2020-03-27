@@ -15,7 +15,6 @@ const nodeGraphQLSidebar = require('./sidebars/node-GraphQL')
 const nodeWeiboSidebar = require('./sidebars/node-weibo')
 const nodeBFFSidebar = require('./sidebars/node-BFF')
 const reactJinJieSidebar = require('./sidebars/react-jinjie')
-const vueShiZhanSidebar = require('./sidebars/vue-shizhan')
 const WebpackSidebar = require('./sidebars/Webpack')
 const vueSSRSidebar = require('./sidebars/vue-ssr')
 const goSidebar = require('./sidebars/go')
@@ -113,7 +112,6 @@ module.exports = {
       {
         text: 'vue',
         items: [
-          // { text: 'Vue开发实战', link: '/vue-shizhan/' },
           // { text: 'Vue2.5开发去哪儿网App', link: '/vue-quna/'},
           // { text: 'Get全栈技能打造商城系统', link: '/vue-shagncheng/' },
           // { text: 'Vue 实战商业级读书WebApp', link: '/vue-dushu/'},
@@ -184,7 +182,6 @@ module.exports = {
       '/vue-interview/': vueInterviewSidebar,
       '/Webpack/': WebpackSidebar,
       '/react-jinjie/': reactJinJieSidebar,
-      '/vue-shizhan/': vueShiZhanSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
