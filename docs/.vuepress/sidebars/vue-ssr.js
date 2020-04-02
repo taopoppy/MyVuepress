@@ -44,5 +44,11 @@ module.exports = [
       '/vue-ssr/todo_five_vuessr_introduce',
       '/vue-ssr/todo_five_vuessr_introduce2'
     ]
-  }
+  },
+  {
+    title: '高级组件开发',
+    children: [
+      '/vue-ssr/todo_six_notification_Component'
+    ]
+  },
 ]
