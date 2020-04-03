@@ -90,6 +90,9 @@ new Vue({
 ```
 上面你可以看到，如果是其他不默认不是`value`和`input`事件的组件，我们在父组件实现双向绑定的原始写法必须和子组件中的`value1`和`change`事件名称保持一致，<font color=#1E90FF>但是使用v-model就能将这些东西统一，避免了出错的可能，更简化了写法</font>
 
+## 组件通信
+
+
 ## 插槽
 <font color=#DD1144>插槽的作用可以用一句话形容，当父组件调用子组件的时候，子组件中的部分内容需要父组件具体给出</font>，通常这样的情况是这样：<font color=#1E90FF>子组件可能只是个布局组件，不同的父组件都需要这样的子组件，但是子组件中的内容需要父组件具体调用的时候具体给出</font>，这个时候就是插槽发挥作用的时候了
 
@@ -267,3 +270,8 @@ new Vue({
 有了这样的作用域插槽，我们在父组件中书写插槽的时候既可以拿到通过作用域从自组件中传出的一些`data`，也同时可以拿到父组件中本身的一些`data`,这样的插槽组合起来就特别灵活和方便。
 
 
+**参考资料**
+
+1. [Vue实践-通过props:$emit:$refs:bus:$attrs:$listeners实现组件传值](https://www.bilibili.com/video/BV1EC4y147xE?from=search&seid=2044743830638220037)
+2. [vue中8种组件通信方式, 值得收藏!](https://juejin.im/post/5d267dcdf265da1b957081a3#heading-20)
+3. [Vue.js 父子组件通信的十种方式](https://zhuanlan.zhihu.com/p/48090472)

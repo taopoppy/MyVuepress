@@ -137,16 +137,31 @@ console.log(app.$data)
 
 + <font color=#9400D3>app.$props</font>：当前组件接收到的`props`对象。`Vue`实例代理了对其`props`对象属性的访问。
 
-+ <font color=#9400D3>app.$el</font>：`Vue`实例使用的根`DOM`元素，这里根元素从头到尾指的都是自己的根元素。并不是使用`$mount`或者`el`属性描述的那个接管的`id`为`root`的`div`
++ <font color=#9400D3>app.$el</font>：`Vue`实例使用的根`DOM`元素，这里根元素从头到尾指的都是自己的根元素。并不是使用`$mount`或者`el`属性描述的那个接管的`id`为`root`的`div`,所以要特别注意，<font color=#1E90FF>$el是Vue实例本身最外层的元素，el指的是Vue实例要替换的那个元素</font>
 
-+ <font color=#9400D3>app.$options</font>：<font color=#1E90FF>用于当前`Vue`实例的初始化选项。需要在选项中包含自定义属性时会有用处</font>,初始化选项说白了就是实例化对象的时候传进去的一整个对象和默认的一些属性合并后的东西。但是特别要注意两个点：
++ <font color=#9400D3>app.$options</font>：<font color=#1E90FF>用于当前Vue实例的初始化选项。需要在选项中包含自定义属性时会有用处</font>,初始化选项说白了就是实例化对象的时候传进去的一整个对象和默认的一些属性合并后的东西。但是特别要注意两个点：
   + <font color=#1E90FF>app.$options.data和app.$data是不等价的</font>
   + <font color=#1E90FF>app.$options.render方法是有效果的</font>
+
++ <font color=#9400D3>app.$parent</font>：父实例，如果当前实例有的话。
+
 + <font color=#9400D3>app.$root</font>：当前组件树的根`Vue`实例。如果当前实例没有父实例，此实例将会是其自己。
+
++ <font color=#9400D3>app.$children</font>：当前实例的直接子组件。需要注意`$children`并不保证顺序，也不是响应式的。如果你发现自己正在尝试使用`$children`来进行数据绑定，考虑使用一个数组配合`v-for`来生成子组件，并且使用`Array`作为真正的来源。
+
 + <font color=#9400D3>app.$refs</font>：一个对象，持有注册过`ref`特性的所有`DOM`元素和组件实例,<font color=#1E90FF>这个属性的作用是能快速帮我们定位到模板中的某个节点或者某个组件</font>
+
++ <font color=#9400D3>app.$slots</font>：用来访问被插槽分发的内容。每个具名插槽 有其相应的属性 (<font color=#1E90FF>例如：v-slot:foo中的内容将会在vm.$slots.foo 中被找到</font>)。`default`属性包括了所有没有被包含在具名插槽中的节点，或`v-slot:default`的内容。<font color=#DD1144>在使用渲染函数书写一个组件时，访问vm.$slots最有帮助。</font>
+
++ <font color=#9400D3>app.$scopedSlots</font>：用来访问作用域插槽。对于包括 默认`slot`在内的每一个插槽，该对象都包含一个返回相应`VNode`的函数。<font color=#DD1144>vm.$scopedSlots 在使用渲染函数开发一个组件时特别有用</font>。
+
 + <font color=#9400D3>app.$isServer</font>：当前`Vue`实例是否运行于服务器，<font color=#1E90FF>这个属性在服务端渲染的时候很有作用，因为有些代码只能运行到服务端，有些代码只能运行在浏览器中，可以通过这个值来判断</font>
-+ <font color=#9400D3>app.$attrs</font>和<font color=#3eaf7c>app.$listeners</font>：我们后续在讲解高级组件的时候会详细介绍
-+ 、<font color=#3eaf7c>app.$children</font>、<font color=#3eaf7c>app.$parent</font>、<font color=#3eaf7c>app.$slots</font>和<font color=#3eaf7c>app.$scopedSlots</font>：我们后续在讲解组件的时候会详细介绍。
+
++ <font color=#9400D3>app.$attrs</font>：包含了父作用域中不作为`prop`被识别 (且获取) 的特性绑定 (`class`和`style`除外)。当一个组件没有声明任何`prop`时，这里会包含所有父作用域的绑定 (`class`和 `style`除外)，可以通过 v-bind="$attrs" 传入内部组件——<font color=#DD1144>在创建高级别的组件时非常有用</font>。
+
++ <font color=#9400D3>app.$listeners</font>：包含了父作用域中的 (不含`.native`修饰器的)`v-on`事件监听器。它可以通过`v-on="$listeners"`传入内部组件——<font color=#DD1144>在创建更高层次的组件时非常有用</font>。
+
+关于`app.$attrs`和`app.$listeners`的用法，经常在<font color=#9400D3>多级组件传值</font>的时候会用到这个，我们在后面的`Vue组件传值`中会详细介绍。
 
 ### 3. Vue实例的方法
 实例的方式是极其有作用的，我们需要来完整的列举一下
@@ -155,7 +170,9 @@ console.log(app.$data)
 
 + <font color=#3eaf7c>用法</font>：
   + `app.$watch`是用来观察`Vue`实例变化的一个表达式或计算属性函数。回调函数得到的参数为新值和旧值。表达式只接受监督的键路径。对于更复杂的表达式，用一个函数取代。
+
   + `app.$set`是用来向响应式对象中添加一个属性，并确保这个新属性同样是响应式的，且触发视图更新。<font color=#1E90FF>它必须用于向响应式对象上添加新属性,而不能是vue实例或者vue实例的根数据对象</font>。
+
   + `app.$delete`是用来删除对象的属性。如果对象是响应式的，确保删除这个属性的响应式。<font color=#1E90FF>因为你如果是普通的删除这个对象的属性，它的响应式还在，会造成内存溢出</font>，这个方法主要用于避开`Vue`不能检测到属性被删除的限制，但是你应该很少会使用它。
 + <font color=#3eaf7c>实例</font>：
   ```javascript
@@ -202,8 +219,11 @@ console.log(app.$data)
 
 + <font color=#3eaf7c>用法</font>：
   + `app.$on`监听当前实例上的自定义事件。
+
   + `app.$emit`可以触发事件。`app.$on`或者`app.$once`中的回调函数会接收`app.$emit`中所有传入事件触发函数的额外参数。
+
   + `app.$once`监听一个自定义事件，但是只触发一次。一旦触发之后，监听器就会被移除。
+
   + `app.$off`移除自定义事件监听器
 + <font color=#3eaf7c>实例</font>：
   ```javascript
@@ -222,11 +242,24 @@ console.log(app.$data)
 + <font color=#3eaf7c>注意</font>：
   在父子组件的通信当中，使用`.$on`在父组件进行事件的监听并在子组件当中使用`.$emit`去触发事件来实现父子组件的通信。
 
-<font color=#1E90FF>**③ .$forceUpdate && .$nextTick（生命周期相关）**</font>
+<font color=#1E90FF>**③ .$forceUpdate && .$nextTick && .$mount && .$destroy（生命周期相关）**</font>
 
 + <font color=#3eaf7c>用法</font>：
   + `app.$forceUpdate`迫使`Vue`实例重新渲染。<font color=#1E90FF>注意它仅仅影响实例本身和插入插槽内容的子组件，而不是所有子组件</font>。<font color=#DD1144>一般不建议使用这个方法的，因为万一用不好，很大程度的会影响性能</font>
+
   + `app.$nextTick`是用来将回调延迟到下次`DOM`更新循环之后执行。在修改数据之后立即使用它，然后等待`DOM`更新。它跟全局方法`Vue.nextTick`一样，不同的是回调的`this`自动绑定到调用它的实例上。<font color=#DD1144>这里为什么要讲这个方法，因为vue中数据的修改影响视图的更新是异步更新视图的，也就是说数据修改并不会立刻修改视图，我们想要在数据异步的更新了视图后再做一些事情就要用这个方法</font>
+
+  + `app.$mount`是用来手动挂载一个未挂载的实例的，这个方法返回实例自身。要注意两点：
+    + <font color=#1E90FF>Vue实例在实例化时没有收到el选项，或者没有使用.$mount的时候都处于'未挂载'状态，也就是只是一个JS对象，和DOM一点关系都没有</font>
+    + <font color=#1E90FF>如果没有提供参数给.$mount()方法，模板将被渲染为文档之外的的元素，并且你必须使用原生DOM API把它插入文档中。</font>
+      ```javascript
+      var component = new MyComponent().$mount()
+      document.getElementById('app').appendChild(component.$el) 
+      // 这里你应该很清楚的明白$el是啥了
+      ```
+
+  + `app.$destory`是用来完全销毁一个实例。清理它与其它实例的连接，解绑它的全部指令及事件监听器。触发`beforeDestroy`和`destroyed`的钩子(也就是生命周期函数)。
+
 + <font color=#3eaf7c>实例</font>：
   ```javascript
   new Vue({
@@ -248,4 +281,3 @@ console.log(app.$data)
   当我们在`this.$nextTick`中调用了`doSomethingElse`就确保了在整个异步的过程，程序执行的顺序是<font color=#3eaf7c>数据修改</font> -> <font color=#3eaf7c>视图更新</font> -> <font color=#3eaf7c>doSomethingElse</font>
 + <font color=#3eaf7c>注意</font>：
   我们在上面介绍的所有实例的方法和属性在外部都是通过`app.$xxx`执行的，在内部通过`this.$xxx`执行的，因为在实例内部`this`指代的就是`app`实例本身。这个你应该非常了解了。
-
