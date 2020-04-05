@@ -48,7 +48,8 @@ module.exports = [
   {
     title: '高级组件开发',
     children: [
-      '/vue-ssr/todo_six_notification_Component'
+      '/vue-ssr/todo_six_notification_Component',
+      '/vue-ssr/todo_six_tabs_Component'
     ]
   },
 ]
