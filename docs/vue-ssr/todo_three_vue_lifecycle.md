@@ -38,8 +38,6 @@ new Vue({
 
 + <font color=#1E90FF>从生命周期图中可以看到在beforeCreate之前vue内部只是做了一些事件和生命周期相关的东西，并没有和数据有关</font>，<font color=#DD1144>所以如果你想发送ajax请求获取数据并复制给组件中的data，最早也只能在created这个钩子当中</font>
 
-
-
 ### created
 <font color=#1E90FF>**① 用法**</font>:
 
@@ -63,7 +61,6 @@ new Vue({
 <font color=#DD1144>**③ 注意**</font>:
 
 + <font color=#1E90FF>该钩子在服务器端渲染期间不被调用</font>。
-+ <font color=#DD1144>在beforeMount和mouted中间发生一件非常重要的事情，就是render函数的执行，可以从生命周期图谱中看到在beforeMount之前，vue只是将template编译到render函数中，而render方法并没有执行。当render方法执行后我们才能看到template编译后的东西</font>，<font color=#3eaf7c>所以render方法的作用就是使用template编译后的东西来替换原始的挂载节点，也就是我们在生命周期图谱中看到的`创建vm.$el并用其替换“el”`那个绿色的节点</font>
 + <font color=#1E90FF>还有人不懂render函数当中的h参数，h参数就是vue当中的createElement方法，下面两种写法一样</font>
 	```javascript
 	// template写法（简单明了）
@@ -78,7 +75,7 @@ new Vue({
 		}
 	})
 	```
-	
+
 
 ### mounted
 <font color=#1E90FF>**① 用法**</font>:
@@ -87,7 +84,7 @@ new Vue({
 
 <font color=#1E90FF>**② 相关**</font>:
 
-+ 在这个生命周期的时候，实际上已经完成了通过`render`方法生成的`DOM`替换原始`DOM`的过程，所以在`beforeMount`的周期中`this.$el`的值为&lt;div class='root'&gt;&lt;/div&gt;,在`mounted`的周期中，`this.$el`的值就为&lt;div&gt;taopoppy&lt;/div&gt;，这个节点就是真实呈现视图的节点，你可以通过开发者工具看到的节点。
++ 在这个生命周期的时候，实际上已经完成了通过`render`方法生成的`DOM`替换原始`DOM`的过程，<font color=#DD1144>所以在beforeMount的周期中this.$el的值为&lt;div class='root'&gt;&lt;/div&gt;,在mounted的周期中，this.$el的值就为&lt;div&gt;taopoppy&lt;/div&gt;，这个节点就是真实呈现视图的节点</font>，你可以通过开发者工具看到的节点。
 + 这个生命周期在整个组件的存活的期间只会经历一次
 
 <font color=#DD1144>**③ 注意**</font>:
@@ -101,7 +98,7 @@ new Vue({
 		})
 	}
 	```
-	
+
 ### beforeUpdate
 <font color=#1E90FF>**① 用法**</font>:  
 
@@ -130,7 +127,7 @@ new Vue({
 
 ### activated && deactivated
 <font color=#1E90FF>**① 用法**</font>:
- 
+
 `activated`在`keep-alive`组件激活时调用。`deactivated`在`keep-alive`组件停用时调用。这两个生命周期我们在讲解组件时仔细讲解
 
 ### beforeDestroy && destroyed

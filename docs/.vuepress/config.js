@@ -14,7 +14,6 @@ const nodeSidebar = require('./sidebars/node')
 const nodeGraphQLSidebar = require('./sidebars/node-GraphQL')
 const nodeWeiboSidebar = require('./sidebars/node-weibo')
 const nodeBFFSidebar = require('./sidebars/node-BFF')
-const reactJinJieSidebar = require('./sidebars/react-jinjie')
 const WebpackSidebar = require('./sidebars/Webpack')
 const vueSSRSidebar = require('./sidebars/vue-ssr')
 const goSidebar = require('./sidebars/go')
@@ -29,6 +28,7 @@ const prometheusSidebar = require('./sidebars/prometheus')
 const blockchainSidebar = require('./sidebars/blockchain')
 const nodeBlockchainSidebar = require('./sidebars/nodeblockchain')
 const vueInterviewSidebar = require('./sidebars/vueInterview')
+const reactReduxSiderbar = require('./sidebars/react-redux')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -100,10 +100,10 @@ module.exports = {
       {
         text: 'react',
         items: [
-          // { text: 'React实战进阶', link: '/react-jinjie/'},
           // { text: 'React开发简书项目', link: '/react-junior/' },
           // { text: 'React实战大众点评WebApp', link: '/react-dazhong/'},
           // { text: 'React去哪儿网火车票PWA', link: '/react-quna/'},
+          { text: 'React+Redux入门详解', link: '/react-redux/' },
           { text: 'React服务器渲染原理解析', link: '/react-ssr/'},
           // { text: 'React+Next.js+Koa2', link: '/react-next/' },
           // { text: 'React源码深度解析', link: '/react-yuanma/'}
@@ -181,7 +181,6 @@ module.exports = {
       '/vue-ssr/':vueSSRSidebar,
       '/vue-interview/': vueInterviewSidebar,
       '/Webpack/': WebpackSidebar,
-      '/react-jinjie/': reactJinJieSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
@@ -217,7 +216,8 @@ module.exports = {
             '/react/vue2'
           ]
         }
-      ]
+      ],
+      '/react-redux/': reactReduxSiderbar
     }
   }
 }

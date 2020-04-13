@@ -75,7 +75,7 @@ new Vue({
 	template: `<div :class="[{activeClass: isActive}, errorClass]"></div>`,
 	data: {
 		isActive: false,
-  	errorClass: 'text-danger'
+		errorClass: 'text-danger'
 	}
 })
 ```

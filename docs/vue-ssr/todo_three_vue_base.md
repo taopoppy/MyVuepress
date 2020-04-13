@@ -257,6 +257,7 @@ console.log(app.$data)
       document.getElementById('app').appendChild(component.$el) 
       // 这里你应该很清楚的明白$el是啥了
       ```
+    + <font color=#DD1144>所以完整的.$mount(el)要做两个事情，第一步将render渲染的html代码加入内存,此时还在文档之外，第二步，根据el参数将已经渲染的元素将指定的DOM节点替换，此时在文档之内。没有el参数就只进行第一步</font>
 
   + `app.$destory`是用来完全销毁一个实例。清理它与其它实例的连接，解绑它的全部指令及事件监听器。触发`beforeDestroy`和`destroyed`的钩子(也就是生命周期函数)。
 
