@@ -150,8 +150,24 @@ ReactDOM.render(element, document.getElementById('root'))
 const element = <div tabIndex="0"/>
 const element = <img src={user.avatarUrl}/>
 ```
-<font color=#1E90FF>因为JSX语法上更接近JavaScript而不是HTML，所以React DOM使用camelCase（小驼峰命名）来定义属性的名称，而不使用HTML属性名称的命名约定。例如，JSX 里的class变成了 className，而tabindex则变为tabIndex</font>。
+<font color=#1E90FF>因为JSX语法上更接近JavaScript而不是HTML，所以React DOM使用camelCase（小驼峰命名）来定义属性的名称，而不使用HTML属性名称的命名约定。例如，JSX 里的样式属性class变成了 className，而tabindex则变为tabIndex，label标签中的for属性变成了htmlFor</font>。
 
+### 4. 注释和转义
+在`JSX`当中做注释，需要使用下面这样方式：
+```javascript
+<div>
+  {/* 下面是个按钮 */}
+  <button>提交</button>
+</div>
+```
+然后如果在一些输入框中我们不需要自动的被转义，我们需要使用<font color=#9400D3>dangerouslySetInnerHTML</font>属性来设置：
+```javascript
+// 自动被转义
+<li>{item}</li>
+
+// 不自动转义
+<li dangerouslySetInnerHTML={{__html:item}}/>
+```
 
 **参考资料**
 
