@@ -135,3 +135,227 @@ export default TodoList
 + <font color=#DD1144>在React当中有一种immutable的说法，我们不能直接去修改state的值，必须通过修改副本的方式来通过this.setState()给state赋新值</font>
 
 ### 3. 拆分组件和组件传值
++ <font color=#DD1144>父组件给子组件传值通过属性的方式。子组件通过props来拿到父组件传的值</font>
++ <font color=#DD1144>子组件给父组件传值实际上是父组件将自己的方法通过属性传递的方式传给子组件去调用</font>
+```javascript
+// TodoList.js
+import React, {Component, Fragment} from 'react';
+import TodoItem from './TodoItem'
+
+class TodoList extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			inputValue: '',
+			list: []
+		}
+	}
+	handleInputChange(e) {
+		this.setState({
+			inputValue: e.target.value
+		})
+	}
+	handleButtonClick() {
+		this.setState({
+			list: [...this.state.list, this.state.inputValue],
+			inputValue: ''
+		})
+	}
+	handleItemDelete(index) {
+		const list = [...this.state.list]
+		list.splice(index, 1)
+		this.setState({
+			list
+		})
+	}
+	render() {
+		return (
+			<Fragment>
+				<div>
+					<input
+						value={this.state.inputValue}
+						onChange={this.handleInputChange.bind(this)}
+					/>
+					<button onClick={this.handleButtonClick.bind(this)}>提交</button>
+				</div>
+				<ul>
+					{
+						this.state.list.map((item, index) => {
+							return (
+								<TodoItem
+									content={item} // 传递属性
+									key={index}
+									index={index}
+									deleteItem={this.handleItemDelete.bind(this)} // 传递方法
+								/>
+							)
+						})
+					}
+				</ul>
+			</Fragment>
+		)
+	}
+}
+
+export default TodoList
+```
+```javascript
+// TodoItem.js
+import React from 'react'
+
+class TodoItem extends React.Component {
+	constructor(props) {
+		super(props)
+		// 提前将handleClick函数的this绑定在TodoItem
+		this.handleClick = this.handleClick.bind(this)
+	}
+	handleClick() {
+		// 调用父组件传递来的方法
+		// deleteItem就是TodoItem中的handleItemDelete方法
+		// deleteItem中的this指的就是父组件TotoList
+		this.props.deleteItem(this.props.index)
+	}
+	render() {
+		return (
+			<div onClick={this.handleClick}>
+				{this.props.content}
+			</div>
+		)
+	}
+}
+
+export default TodoItem
+```
+要注意两点：
++ <font color=#1E90FF>render方法中的组件方法绑定this的操作放在constructor有助于组件性能提升</font>
++ <font color=#1E90FF>父组件传递给子组件方法的时候，这个方法中的this一定要指向父组件，不然子组件中执行该方法的时候，方法中的this就是undefined</font>
+
+### 4. 代码优化
+虽然我们已经完成了一个`TodoList`的功能，但是我们还有很多优化的地方和新写法
++ <font color=#9400D3>解构赋值</font>：在`React`的`JSX`中如果包含太多的`this.state.xxx`、`this.props.xxx`,会显得有点冗余
++ <font color=#9400D3>函数替换对象</font>：在`this.setState`的第一参数中，新版的可以写成一个函数的方式，通过存在`prevState`来表示旧的`state`
++ <font color=#9400D3>ES6新写法</font>：比如解构赋值，属性名称和值相同时简写，箭头函数返回值简写等等：
+```javascript
+// TodoItem.js
+import React from 'react'
+
+class TodoItem extends React.Component {
+	constructor(props) {
+		super(props)
+		// 提前将handleClick函数的this绑定在TodoItem
+		this.handleClick = this.handleClick.bind(this)
+	}
+	handleClick() {
+		// 调用父组件传递来的方法
+		// deleteItem就是TodoItem中的handleItemDelete方法
+		// deleteItem中的this指的就是父组件TotoList
+		const { deleteItem, index } = this.props // 解构赋值
+		deleteItem(index)
+	}
+	render() {
+		return (
+			<div onClick={this.handleClick}>
+				{this.props.content}
+			</div>
+		)
+	}
+}
+
+export default TodoItem
+```
+```javascript
+// TodoList.js
+import React, {Component, Fragment} from 'react';
+import TodoItem from './TodoItem'
+
+class TodoList extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			inputValue: '',
+			list: []
+		}
+		this.handleInputChange = this.handleInputChange.bind(this)
+		this.handleButtonClick = this.handleButtonClick.bind(this)
+		this.handleItemDelete = this.handleItemDelete.bind(this)
+	}
+	handleInputChange(e) {
+		// 3. 新版函数的ES6简写
+		const value = e.target.value
+		this.setState(() => ({
+			inputValue: value
+		}))
+
+		// // 2. 新版函数的写法
+		// this.setState(()=> {
+		// 	return {
+		// 		inputValue: e.target.value
+		// 	}
+		// })
+
+		// // 1.最古老的写法
+		// this.setState({
+		// 	inputValue: e.target.value
+		// })
+	}
+	handleButtonClick() {
+		this.setState((prevState)=> ({
+			list: [...prevState.list,prevState.inputValue],
+			inputValue: ''
+		}))
+
+		// // 1. 最古老的写法
+		// this.setState({
+		// 	list: [...this.state.list, this.state.inputValue],
+		// 	inputValue: ''
+		// })
+	}
+	handleItemDelete(index) {
+		this.setState((prevState)=> {
+			const list = [...prevState.list]
+			list.splice(index, 1)
+			return {
+				list
+			}
+		})
+
+		// // 1.最古老的写法
+		// const list = [...this.state.list]
+		// list.splice(index, 1)
+		// this.setState({
+		// 	list
+		// })
+	}
+	getTodoItem() {
+		return this.state.list.map((item, index) => {
+			return (
+				<TodoItem
+					content={item} // 传递属性
+					key={index}
+					index={index}
+					deleteItem={this.handleItemDelete} // 传递方法
+				/>
+			)
+		})
+	}
+	render() {
+		return (
+			<Fragment>
+				<div>
+					<label htmlFor="insertArea"></label>
+					<input
+						id="insertArea"
+						value={this.state.inputValue}
+						onChange={this.handleInputChange}
+					/>
+					<button onClick={this.handleButtonClick}>提交</button>
+				</div>
+				<ul>
+					{this.getTodoItem()}
+				</ul>
+			</Fragment>
+		)
+	}
+}
+export default TodoList
+```

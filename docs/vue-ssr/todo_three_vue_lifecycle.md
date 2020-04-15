@@ -99,6 +99,14 @@ new Vue({
 	}
 	```
 
+<font color=#DD1144>**④ 总结**</font>
+
+其实到这里关键的几个实例创建的生命周期我们都已经学习完了，我们将和组件创建和挂载的几个生命周期用图示来回顾一下各自的重要点：
+
+<img :src="$withBase('/vuessr_vue_lifecycle_short.png')" alt="组件生命周期简单总结">
+
+
+
 ### beforeUpdate
 <font color=#1E90FF>**① 用法**</font>:  
 
