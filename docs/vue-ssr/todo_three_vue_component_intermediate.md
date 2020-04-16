@@ -91,7 +91,56 @@ new Vue({
 上面你可以看到，如果是其他不默认不是`value`和`input`事件的组件，我们在父组件实现双向绑定的原始写法必须和子组件中的`value1`和`change`事件名称保持一致，<font color=#1E90FF>但是使用v-model就能将这些东西统一，避免了出错的可能，更简化了写法</font>
 
 ## 组件通信
+### 1. props / $emit
+父组件通过`props`的方式向子组件传递数据，而通过`$emit`子组件可以向父组件通信。这种方式是初学者最应该先掌握的，我们在上面的双向绑定中已经很详细的展示了这种方式，这里我们就不做赘述。
 
+<font color=#9400D3>这种方式适用于父子组件的通信</font>
+
+### 2. $children / $parent
++ 子组件中通过`$parent`访问到父组件，<font color=#1E90FF>访问到组件的意思是拿到父组件Vue实例的所有方法和data，所以在react中子组件如果调用父组件的方法必须要求父组件将这个方法通过属性传递的方式给子组件，但是vue中可以通过$parent.xxx()的方式直接调用</font>
++ 父组件中可以通过`$children`访问到保存所有子组件对象组成的数组，<font color=#1E90FF>$children并不保证顺序，也不是响应式的，应该尽量避免使用$children去做数据绑定</font>
+
+### 3. provide / inject
+<font color=#DD1144>父组件中通过provide来提供变量, 然后再子组件中通过inject来注入变量,不论子组件嵌套有多深, 只要调用了inject 那么就可以注入provide中的数据，而不局限于只能从当前父组件的props属性中回去数据</font>
+
+但是，从官网的描述来看，通过`provide / inject`简单的使用是不能实现`reactive`动态的效果，也就是父组件提供的`provide`动态的变化是无法引起后辈组件中通过`inject`拿到数据的变化，但是<font color=#9400D3>我们在[组件高级](taopoppy.cn/vue-ssr/todo_three_vue_component_advanced.html)的那一节有详细的讲如何通过Object.defineProperty实现动态绑定的</font>
+
+### 4. ref / $refs
+<font color=#1E90FF>ref被用来给元素或子组件注册引用信息。引用信息将会注册在父组件的$refs对象上。如果在普通的DOM元素上使用，引用指向的就是DOM元素；如果用在子组件上，引用就指向组件实例：</font>
+
+```javascript
+<!-- `vm.$refs.p`是一个DOM节点 -->
+<p ref="p">hello</p>
+
+<!-- `vm.$refs.child`是一个子组件的实例 -->
+<child-component ref="child"></child-component>
+```
+
+<font color=#DD1144>因为ref本身是作为渲染结果被创建的，在初始渲染的时候你不能访问它们 - 它们还不存在！$refs 也不是响应式的，因此你不应该试图用它在模板中做数据绑定，你应该避免在模板或计算属性中访问$refs</font>
+
+```javascript
+// 子组件
+export default {
+  name: 'baseInput'
+  template: `<input ref="input">`,
+  methods: {
+    // 用来从父级组件聚焦输入框
+    focus: function () {
+      this.$refs.input.focus()
+    }
+  }
+}
+
+// 父组件
+export default {
+  template:`<base-input ref="usernameInput"></base-input>`
+  mounted() {
+    this.$refs.usernameInput.focus()
+  }
+}
+```
+
+<font color=#9400D3>其实$children / $parent 和ref / $refs在父子通信中都不适合做数据的绑定，而是适合在特殊的场景做函数调用</font>
 
 ## 插槽
 <font color=#DD1144>插槽的作用可以用一句话形容，当父组件调用子组件的时候，子组件中的部分内容需要父组件具体给出</font>，通常这样的情况是这样：<font color=#1E90FF>子组件可能只是个布局组件，不同的父组件都需要这样的子组件，但是子组件中的内容需要父组件具体调用的时候具体给出</font>，这个时候就是插槽发挥作用的时候了
