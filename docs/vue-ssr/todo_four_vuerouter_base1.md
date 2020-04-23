@@ -101,7 +101,7 @@ export default [
 动态路由的写法如上，它的含义就是：<font color=#DD1144>通过在路由当中输入不同的值，这个值将以参数的形式输入到这个路由即将进入的组件当中</font>，比如上面这个你输入`localhost:8000/app/999`,那么`999`就作为`id`参数的值传入了`Todo`组件中，在`Todo`组件中可以通过<font color=#DD1144>this.$route拿到所有路由的信息</font>，如下所示：
 <img :src="$withBase('/vuessr_todo_routerimg.png')" alt="路由信息">
 
-动态路由的作用一般都用在可复用组件上比较多，比如商品的详情页面，只要传递来的`id`是不一样的，根据不同的商品`id`显示不同的商品信息即可。
+动态路由的作用一般都用在可复用组件上比较多，比如商品的详情页面，只要传递来的`id`是不一样的，根据不同的商品`id`显示不同的商品信息即可，<font color=#DD1144>这里就有一个非常重要的问题，关于组件复用的问题，比如从localhost:8000/app/999通过&lt;router-link&gt;路由方式跳转到localhost:8000/app/888的时候，Todo组件会被复用，涉及到页面数据重新渲染的问题，有两种方法，第一种通过watch($router)监听路由，根据$router.params中的id重新请求，第二种就是在组件的路由守卫beforeRouterUpdate中根据$router.params中的id重新请求，两种方法推荐后者</font>。
 
 同样<font color=#DD1144>查询参数</font>也可以通过<font color=#DD1144>this.$route</font>拿到，比如我们输入`localhost:8000/app/999?a=123456&b=765432`,那么通过 <font color=#1E90FF>this.$route.query.a</font>和<font color=#1E90FF>this.$route.query.b</font>就能分别拿到123456和765432两个值了。
 
@@ -170,6 +170,55 @@ export default [
 ]
 ```
 这种<font color=#1E90FF>命名式的router-view</font>通常用在传统的三栏布局之上，顶部的`tab`有切换，左侧的菜单栏就有一个大的切换，而右边的显示栏是随着左侧的菜单栏切换而变换的
+
+### 5. Vue-Router参数传递
+<font color=#DD1144>声明式的导航</font>（&lt;router-link :to="..."&gt;）和<font color=#DD1144>编程式的导航</font>（router.push(...)）都可以传参
+
+<font color=#9400D3>**① 声明式的导航**</font>
+
+无论是声明式的导航还是编程式的导航，参数的传递都有这么四个参数：<font color=#1E90FF>name</font>、<font color=#1E90FF>path</font>、<font color=#1E90FF>params</font> 和 <font color=#1E90FF>query</font>，其中`name`和`path`都代表路径的意思，<font color=#DD1144>name代表路径别名，可以和params搭配组成完整的路径，但是path不能和params同时存在，因为path本身就代表一个完整的路径</font>。
+
+```html
+<!--第一种方式  访问 /xxx/value?name=taopoppy  （前提是路由设置是： path: '/xxx/:key'）--> 
+<router-link :to="{name:xxx,params:{key:value},query:{name:'taopoppy'}}">valueString</router-link>
+
+<!--第二种方式  访问 /xxx/value?name=taopoppy-->
+<router-link :to="{path: 'xxx/value',query:{name:'taopoppy'}}">valueString</router-link>
+```
+<font color=#9400D3>**② 编程式的导航**</font>
+
+编程式的导航和声明式的差不多，其实参数的形式都是差不多的
+```javascript
+// 访问/user
+router.push('user')
+
+// 访问 /user/123（前提是路由设置是： path: '/user/:userId'）
+const userId = '123'
+router.push({ name: 'user', params: { userId: userId }})
+router.push({ path: `user/${userId}`})
+
+// 访问register/taopoppy?plan=private （前提是路由设置是： path: '/register/:registerName'）
+const name = 'taopoppy'
+router.push({ name: 'register', params: { registerName: name }, query: { plan: 'private' }})
+router.push({ path: `register/${name}`, query: { plan: 'private' }})
+```
+
+### 6. $route和$router
++ <font color=#DD1144>$route 是“路由信息对象”，包括 path，params，hash，query，fullPath，matched，name 等路由信息参数。</font>
++ <font color=#DD1144>$router 是“路由实例”对象，即使用 new VueRouter创建的实例，包括了路由的跳转方法，钩子函数等。</font>
+
+路由的常见跳转方法如下：
+```javascript
+  this.$router.go(-1)                       //跳转到上一次浏览的页面
+  this.$router.replace('/menu')             //指定跳转的地址
+  this.$router.replace({name:'menuLink'})   //指定跳转路由的名字下
+  this.$router.push('/menu')                //通过push进行跳转
+  this.$router.push({name:'menuLink'})      //通过push进行跳转路由的名字下
+```
+
+`$router.push`和`$router.replace`的区别：
++ <font color=#1E90FF>使用push方法的跳转会向 history 栈添加一个新的记录，当我们点击浏览器的返回按钮时可以看到之前的页面。</font>
++ <font color=#1E90FF>使用replace方法不会向 history 添加新记录，而是替换掉当前的 history 记录，即当replace跳转到的网页后，‘后退’按钮不能查看之前的页面。</font>
 
 ## Vue-router之导航守卫
 
@@ -266,8 +315,8 @@ beforeRouteEnter (to, from, next) {
   <router-link to="/app/123">app123</router-link>
   <router-link to="/app/456">app456</router-link>
 ```
-+ <font color=#3eaf7c>还比如一般我们在京东，淘宝中看一个商品的详情，同时下面还有好多相关商品，点击这些商品的链接，实际上也是一次组件中beforeRouterUpdate钩子被触发的场景</font>
-+ <font color=#DD1144>特别注意，如果由localhost:8000/app/123由路由链接跳转到localhost:8000/app/456，是不能在mounted当中去根据路由参数值更新数据，因为是组件的复用，mounted是不会执行第二次的，只能使用beforeRouteUpdate去更新数据</font>
++ <font color=#3eaf7c>还比如一般我们在京东，淘宝中看一个商品的详情，同时下面还有好多相关商品，点击这些商品的链接，实际上也是一次组件中beforeRouterUpdate钩子被触发的场景，这也是我们前面在讲watch($router)和beforeRouterUpdate都能解决相同组件复用时相互跳转数据更新的问题</font>
++ <font color=#DD1144>特别注意，如果由localhost:8000/app/123由路由链接跳转到localhost:8000/app/456，是不能在mounted当中去根据路由参数值更新数据，因为是组件的复用，不需要重新创造新组件，也就不会重新执行那些生命周期函数，自然mounted也是不会执行第二次的，只能使用beforeRouteUpdate去更新数据</font>
 
 
 <font color=#9400D3>**③ beforeRouteLeave**</font>
@@ -369,3 +418,4 @@ npm i babel-plugin-syntax-dynamic-import@6.18.0 -D --registry=https://registry.n
 **参考资料**
 
 1. [vue-router导航守卫，不懂的来](https://zhuanlan.zhihu.com/p/54112006)
+2. [从头开始学习vue-router](https://juejin.im/post/5b0281b851882542845257e7#heading-15)
