@@ -286,7 +286,6 @@ export default {
 export default () => {
   return new Vuex.Store({
     modules: {
-			namespaced: true,
       a: {
         namespaced: true,
         state: { text: 1},
