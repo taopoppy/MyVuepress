@@ -8,5 +8,11 @@ module.exports = [
       '/react-redux/react_base_todolist',
       '/react-redux/react_base_guanwang1'
     ]
+  },
+  {
+    title:'react进阶',
+    children: [
+      '/react-redux/react_advanced_one'
+    ]
   }
 ]
