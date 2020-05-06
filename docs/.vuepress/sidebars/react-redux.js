@@ -12,7 +12,8 @@ module.exports = [
   {
     title:'react进阶',
     children: [
-      '/react-redux/react_advanced_one'
+      '/react-redux/react_advanced_one',
+      '/react-redux/react_advanced_two'
     ]
   }
 ]

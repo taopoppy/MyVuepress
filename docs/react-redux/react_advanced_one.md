@@ -1,4 +1,4 @@
-# React的原理
+# React的核心原理
 
 ## 属性和数据驱动
 ### 1. Reactdevelopertools的使用
@@ -27,7 +27,7 @@ class TodoItem extends React.Component {
 // TodoItem这个组件做属性校验
 TodoItem.propTypes = {
 	test: PropTypes.string.isRequired, // 类型和必要性同时检测
-	content: PropTypes.arrayOf(PropTypes.string, PropTypes.number), // content既可以是string类型也可以是number类型
+	content: PropTypes.oneOfType[PropTypes.string, PropTypes.number], // content既可以是string类型也可以是number类型
 	deleteItem: PropTypes.func,
 	index: PropTypes.number
 }
@@ -156,6 +156,6 @@ export default TodoItem
 如上图，假如在一个循环中旧的虚拟DOM有4个节点，数据更新后，在数组的最中间插入另一个节点：
 + <font color=#DD1144>在无key或者key为index的时候，因为Diff算法是同层比对，一样的会复用，所以导致的结果就是在真实操作DOM的时候，它认为旧23变成了新234，所以就会先把旧的23的DOM删掉，然后生成新的234,再添加到DOM中。包含了删除2个节点的真实DOM操作，生成3个节点的真实DOM操作，将3个节点加入文档的真实DOM操作</font>
 
-+ <font color=#DD1144>但是在有key的情况下，因为有key做标志，新的虚拟DOM中c和d知道是从旧的虚拟DOM中的c和d复用来的，所以在真实的DOM操作中只需要生成新的e节点并加入DOM中。只包含了生成1个节点的真实DOM操作和将1个节点加入文档的真实DOM操作</font>
++ <font color=#DD1144>但是在有key的情况下，因为有key做标志，新的虚拟DOM中c和d通过key知道自己和旧的虚拟DOM中的c和d描述的是真实DOM中同一段位置的东西，比对之后发现并无变化，所以在真实的DOM操作中只需要生成新的e节点并加入DOM中。只包含了生成1个节点的真实DOM操作和将1个节点加入文档的真实DOM操作</font>
 
 所以对比一下，你就能看出，在循环中，每个节点有固定且唯一的`key`能省略点多少真实的`DOM`操作，所以这就是设置正确的`key`是真的能提高性能的原因，而且数组中循环的元素越多，性能提升的越明显。
