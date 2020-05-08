@@ -29,6 +29,7 @@ const blockchainSidebar = require('./sidebars/blockchain')
 const nodeBlockchainSidebar = require('./sidebars/nodeblockchain')
 const vueInterviewSidebar = require('./sidebars/vueInterview')
 const reactReduxSiderbar = require('./sidebars/react-redux')
+const learnMaterialsSodebar = require('./sidebars/learnMaterials')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -45,6 +46,7 @@ module.exports = {
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
+      { text: '资料', link: '/learnMaterials/'},
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
       //{ text: 'Flutter', link: '/Flutter/'},
@@ -200,6 +202,7 @@ module.exports = {
       '/go-concurrent/': goConcurrentSiderbar,
       '/Beego/': BeegoSidebar,
       '/node-GraphQL/': nodeGraphQLSidebar,
+      '/learnMaterials/': learnMaterialsSodebar,
       '/react/':[
         '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
         {
