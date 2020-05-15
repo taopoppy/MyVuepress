@@ -6,6 +6,7 @@
 + [（GitChat）重学 Go 语言：进阶篇](https://gitbook.cn/gitchat/column/5e7077b2ff3c455d2445827e)
 + [（极客时间）Go语言核心36讲](https://time.geekbang.org/column/intro/112)
 + [（B站）《原汁原味go语言学习》](https://www.bilibili.com/video/BV1ZE411D7aE)
++ [（慕课视频）基于Golang协程实现流量统计系统](https://coding.m.imooc.com/classindex.html?cid=192)
 
 ## Go-框架
 + [（GitChat小册）Gin 框架入门实践](https://gitbook.cn/gitchat/column/5dab061e7d66831b22aa0b44)
@@ -24,6 +25,7 @@
 + [（慕课视频）Go语言开发分布式任务调度轻松搞定高性能Crontab](https://coding.imooc.com/class/281.html)
 + [（慕课视频）Go实战仿百度云盘实现企业级分布式云存储系统](https://coding.imooc.com/class/323.html)
 + [（极客时间）系统性能调优必知必会](https://time.geekbang.org/column/intro/308)
++ [（B站）让我们写个G站吧](https://space.bilibili.com/10/channel/detail?cid=78794)
 
 ## Go-微服务
 + [（慕课视频）全流程开发实践晋级：GO实战多版本抢红包系统](https://coding.imooc.com/class/345.html)
