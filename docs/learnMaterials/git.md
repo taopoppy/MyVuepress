@@ -8,3 +8,6 @@
 
 ## 极客时间
 + [（极客时间）玩转Git三剑客](https://time.geekbang.org/course/intro/145)
+
+## B站
++ [（B站）Github全面详解](https://www.bilibili.com/video/BV1P7411B7W2?p=1)

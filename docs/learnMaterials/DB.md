@@ -8,7 +8,7 @@
 + [（慕课专栏）实战派 MySQL 高阶应用指南](https://www.imooc.com/read/71)
 + [（慕课专栏）一线数据库工程师带你深入理解 MySQL](https://www.imooc.com/read/43)
 + [（极客时间）MySQL实战45讲](https://time.geekbang.org/column/intro/139)
-
++ [（B站）SQL全面初探 - Mosh](https://www.bilibili.com/video/BV1Xb41177na)
 
 ## redis
 + [（掘金小册）Redis 深度历险：核心原理与应用实践](https://juejin.im/book/5afc2e5f6fb9a07a9b362527)

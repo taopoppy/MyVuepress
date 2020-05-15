@@ -5,6 +5,8 @@
 + [（GitChat）重学 Go 语言：基础篇](https://gitbook.cn/gitchat/column/5dca675eb104917ad887b388)
 + [（GitChat）重学 Go 语言：进阶篇](https://gitbook.cn/gitchat/column/5e7077b2ff3c455d2445827e)
 + [（极客时间）Go语言核心36讲](https://time.geekbang.org/column/intro/112)
++ [（B站）《原汁原味go语言学习》](https://www.bilibili.com/video/BV1ZE411D7aE)
+
 ## Go-框架
 + [（GitChat小册）Gin 框架入门实践](https://gitbook.cn/gitchat/column/5dab061e7d66831b22aa0b44)
 
@@ -26,5 +28,13 @@
 ## Go-微服务
 + [（慕课视频）全流程开发实践晋级：GO实战多版本抢红包系统](https://coding.imooc.com/class/345.html)
 
-## Go-网关
+## Go-微服务网关
 + [（慕课视频）Vue+Go前端后端一体化 企业级微服务网关项目](https://coding.imooc.com/class/436.html)
++ [（B站）go实现反向代理 (微服务网关技术)](https://www.bilibili.com/video/BV1P7411B7W2?p=1)
+
+
+## Go-设计模式
++ [（B站）go语言设计模式 （主讲清华尹成）](https://www.bilibili.com/video/BV1DA411t79X)
+
+## Go-源码解读
++ [（B站）Go夜读](https://space.bilibili.com/326749661/channel/detail?cid=61588)
