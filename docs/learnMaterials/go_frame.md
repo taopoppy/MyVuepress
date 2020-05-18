@@ -8,6 +8,11 @@
 + [（B站）《原汁原味go语言学习》](https://www.bilibili.com/video/BV1ZE411D7aE)
 + [（慕课视频）基于Golang协程实现流量统计系统](https://coding.m.imooc.com/classindex.html?cid=192)
 
+
+## Go-周边
++ [（微信公众号）Golang语言社区](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzAxMzc4Mzk1Mw==&scene=124#wechat_redirect)
++ [（B站）eggo-tech](https://space.bilibili.com/567195437/)
+
 ## Go-框架
 + [（GitChat小册）Gin 框架入门实践](https://gitbook.cn/gitchat/column/5dab061e7d66831b22aa0b44)
 
