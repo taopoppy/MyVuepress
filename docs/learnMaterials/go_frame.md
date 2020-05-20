@@ -45,3 +45,6 @@
 
 ## Go-源码解读
 + [（B站）Go夜读](https://space.bilibili.com/326749661/channel/detail?cid=61588)
+
+## Go-架构课程
++ [（Go中文网）Go语言方向后端架构经典案例课程](https://course.studygolang.com/)

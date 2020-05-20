@@ -13,7 +13,18 @@ module.exports = [
     title:'react进阶',
     children: [
       '/react-redux/react_advanced_one',
-      '/react-redux/react_advanced_two'
+      '/react-redux/react_advanced_two',
+      '/react-redux/react_advanced_three',
     ]
-  }
+  },
+  {
+    title:'redux基础',
+    children: [
+    ]
+  },
+  {
+    title:'redux进阶',
+    children: [
+    ]
+  },
 ]

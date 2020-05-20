@@ -34,3 +34,4 @@
 ## react-源码分析
 + [（慕课视频）React源码深度解析 高级前端工程师必备技能](https://coding.imooc.com/class/309.html)
 + [（B站）React源码解析](https://www.bilibili.com/video/BV1cE411B7by?p=1)
++ [（微信公众号）React](https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzAxMTMyOTk3MA==&scene=124#wechat_redirect)

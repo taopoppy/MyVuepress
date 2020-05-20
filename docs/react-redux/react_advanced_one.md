@@ -27,7 +27,7 @@ class TodoItem extends React.Component {
 // TodoItem这个组件做属性校验
 TodoItem.propTypes = {
 	test: PropTypes.string.isRequired, // 类型和必要性同时检测
-	content: PropTypes.oneOfType[PropTypes.string, PropTypes.number], // content既可以是string类型也可以是number类型
+	content: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), // content既可以是string类型也可以是number类型
 	deleteItem: PropTypes.func,
 	index: PropTypes.number
 }

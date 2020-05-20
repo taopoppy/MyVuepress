@@ -34,3 +34,6 @@
 + [（掘金小册）剖析 Vue.js 内部运行机制](https://juejin.im/book/5a36661851882538e2259c0f)
 + [（慕课视频）Vue.js源码全方位深入解析 （含Vue3.0源码分析）](https://coding.imooc.com/class/228.html)
 
+## 大前端
++ [（慕课视频）大前端](https://class.imooc.com/sale/webfullstack?mc_marking=1eb5ce0be2ada8da4a6387b391f00b92&mc_channel=syzcjj1)
++ [（极客时间）前端进阶训练营](https://detail.youzan.com/show/goods?alias=1ydv2jglmr4e0)
