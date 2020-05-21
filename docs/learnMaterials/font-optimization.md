@@ -6,3 +6,6 @@
 ## 慕课网
 + [（慕课视频）让你页面速度飞起来 Web前端性能优化](https://coding.imooc.com/class/130.html)
 + [（慕课专栏）你不知道的前端性能优化技巧](https://www.imooc.com/read/41)
+
+## 极客时间
++ [（极客时间）前端全链路性能优化实战](https://time.geekbang.org/course/detail/100041001-171538)

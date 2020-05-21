@@ -17,7 +17,7 @@
 
 ### Js-Es
 + [（慕课视频）再学JavaScript ES(6-10)全版本语法大全](https://coding.imooc.com/class/389.html)
-
++ [（慕课视频）再学JavaScript ES(6-11)全版本语法大全](https://coding.imooc.com/class/444.html?mc_marking=f2c5ebfbf82465dbeb1951eb9ad14958&mc_channel=banner)
 ### Js-核心原理
 + [（极客时间）JavaScript核心原理解析](https://time.geekbang.org/column/intro/252)
 

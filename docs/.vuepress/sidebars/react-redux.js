@@ -6,7 +6,6 @@ module.exports = [
     children: [
       '/react-redux/react_base_one',
       '/react-redux/react_base_todolist',
-      '/react-redux/react_base_guanwang1'
     ]
   },
   {
@@ -15,6 +14,13 @@ module.exports = [
       '/react-redux/react_advanced_one',
       '/react-redux/react_advanced_two',
       '/react-redux/react_advanced_three',
+    ]
+  },
+  {
+    title:'react官网',
+    children: [
+      '/react-redux/react_base_guanwang1',
+      '/react-redux/react_base_guanwang2'
     ]
   },
   {

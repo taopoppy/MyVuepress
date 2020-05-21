@@ -122,7 +122,7 @@ export default TodoItem
 
 + <font color=#DD1144>JSX语法会通过Babel编译成为React.createElement方法</font>
 + <font color=#DD1144>React.createElement方法执行返回的就是一个JS对象，俗称虚拟DOM</font>
-+ <font color=#DD1144>虚拟DOM描述了真实DOM的结构，通过React再生成真实的DOM</font>
++ <font color=#DD1144>虚拟DOM描述了真实DOM的结构，通过React中的ReactDOM.render()函数再生成真实的DOM并挂载到浏览器中</font>
 
 <img :src="$withBase('/react_redux_jsx.png')" alt="JSX的本质">
 
