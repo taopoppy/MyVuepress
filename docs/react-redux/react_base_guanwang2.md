@@ -84,7 +84,7 @@ ReactDOM.render(
 ```
 通过上面的图示和代码，我们现在能够更清晰的理解这一段代码了
 
-## 组件
+### 3. 组件的概念
 组件的概念我们已经说过了，通过直接书写`function`书写的叫做<font color=#DD1144>函数组件</font>、通过`class`方式继承`React.Component`的书写叫做<font color=#DD1144> class组件</font>
 
 那么我们现在要讲解一下在组件中比较特有的属性
@@ -118,3 +118,56 @@ ReactDOM.render(
 当你了解了什么是`Props`后，还要记住它非常重要的一个特性：<font color=#DD1144>组件无论是使用函数声明还是通过 class 声明，都决不能修改自身的props</font>
 
 ## 组件的state
+<font color=#1E90FF>State与props类似，但是state是私有的，并且完全受控于当前组件</font>
+
+每次组件更新时`render`方法都会被调用，但只要在相同的`DOM`节点中渲染&lt;Clock /&gt; ，就仅有一个`Clock`组件的`class`实例被创建使用。这就使得我们可以使用如`state`或生命周期方法等很多其他特性。
+```javascript
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()}; // state赋值的地方
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    this.setState({
+      date: new Date()     // 通过this.setState()来修改组件的state
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+
+
+
+正确地使用`State`我们应该注意以下四个个方面
++ <font color=#9400D3>不要直接修改State，而是应该使用setState，构造函数是唯一可以给 this.state赋值的地方</font>
+
++ <font color=#9400D3>出于性能考虑，React可能会把多个setState()调用合并成一个调用。因为this.props和this.state可能会异步更新，所以你不要依赖他们的值来更新下一个状态</font>
+
++ <font color=#9400D3>数据是向下流动的，任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件。</font>
+
++ <font color=#9400D3>组件可以选择把它的state作为props向下传递到它的子组件中，子组件本身无法知道它是来自于父组件的state，或是父组件的props，还是手动输入的。所以组件是有状态组件还是无状态组件属于组件实现的细节，它可能会随着时间的推移而改变。你可以在有状态的组件中使用无状态的组件，反之亦然</font>
