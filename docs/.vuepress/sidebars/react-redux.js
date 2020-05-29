@@ -22,7 +22,10 @@ module.exports = [
     title:'redux基础到进阶',
     children: [
       '/react-redux/react_redux_base1',
-      '/react-redux/react_redux_base2'
+      '/react-redux/react_redux_base2',
+      '/react-redux/react_redux_advanced_one',
+      '/react-redux/react_redux_advanced_two',
+      '/react-redux/react_redux_advanced_three',
     ]
   },
 ]
