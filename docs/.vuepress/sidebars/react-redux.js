@@ -15,7 +15,8 @@ module.exports = [
     title:'react官网超精读',
     children: [
       '/react-redux/react_base_guanwang1',
-      '/react-redux/react_base_guanwang2'
+      '/react-redux/react_base_guanwang2',
+      '/react-redux/react_base_guanwang3'
     ]
   },
   {

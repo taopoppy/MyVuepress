@@ -75,7 +75,8 @@ export default TodoList;
 ```
 现在我们将这个文件拆分成为UI组件(`TodoListUI.JS`)和容器组件(`TodoList.js`):
 ```javascript
-// TodoListUI.jsimport React, {Component} from 'react'
+// TodoListUI.js
+import React, {Component} from 'react'
 import { Input, Button, List } from 'antd';
 
 class TodoListUI extends Component {

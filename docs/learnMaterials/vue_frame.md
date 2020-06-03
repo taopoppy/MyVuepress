@@ -15,6 +15,7 @@
 + [（慕课视频）Vue全家桶实战 从零独立开发企业级电商系统](https://coding.imooc.com/class/397.html)
 
 ## vue-服务端渲染
++ [（B站）nuxt-1](https://www.bilibili.com/video/BV1ka4y1x77P)
 + [（慕课视频）Vue核心技术Vue+Vue-Router+Vuex+SSR实战精讲](https://coding.imooc.com/class/196.html)
 + [（慕课视频）Vue全家桶+SSR+Koa2全栈开发美团网](https://coding.imooc.com/class/280.html)
 

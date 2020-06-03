@@ -30,6 +30,7 @@ const nodeBlockchainSidebar = require('./sidebars/nodeblockchain')
 const vueInterviewSidebar = require('./sidebars/vueInterview')
 const reactReduxSiderbar = require('./sidebars/react-redux')
 const learnMaterialsSodebar = require('./sidebars/learnMaterials')
+const reactSSRSiderbar = require('./sidebars/react-ssr')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -220,7 +221,8 @@ module.exports = {
           ]
         }
       ],
-      '/react-redux/': reactReduxSiderbar
+      '/react-redux/': reactReduxSiderbar,
+      '/react-ssr/':reactSSRSiderbar
     }
   }
 }
