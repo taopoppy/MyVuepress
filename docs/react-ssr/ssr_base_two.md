@@ -189,7 +189,56 @@ export default Home
 
 
 ## 虚拟DOM的服务端渲染
+<font color=#9400D3>**① 虚拟DOM和服务端渲染的关系**</font>
+
+`React`服务端渲染的技术是建立在虚拟`DOM`的技术上面的，<font color=#1E90FF>虚拟DOM是用来描述真实DOM结构的javascript对象，或者说是真实DOM的一个JavaScript对象的映射</font>，所以由于存在虚拟`DOM`：
++ 在客户度渲染中通过`ReactDOM.render()`方法将其转换成为真实`DOM`挂载到页面上
++ 在服务端渲染中通过`renderToString()`方法将其转换成为字符串返回给浏览器
+
+所以虚拟`DOM`的存在实际上存在诸多好处：
++ <font color=#1E90FF>减少真实DOM操作，提高页面渲染速度</font>
++ <font color=#1E90FF>使得跨端得以实现，虚拟DOM被react和react native都能识别</font>
++ <font color=#1E90FF>使得服务端渲染变的非常简单</font>
+
+<font color=#9400D3>**② 服务端渲染的弊端**</font>
+
+客户端渲染的时候，`React`代码的执行是在浏览器中执行的，消耗的是客户端的浏览器，而服务端渲染消耗的是服务器端的性能，<font color=#DD1144>所以其实在不需要搜索引擎优化的项目，或者说在前后端分离的项目中已经优化的不错了的情况下，尽量不要SSR技术</font>
 
 ## Webpack自动打包和服务重启
+我们下载`nodemon`来帮助我们自动重启`node`服务：
+```javascript
+npm install nodemon@1.18.2 --save-dev
+```
+然后我们修改`package.json`文件：
+```javascript
+// package.json
+{
+  "scripts": {
+    "start": "nodemon --watch build --exec node \"./build/bundle.js\"",
+    "build": "webpack --config webpack.server.js --watch"
+  },
+}
+```
++ 首先我们在`npm run build`命令中添加`--watch`来监听，凡是`index.js`以及它里面中所有引入的东西发生变化就会重新打包
++ 其次我们使用`nodemon`来监听`build`目录中内容的变化，一旦`build`文件夹中的文件发生变化就会去执行`node ./build/bundle.js`这个命令
+
+所以这样的话我们需要在开发环境中同时开两个命令行窗口。还是有点复杂，我们下面来说`npm-run-all`
+
 
 ## npm-run-all提高效率
+下载`npm-run-all`来帮助我们在一个命令行同时执行多个命令:
+```javascript
+npm install npm-run-all@4.1.3 --save-dev
+```
+然后修改`package.json`：
+```javascript
+// package.json
+{
+  "scripts": {
+    "dev:start": "nodemon --watch build --exec node \"./build/bundle.js\"",
+    "dev:build": "webpack --config webpack.server.js --watch",
+    "dev":"npm-run-all --parallel dev:**"
+  },
+}
+```
+我们执行`npm run dev`，它就会并行的执行以`dev:`打头的所有命令。也就是同时执行`npm run dev:start`和`npm run dev:build`
