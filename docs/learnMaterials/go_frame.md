@@ -45,6 +45,7 @@
 
 ## Go-源码解读
 + [（B站）Go夜读](https://space.bilibili.com/326749661/channel/detail?cid=61588)
++ [（B站）Jiajun的编程随想](https://space.bilibili.com/487831726?spm_id_from=333.788.b_765f7570696e666f.1)
 
 ## Go-架构课程
 + [（Go中文网）Go语言方向后端架构经典案例课程](https://course.studygolang.com/)
