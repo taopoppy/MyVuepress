@@ -197,7 +197,7 @@ export default Login
 <font color=#DD1144>因为服务端渲染只发生在第一次进入页面的时候</font>，<font color=#1E90FF>第一次进入页面浏览器会向服务器发送请求，服务器把渲染好的页面返回给浏览器，同时浏览器也请求到了js文件，但是执行完毕js文件后，页面就被js，或者说被react接管了，所有之后页面的交互和页面跳转都是js当中的react代码执行的效果而已</font>，<font color=#9400D3>可以理解为服务端渲染只渲染第一个页面，其他都是客户端渲染</font>
 
 举两个例子：
-+ 当你第一次直接输入`localhost:3000`，`localhost:3000/`这个页面时服务端渲染出来的，从`/`通过页面跳转到`/Login`，`localhost:3000/Login`这个页面是客户端渲染的
++ 当你第一次直接输入`localhost:3000`，`localhost:3000/`这个页面是服务端渲染出来的，从`/`通过页面跳转到`/Login`，`localhost:3000/Login`这个页面是客户端渲染的
 + 当你第一次直接输入`localhost:3000/login`，`localhost:3000/Login`这个页面时服务端渲染出来的，从`/Login`通过页面跳转到`/`，`localhost:3000/`这个页面是客户端渲染的
 
 所以再次强调：<font color=#1E90FF>服务端只发生在第一次进入页面的时候，这个<font color=#3eaf7c>第一次</font>的含义包含你直接在浏览器中输入地址的情况，也包括你刷新浏览器当前网页的情况</font>
