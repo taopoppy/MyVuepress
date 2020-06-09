@@ -326,3 +326,7 @@ class Home extends React.Component {
 	}
 }
 ```
+
+最后我们来使用做一个图示，帮助你理解到底是怎么让服务端在渲染页面之前`store`中就有了数据和客户端的`clientStore`怎么在创建的时候和`serverStore`保持一致的：
+
+<img :src="$withBase('/react_ssr_clientstore.png')" alt="数据问题解决">
