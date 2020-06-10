@@ -6,6 +6,7 @@
 ## 慕课网
 + [（慕课视频）JavaScript版 数据结构与算法](https://coding.imooc.com/class/315.html)
 + [（慕课专栏）数据结构与算法（前端版）](https://www.imooc.com/read/74)
++ [（慕课视频）JavaScript版数据结构与算法 轻松解决前端算法面试](https://coding.imooc.com/class/446.html)
 
 ## B站
 + [（B站）人人都能看得懂的Leetcode刷题教程合集](https://www.bilibili.com/video/BV1wA411b7qZ)

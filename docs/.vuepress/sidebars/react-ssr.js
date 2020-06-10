@@ -27,6 +27,10 @@ module.exports = [
     ]
   },
   {
-    
-  }
+    title:'React_SSR_实战基础',
+    children: [
+      '/react-ssr/ssr_combat_project_one',
+      '/react-ssr/ssr_combat_project_two',
+    ]
+  },
 ]
