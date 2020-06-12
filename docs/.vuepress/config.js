@@ -50,7 +50,7 @@ module.exports = {
       { text: '资料', link: '/learnMaterials/'},
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
-      //{ text: 'Flutter', link: '/Flutter/'},
+      { text: 'Flutter', link: '/Flutter/'},
       //{ text: '算法世界', link: '/Algorithm/'},
       // { text: '小程序',
       //   items: [

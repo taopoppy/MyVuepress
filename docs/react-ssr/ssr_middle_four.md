@@ -129,17 +129,184 @@ Home.loadData = (store) => {
 这两个流程非常重要，只有清楚的搞清楚流程才能正确解决出现的问题。
 
 ## axios的instance的使用
+其实按照上面的写法每个组件当中都要对请求地址做判断是一种很low的做法，对项目的维护性不好。在`axios`当中有两个比较重要的概念分别是<font color=#DD1144>instance</font> 和 <font color=#DD1144>interceptors</font>，在一些比较高级的代码处理的时候非常好用,我们创建`src/client/request.js`和`src/server/request.js`:
+```javascript
+// src/client/request.js
+import axios from 'axios'
+
+const instance = axios.create({
+	baseURL: '/'
+})
+
+export default instance
+```
+```javascript
+// src/server/request.js
+import axios from 'axios'
+
+const instance = axios.create({
+	baseURL: 'http://localhost:4000/ssr'
+})
+
+export default instance
+```
+然后我们在`src/containers/Home/store/action.js`当中改写一下代码：
+```javascript
+// src/containers/Home/store/action.js
+import clientAxios from '../../../client/request'
+import serverAxios from '../../../server/request'
+
+export const getHomeList = (server) => {
+	const request = server? serverAxios: clientAxios
+
+	return (dispatch)=> {
+		return request.get('/api/news.json?secret=abcd')
+		.then((res)=>{
+			const list = res.data
+			dispatch(changeList(list))
+		})
+		.catch((err)=> {
+			console.log(err)
+		})
+	}
+}
+```
+可以看到我们分别在`serverAxios`和`clientAxios`当中定义了`baseURL`，分别使用他们请求的时候会在请求地址前面自动拼接上`baseURL`的地址，这样书写方便了不少，代码也更优雅。
 
 ## redux-thunk的withExtraArgument
+由于`withExtraArgument`方法的存在，我们在创建`store`的时候可以携带一个参数进入，这样的话，我们可以携带不同的`axiosInstance`实例进入，这样在客户端请求的时候只能通过`getClientStore`创建`store`，我们就传入`clientAxios`，在服务端请求的时候只能通过`getStore`去创建`store`，我们就传入`serverAxios`,这个参数可以在`actionCreators`的时候作为第三个参数拿到：
+```javascript
+// src/store/index.js
+
+import clientAxios from '../client/request' // 引入clientAxios
+import serverAxios from '../server/request' // 引入serverAxios
+
+const reducer = combineReducers({
+	home: homeReducer
+})
+
+
+export const getStore = ()=> {
+	return createStore(reducer,applyMiddleware(thunk.withExtraArgument(serverAxios))) // 服务端渲染携带serverAxios
+}
+
+export const getClientStore = () => {
+	const composeEnhancers =
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
+
+	const enhancer = composeEnhancers(
+		applyMiddleware(thunk.withExtraArgument(clientAxios)), // 客服端渲染携带clientAxios
+	);
+
+
+	const defaultState = window.context.state
+	return createStore(reducer,defaultState,enhancer)
+}
+```
+```javascript
+// src/containers/Home/store/action.js
+export const getHomeList = () => {
+	return (dispatch, getState, axiosInstance)=> {
+		// 如果是客户端请求，客户端创建store的时候携带的是axiosInstance = clientStore
+		// 如果是服务端请求，服务端创建store的时候携带的是axiosInstance = serverStore
+		return axiosInstance.get('/api/news.json?secret=abcd')
+		.then((res)=>{
+			const list = res.data
+			dispatch(changeList(list))
+		})
+		.catch((err)=> {
+			console.log(err)
+		})
+	}
+}
+```
 
 ## renderRoutes支持多级路由
+我们知道，在`Home`和`Login`都有一个头部的组件，我们分别要在两个组件内部都引入这样的组件，这样有点麻烦，我们可以使用多级路由的写法，在一个地方书写，所有组件内部都含有头部的组件`Header`
 
-## 登录功能制作
+首先创建一个`src/App.js`：
+```javascript
+// src/App.js
+import React from 'react'
+import Header from './components/Header'
+import { renderRoutes } from 'react-router-config'
 
-## 登录接口打通
+// 渲染一级路由的内容
+const App = (props) => {
+	return (
+		<div>
+			<Header />
+			{renderRoutes(props.route.routes)} {/*渲染二级路由的内容*/}
+		</div>
+	)
+}
 
-## 登录状态切换
+export default App
+```
+然后我们修改一下路由条目：
+```javascript
+// src/Routes.js
+import App from './App' // 引入App
 
-## 解决登录cookie传递的问题
+export default [{
+	path: '/',
+	component: App, // 一级路由
+	routes: [  // 二级路由
+		{
+			path: '/',
+			component: Home,
+			exact: true,
+			loadData: Home.loadData,
+			key: 'home'
+		},
+		{
+			path: '/login',
+			component: Login,
+			exact:true,
+			key: 'login'
+		},
+	]
+}]
+```
++ <font color=#DD1144>这种路由的写法，一级路由是一种模糊匹配，意思就是凡事以 / 这中路由开头都能匹配到 App 组件，然后二级路由是精确匹配，因为有 exact 属性为 true ,所以访问 localhost:3000/login ，首先匹配到一级路由的 App 组件，然后精确匹配到二级路由的 login 组件，所以在 App 组件中会包含 Login 组件的显示内容。</font>
 
-## 翻译列表页面制作
++ <font color=#DD1144>而且二级路由是写在一级路由的routes属性下面，所以二级路由会作为进入到一级路由对应的组件当中，作为组件的props.route属性存在，所以你在App组件当中，renderRoutes渲染二级路由直接渲染的是props.route.routes</font>,，所有有了这样的特性，你可以在二级路由对应的组件当中继续延伸三级路由等等
+
+然后我们需要同时修改客户度和服务端的路由写法：
+```javascript
+// src/server/utils.js
+import { renderRoutes } from 'react-router-config' // 引入renderRoutes
+
+export const render = (store,routes,req) => {
+		const content = renderToString((
+			<Provider store={store}>
+				<StaticRouter location={req.path} context={{}}>
+					<div>
+						{renderRoutes(routes)} {/*修改写法*/}
+					</div>
+				</StaticRouter>
+			</Provider>
+		))
+}
+```
+```javascript
+// src/client/index.js
+import routes from '../Routes'
+import { renderRoutes } from 'react-router-config' // 引入renderRoutes
+
+const store = getClientStore()
+
+const App = () => {
+	return (
+		<Provider store={store}>
+			<BrowserRouter>
+				<div>
+					{renderRoutes(routes)} {/*修改写法*/}
+				</div>
+			</BrowserRouter>
+		</Provider>
+	)
+}
+ReactDom.hydrate(<App />,document.getElementById('root'))
+```
+此时我们就可以删除我们在`Home`和`Login`组件当中引入的`Header`组件了

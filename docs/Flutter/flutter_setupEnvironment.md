@@ -48,7 +48,15 @@
 
 这里没有什么大问题，如果你翻不了墙就从官网给的镜像地址下载即可，但是注意`zip`包要从给的地址中的`stable channel`下载稳定版，不要从`Beta channel`下载最新版
 
-另外`PUB_HOSTED_URL`和`FLUTTER_STORAGE_BASE_URL是google`可以配也可以不配，本主压根没有管。
+另外`PUB_HOSTED_URL`和`FLUTTER_STORAGE_BASE_URL是google`可以配也可以不配，本主搭建环境的时候压根没有管，但是后面创建项目的时候卡的一批，所以推荐配置一下，不同的系统配置参考[配置 Flutter 中国镜像](https://www.jianshu.com/p/897a78aec874)。
+
+不过参考当中写的是在用户环境添加新的变量，而作者我在系统变量和用户变量中都添加了才有效果。而且最好使用下面这个地址：
+```javascript
+FLUTTER_STORAGE_BASE_URL: https://mirrors.sjtug.sjtu.edu.cn
+PUB_HOSTED_URL: https://dart-pub.mirrors.sjtug.sjtu.edu.cn
+```
+并且一定注意要在用户变量下的`path`条目下添加`flutter\bin`的全路径，这个很容易被忽略。
+
 
 ## 安装Android Studio
 
@@ -57,7 +65,7 @@
 
 `Flutter`需要安装和配置`Android Studio`:
 
-下载并安装 (Android Studio)[https://developer.android.com/studio/index.html].
+下载并安装 (Android Studio)[https://developer.android.com/studio/index.html](https://developer.android.com/studio/index.html).
 
 启动`Android Studio`，然后执行`“Android Studio安装向导”`。这将安装最新的`Android SDK`，`Android SDK`平台工具和`Android SDK`构建工具，这是`Flutter`为`Android`开发时所必需的
 
@@ -70,8 +78,8 @@
 
 但是官网好像没有配置环境的问题，这里我要详细说一下：
 
-+ 下载完毕后，我们到要新加一个环境变量`ANDROID_HOME`,路径就是你下载`Android SDK`时填的路径
-+ 然后再`Path`中新建3个环境，分别是`%ANDROID_HOME\emulator%`,`%ANDROID_HOME\platform-tools``%ANDROID_HOME\tools`
++ 下载完毕后，我们到要新加一个环境变量`ANDROID_HOME`,路径就是你下载`Android SDK`时填的路径，默认的`Android SDK`环境在`C:\Users\Administrator\AppData\Local\Android\Sdk`
++ 然后再`Path`中新建3个环境，分别是`%ANDROID_HOME%\emulator`,`%ANDROID_HOME%\platform-tools`,`%ANDROID_HOME%\tools`
 + 然后重启电脑
 
 然后我们在`cmd`上输入`adb`检查android的环境变量是否设置正确，然后在输入`flutter`来检测`flutter`的环境变量是否生效,但是有的时候输入`adb`的时候会提示`adb不是系统内部或者外部的命令`，通常网上给的答案是`adb.exe`以前是在`sdk`文件的`tools`目录下,现在版本的是在`platform-tools`目录下，所以要将`platform-tools`也添加在`Path`中，这个方法显然不可取，因为我们上面的步骤就已经添加了，我的方法是：
@@ -126,8 +134,122 @@
 
 这样我们的模拟器就能启动了，注意的是第一次启动的时候很慢，需要几分钟
 
-## 检测
+## 调试和检测
++ 在你的设备上启用<font color=#DD1144>开发人员选项</font>和<font color=#DD1144>USB调试</font>
++ 使用USB将手机插入电脑，如果有授权提示需要同意授权
++ 在终端中，运行<font color=#DD1144>flutter devices</font> 命令以验证`Flutter`是否是被你连接的`Android`设备
++ 通过<font color=#DD1144>flutter run</font>运行启动项目
+
 我们通过在命令行中输入`flutter doctor`，会检测4条内容，`协议`，`android-sdk`，`两个插件`，`模拟器的链接`
 后面三个我们在前面的步骤中都解决了，第一个是检测协议的，它会提示你run一个命令，然后你就根据提示去`run`它提示的命令。这个命令是帮助你同意协议的，需要同意大概4-5条。总之你就根据提示同意即可
 
 当检测全部通过后，我们就可以正式来创建flutter的项目了
+
+## 创建项目
+### 1. android studio
+<font color=#1E90FF>File</font> -> <font color=#1E90FF>New</font> -> <font color=#1E90FF>new Flutter Project</font>
+
+在弹出的面板中选择<font color=#1E90FF>Flutter Application</font> -> <font color=#1E90FF>Next</font> -> <font color=#1E90FF>填写Project name和Project location</font> -> <font color=#1E90FF>Next</font> -> <font color=#1E90FF>Finish</font>
+
+然后在`android studio`当中就可以直接点击上面的绿色的启动按钮来启动项目，当然前提是必须已经有一个启动起来的安卓模拟器或者连接到电脑上的可用安卓设备
+
+
+### 2. Flutter脚手架
+因为配置了`flutter`的环境变量，所以可以到某个目录下，执行下面的命令：
+```bash
+> flutter create my_app
+> cd my_app
+> flutter run
+```
+执行`flutter run`这个命令必须保证在当前已经有一个启动起来的安卓模拟器或者连接到电脑上的可用安卓设备
+
+### 3. VSCode
+<font color=#1E90FF>**① 安装flutter插件**</font>
+
++ 启动`VS Code`。
++ 调用`View` > `Command Palette…`。
++ 输入`install`, 然后选择`Extensions: Install Extension action`。
++ 在搜索框输入`flutter` ，在搜索结果列表中选择 `Flutter`, 然后点击`Install`。
++ 选择 `OK` 重新启动 `VS Code`。
+
+<font color=#1E90FF>**② 验证配置**</font>
+
++ 调用`View` > `Command Palette…`
++ 输入 `doctor`, 然后选择 `Flutter: Run Flutter Doctor` action。
++ 查看`OUTPUT`窗口中的输出是否有问题
+
+<font color=#1E90FF>**③ 创建Flutter应用**</font>
+
++ 启动 `VS Code`
++ 调用 `View` > `Command Palette…`
++ 输入 `flutter`, 然后选择 `Flutter: New Project` action
++ 输入 `Project` 名称 (如`myapp`), 然后按回车键
++ 指定放置项目的位置，然后按蓝色的确定按钮
++ 等待项目创建继续，并显示`main.dart`文件
+
+## 运行项目
+我在运行项目的时候会遇到两个问题分别是<font color=#DD1144>启动时卡在gradle task assembleDebug</font>和 <font color=#DD1144>FAILURE: Build failed with an exception.（无法连接到https://storage.googleapis.com/download.flutter.io这个地址）</font>
+
+两个问题都是同一个地方产生的,就是项目启动下载和连接的地址是外网的地址，我们需要替换成为国内镜像，我们给出两个参考地址：
++ [Android Studio 运行flutter卡在: Running Gradle task 'assembleDebug'...](https://juejin.im/post/5ea6dcc3f265da7bcb65e0bb)
++ [Flutter运行app失败 running gradle task assembleDebug](http://element-ui.cn/news/show-353525.aspx)
+
+按照上面两个一起改，就能成功。或者才考我下面的改法（其实就是对上面的总结）：
+
+修改本地`flutter`安装目录中的`flutter.gradle`文件（参考我的文件路径：`D:\flutter\packages\flutter_tools\gradle\flutter.gradle`
+```javascript
+buildscript {
+    repositories {
+        // 这里做了修改，使用国内阿里的代理
+        // google()
+        // jcenter()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+android {
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+apply plugin: FlutterPlugin
+
+class FlutterPlugin implements Plugin<Project> {
+		// 这里做了修改，使用国内flutter的代理
+    // private static final String MAVEN_REPO      = "https://storage.googleapis.com/download.flutter.io";
+    private static final String MAVEN_REPO      = "https://storage.flutter-io.cn/download.flutter.io";
+}
+```
+
+同时会修改`flutter`项目中的`android/build.gradle`文件：
+```javascript
+buildscript {
+  ext.kotlin\_version = '1.3.50'
+  repositories {
+  // 这里做了修改，使用国内阿里的代理
+  // google()
+ // jcenter()  maven { url 'https://maven.aliyun.com/repository/google' }
+  maven { url 'https://maven.aliyun.com/repository/jcenter' }
+  maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+ }
+  dependencies {
+  classpath 'com.android.tools.build:gradle:3.5.0'
+  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin\_version"
+  }
+}
+
+allprojects {
+  repositories {
+  //修改的地方
+  //google()
+ //jcenter()  maven { url 'https://maven.aliyun.com/repository/google' }
+  maven { url 'https://maven.aliyun.com/repository/jcenter' }
+  maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+ }}
+```
