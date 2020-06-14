@@ -270,7 +270,7 @@ export default [{
 ```
 + <font color=#DD1144>这种路由的写法，一级路由是一种模糊匹配，意思就是凡事以 / 这中路由开头都能匹配到 App 组件，然后二级路由是精确匹配，因为有 exact 属性为 true ,所以访问 localhost:3000/login ，首先匹配到一级路由的 App 组件，然后精确匹配到二级路由的 login 组件，所以在 App 组件中会包含 Login 组件的显示内容。</font>
 
-+ <font color=#DD1144>而且二级路由是写在一级路由的routes属性下面，所以二级路由会作为进入到一级路由对应的组件当中，作为组件的props.route属性存在，所以你在App组件当中，renderRoutes渲染二级路由直接渲染的是props.route.routes</font>,，所有有了这样的特性，你可以在二级路由对应的组件当中继续延伸三级路由等等
++ <font color=#DD1144>而且二级路由是写在一级路由的routes属性下面，所以二级路由会进入到一级路由对应的组件当中，作为组件的props.route属性存在，所以你在App组件当中，renderRoutes渲染二级路由直接渲染的是props.route.routes</font>,，所有有了这样的特性，你可以在二级路由对应的组件当中继续延伸三级路由等等
 
 然后我们需要同时修改客户度和服务端的路由写法：
 ```javascript

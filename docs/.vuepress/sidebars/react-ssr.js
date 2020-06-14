@@ -16,6 +16,7 @@ module.exports = [
 			'/react-ssr/ssr_middle_two',
       '/react-ssr/ssr_middle_three',
       '/react-ssr/ssr_middle_four',
+      '/react-ssr/ssr_middle_five'
     ]
   },
   {
