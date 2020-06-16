@@ -5,7 +5,8 @@ module.exports = [
     title: 'Flutter新体验',
     children: [
       '/Flutter/flutter_setupEnvironment',
-      '/Flutter/flutter_dart'
+      '/Flutter/flutter_dart',
+      '/Flutter/flutter_dart_advanced'
     ]
   }
 ]
