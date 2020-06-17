@@ -50,12 +50,19 @@
 
 另外`PUB_HOSTED_URL`和`FLUTTER_STORAGE_BASE_URL是google`可以配也可以不配，本主搭建环境的时候压根没有管，但是后面创建项目的时候卡的一批，所以推荐配置一下，不同的系统配置参考[配置 Flutter 中国镜像](https://www.jianshu.com/p/897a78aec874)。
 
-不过参考当中写的是在用户环境添加新的变量，而作者我在系统变量和用户变量中都添加了才有效果。而且最好使用下面这个地址：
+不过参考当中写的是在用户环境添加新的变量，而作者我在系统变量和用户变量中都添加了才有效果。而且使用下面这个地址：
 ```javascript
 FLUTTER_STORAGE_BASE_URL: https://mirrors.sjtug.sjtu.edu.cn
 PUB_HOSTED_URL: https://dart-pub.mirrors.sjtug.sjtu.edu.cn
 ```
-并且一定注意要在用户变量下的`path`条目下添加`flutter\bin`的全路径，这个很容易被忽略。
+使用上面这网址在下载`flutter`插件和包的保湿会报502的错误，所以最好去官网查一下：
+```javascript
+FLUTTER_STORAGE_BASE_URL: https://storage.flutter-io.cn
+PUB_HOSTED_URL: https://pub.flutter-io.cn
+```
+
+
+最后一定注意要在用户变量下的`path`条目下添加`flutter\bin`的全路径，这个很容易被忽略。
 
 
 ## 安装Android Studio

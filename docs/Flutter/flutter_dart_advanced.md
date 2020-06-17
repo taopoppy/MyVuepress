@@ -1,4 +1,4 @@
-# Dart语言详解
+# Dart面向对象
 `Dart`语言是一种强类型，静态编程语言，有两个比较重要的特性：
 + <font color=#9400D3>JIT</font>:（just in time）即时编译，`Flutter`在开发期间，使用的是JIT,更快的编译，更快的重载，但是在运行时需要将代码编译成为机器码，直接的感受就是慢。
 + <font color=#9400D3>AOT</font>:（ahead of time）事前编译，可以直接编译机器码（二进制代码），事先将代码编译成为二进制码，APP在`release`（发布）之后，编译方式就是`AOT`

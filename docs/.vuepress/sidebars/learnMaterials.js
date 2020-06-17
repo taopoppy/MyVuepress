@@ -33,6 +33,12 @@ module.exports = [
     ]
   },
   {
+    title:'flutter',
+    children: [
+      '/learnMaterials/flutter'
+    ]
+  },
+  {
     title:'后端汇总',
     children: [
       '/learnMaterials/go_frame',
