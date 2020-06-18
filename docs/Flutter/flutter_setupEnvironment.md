@@ -141,6 +141,9 @@ PUB_HOSTED_URL: https://pub.flutter-io.cn
 
 这样我们的模拟器就能启动了，注意的是第一次启动的时候很慢，需要几分钟
 
+还有一个问题就是下载模拟器默认的安装地址是`C:\Users\Administrator.android\avd`，模拟器一下就是8，9个G，下载到C盘真的不是一个很好的选择，C盘是系统盘，如果下载到C盘运行起来你自己体会有多卡吧，所以我们要修改默认的avd的安装地址，步骤非常简单，我们参考下面这个博客中的方法即可：
++ [Android Studio修改AVD默认存储位置](https://blog.csdn.net/qq_40783957/article/details/84957339?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase)
+
 ## 调试和检测
 + 在你的设备上启用<font color=#DD1144>开发人员选项</font>和<font color=#DD1144>USB调试</font>
 + 使用USB将手机插入电脑，如果有授权提示需要同意授权
