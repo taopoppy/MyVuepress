@@ -12,7 +12,10 @@ module.exports = [
   {
     title: 'Flutter基础知识',
     children: [
-      '/Flutter/flutter_base'
+      '/Flutter/flutter_base1',
+      '/Flutter/flutter_base2',
+      '/Flutter/flutter_base3',
+      '/Flutter/flutter_base4'
     ]
   }
 ]

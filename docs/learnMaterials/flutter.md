@@ -10,6 +10,9 @@
 + [（B站视频）ThinkerBell9](https://space.bilibili.com/431892122?spm_id_from=333.788.b_765f7570696e666f.1)
 + [（B站视频）Flutter UI-Speed Code](https://www.bilibili.com/video/BV1u4411k7Bm?p=17)
 + [（B站视频）宁皓网 - Flutter 入门到精通【合并版】(01-20)](https://www.bilibili.com/video/BV13J411Q7jN?p=1)
++ [（B站视频）仿直聘boss的flutter完整教程](https://www.bilibili.com/video/BV11J411q7Qe)
++ [（B站视频）Flutter开发基础教程_微信克隆](https://www.bilibili.com/video/BV1fW411U7kJ)
+
 ## youtobe
 
 + [（油管视频）The Flutter Way](https://www.youtube.com/channel/UCJm7i4g4z7ZGcJA_HKHLCVw/videos)
@@ -24,3 +27,4 @@
 ## 个人博客
 
 + [（个人博客）一个很棒的Flutter学习资源列表](https://www.devio.org/2018/09/09/awesome-flutter/#%E6%89%AB%E7%A0%81%E5%99%A8)
++ [（简书文章）Flutter 屏幕适配 -- 百分比](https://www.jianshu.com/p/cbb1e1aa2802)
