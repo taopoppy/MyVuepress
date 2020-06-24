@@ -31,6 +31,7 @@ const vueInterviewSidebar = require('./sidebars/vueInterview')
 const reactReduxSiderbar = require('./sidebars/react-redux')
 const learnMaterialsSodebar = require('./sidebars/learnMaterials')
 const reactSSRSiderbar = require('./sidebars/react-ssr')
+const FlutterKnowSidebar = require('./sidebars/Flutter-Know')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -50,7 +51,12 @@ module.exports = {
       { text: '资料', link: '/learnMaterials/'},
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
-      { text: 'Flutter', link: '/Flutter/'},
+      { text: 'Flutter',
+        items: [
+          { text: 'Flutter入门到实战', link: '/Flutter/'},
+          { text: 'Flutter知识详解', link: '/Flutter-Know/'},
+        ]
+      },
       //{ text: '算法世界', link: '/Algorithm/'},
       // { text: '小程序',
       //   items: [
@@ -176,6 +182,7 @@ module.exports = {
       '/construct/': constructSidebar,
       '/Algorithm/': AlgorithmSidebar,
       '/Flutter/': FlutterSidebar,
+      '/Flutter-Know/': FlutterKnowSidebar,
       '/node-RESTful/': nodeRESTfulSidebar,
       '/node-weibo/':nodeWeiboSidebar,
       '/node-BFF/': nodeBFFSidebar,
