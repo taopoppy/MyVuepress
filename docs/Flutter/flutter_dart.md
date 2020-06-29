@@ -32,7 +32,7 @@ void main() {
 void main() {
   int a = 123;
   String name = "taopoppy"; // 明确指明类型
-  var b = 234;              // 运行时推测类型
+  var b = 234;              // 编译时推测类型
   print(a);
   print(b);
 }
@@ -94,7 +94,8 @@ if(!zero) {
 ```
 
 + <font color=#3eaf7c>在`Dart`中，只有布尔值`true`被视为`true`</font>
-```dart
+
+```Dart
 void main() {
  var myNull = null;
  if(myNull == null){

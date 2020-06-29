@@ -1,4 +1,4 @@
-# flutter的组件
+# Flutter的组件基础
 
 ## Flutter包和插件
 `Flutter`提供了一个网址为[https://pub.dartlang.org](https://pub.dartlang.org),我们可以在其中搜索我们需要的插件，比如我们现在要下载和使用一个插件叫做：`flutter_color_plugin`,要在项目当中使用我们只需要下面三步：
