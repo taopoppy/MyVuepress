@@ -1,228 +1,167 @@
-# Flutter的资源和自定义
+# Flutter的手势和点击
 
-## 导入和使用资源
-我们首先导入一部分的图片资源到项目当中的`images`文件夹当中，接着要想在项目当中使用这些资源图片，我们需要先到`pubspec.yaml`当中去配置一下：
-```yaml
-flutter:
-  assets:
-   - images/type_channelgroup.png
-   - images/type_channelgs.png
-   - images/type_channelplane.png
-   - images/type_channeltrain.png
-   - images/type_cruise.png
-   - images/type_district.png
-   - images/type_food.png
-   - images/type_hotel.png
-   - images/type_huodong.png
-   - images/type_shop.png
-   - images/type_sight.png
-   - images/type_ticket.png
-   - images/type_travelgroup.png
-```
-然后我们使用的时候就可以这样使用；
+## 点击事件
 ```dart
-Image(
-	width: 100,
-	height: 100,
-	image:  AssetImage('images/type_channelgroup.png'), // 本地资源文件直接使用AssetImage
-),
-```
-## 修改应用主题
-```dart
-// main.dart
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(DynamicThemeState());
-}
-
-// 需要有状态的StatefulWidget组件
-class DynamicThemeState extends StatefulWidget {
+class GesturePage extends StatefulWidget {
   @override
-  _DynamicThemeStateState createState() => _DynamicThemeStateState();
+  _GesturePageState createState() => _GesturePageState();
 }
 
-class _DynamicThemeStateState extends State<DynamicThemeState> {
-  // 定义默认的主题模式
-  Brightness _brightness = Brightness.light; // 白天
+class _GesturePageState extends State<GesturePage> {
+  String printString = '';
+
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter App',
-      theme: new ThemeData(
-        brightness: _brightness, // 主题设置成为变量
-        primarySwatch: Colors.deepPurple
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('user gesture and click event'),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.arrow_back,color: Colors.white,),
+        ),
       ),
-      home: Scaffold(
-        appBar: AppBar(title: Text('路由的创建和导航'),),
-        body: Column(
+      body: FractionallySizedBox(
+        widthFactor: 1,
+        child: Stack(
           children: <Widget>[
-            RaisedButton(   // 切换主题的按钮
-              onPressed: () {
-                setState(() {
-                  if(_brightness == Brightness.dark) {
-                    _brightness = Brightness.light;
-                  } else {
-                    _brightness = Brightness.dark;
-                  }
-                });
-              },
-              child: Text('change Theme'),
+            Column(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: ()=> _printMsg('点击'), // 一个点击事件的顺序是：onTapDown，onTapUp，onTap
+                  onDoubleTap: ()=> _printMsg('双击'), // 一个双击事件的顺序是：onDoubleTap
+                  onLongPress: ()=> _printMsg('长按'), // 一个长按事件的顺序是：onTapDown，onTapCancel，onLongPress
+                  onTapCancel: ()=> _printMsg('取消'),
+                  onTapUp: (e)=> _printMsg('松开'),
+                  onTapDown: (e)=> _printMsg('按下'),
+                  child: Container(
+                    padding: EdgeInsets.all(50),
+                    decoration: BoxDecoration(color: Colors.redAccent),
+                  ),
+                ),
+                Text(printString),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  _printMsg(String msg) {
+    setState(() {
+      printString += ', ${msg}';
+    });
+  }
+}
+```
+要处理一个区域中的点击事件，需要使用`GestureDetector`组件来进行包裹，然后在内部进行一些不同点击的处理，首先要说的就是三个基础的事件：
++ <font color=#9400D3>onTapDown（按下）</font>：手指按下
++ <font color=#9400D3>onTapUp（松开）</font>：手指松开
++ <font color=#9400D3>onTapCancel（取消）</font>：取消，一般点击后，手指滑动到区域之外再松开会触发取消事件
+
+接着，点击双击长按都是又上面的三个事件作为基础合成的：
++ <font color=#9400D3>onTap（点击）</font>：一个点击事件的顺序是：`onTapDown`（按下），`onTapUp`（松开），`onTap`（点击）
++ <font color=#9400D3>onDoubleTap（双击）</font>：一个双击事件的顺序是：`onDoubleTap`(双击)
++ <font color=#9400D3>onLongPress（长按）</font>：一个长按事件的顺序是：`onTapDown`（按下），`onTapCancel`（取消），`onLongPress`（长按）
+
+
+## 手势处理
+```dart
+import 'package:flutter/material.dart';
+
+class GesturePage extends StatefulWidget {
+  @override
+  _GesturePageState createState() => _GesturePageState();
+}
+
+class _GesturePageState extends State<GesturePage> {
+  double moveX = 0,moveY = 0; // 小球的初始定位为（0，0）
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('user gesture and click event'),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.arrow_back,color: Colors.white,),
+        ),
+      ),
+      body: FractionallySizedBox(
+        widthFactor: 1,
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              left: moveX,
+              top: moveY,
+              child: GestureDetector(
+                onPanUpdate: (e) => doMove(e),
+                onPanStart: (e)=> print('onPanStart'), // 手势开始触发的事件
+                onPanDown: (e)=> print('onPanDown'), // 手势开始触发的事件
+                onPanEnd: (e)=> endMove(e), // 手势结束触发的事件
+                onPanCancel: () => print('onPanCancel'),
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(color:Colors.amber,borderRadius: BorderRadius.circular(36)),
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  // 手势变换的时候触发事件
+  doMove(DragUpdateDetails e) {
+    setState(() {
+      moveY+= e.delta.dy; // 当前位置 = 旧的位置 + 变换的位置
+      moveX+= e.delta.dx; // 当前位置 = 旧的位置 + 变换的位置
+    });
+  }
+  // 手势结束后触发的事件
+  endMove(DragEndDetails e) {
+    setState(() {
+      moveY = 0; // 回归原位
+      moveX = 0; // 回归原位
+      print('onPanEnd');
+    });
+  }
 }
+
 ```
+我们上面这个案例实现了一个可以拖动的小球，在拖动完毕后会自动回归原位。要注意的就是，从你手指按下，然后到做完手势，最后松开手指的整个过程，`GestureDetector`当中的几个事件是按照下面的顺序依次执行的：<font color=#9400D3>onPanDown</font> -> <font color=#9400D3>onPanStart</font> -> <font color=#9400D3>onPanUpdate</font> -> <font color=#9400D3>onPanEnd</font>。其中`onPanUpdate`事件的执行次数和手势的时间有关，会连续触发多次，其他事件都只在一次完整的手势中执行一次。
 
-## 自定义字体
-<font color=#1E90FF>**① 下载字体**</font>
+## 拍照App
+拍照的功能需要借助插件`image_picker`来帮助实现，可以到官网[https://pub.dev/packages/image_picker#-readme-tab-](https://pub.dev/packages/image_picker#-readme-tab-)去查看它的下载和说明。
 
-首先我们可以到[https://fonts.google.com/](https://fonts.google.com/)这个网站上去找一些字体，然后下载下来，下载下来的是个`zip`文件，解压之后是个`.ttf`文件，然后我们将其保存在项目的`fonts`文件夹中，路径为：`flutter-project\flutter_base\fonts\MuseoModerno-VariableFont_wght.ttf`
-
-<font color=#1E90FF>**② 配置文件**</font>
-
-到`pubspec.yaml`当中去配置字体的文件：
-```yaml
-fonts:
-  - family: MuseoModerno
-    fonts:
-      - asset: fonts/MuseoModerno-VariableFont_wght.ttf
-```
-这样就完成了字体的注册。
-
-<font color=#1E90FF>**③ 字体的应用**</font>
-
-
-
-字体的应用有两种，一种是整个`App`都用这种字体，第二种是局部用到特殊字体。整体`APP`都要用到这个字体直接在`main.dart`中修改：
+这里要注意的就是在使用插件的时候，由于是跨平台，在`Android`和`IOS`上同一个插件会有不同的配置，如何配置会有详细的说明，<font color=#1E90FF>而且一般比较好的插件会在github上中有配置案例，可以直接上github去找具体文件当中的配置</font>
 ```dart
-class _DynamicThemeStateState extends State<DynamicThemeState> {
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class PhotoApp extends StatefulWidget {
+  @override
+  _PhotoAppState createState() => _PhotoAppState();
+}
+
+class _PhotoAppState extends State<PhotoApp> {
+  List<File> _images = []; // 设置默认的图片列表
+
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter App',
-      theme: new ThemeData(
-        fontFamily: 'MuseoModerno', // 添加字体的名称即可
-        brightness: _brightness,
-        primarySwatch: Colors.deepPurple
-      ),
-    );
-  }
-}
-```
-然后回到`pubspec.yaml`，点击上面的`Pub get`来添加字体到项目，然后重启即可。
-
-局部使用自定义字体就比较简单了，如下所示：
-```dart
-// fontFamily的值设置成为自定义字体的名称即可
-Text('change Theme',style: TextStyle(fontFamily: 'MuseoModerno'),)
-```
-
-
-## 第三方App
-如何在`flutter`打开第三方`App`呢？我们需要<font color=#DD1144>url_launcher</font>这样一个`flutter`插件来帮助我们，我们到官网去看看用法，地址为[https://pub.dev/packages/url_launcher#-installing-tab-](https://pub.dev/packages/url_launcher#-installing-tab-)
-```dart
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-void main() {
-  runApp(Scaffold(
-    body: Center(
-      child: Column(
-        children: <Widget>[
-          RaisedButton(
-            onPressed: _launchURL,
-            child: Text('打开浏览器'),
-          ),
-          RaisedButton(
-            onPressed: _launchMap,
-            child: Text('打开地图'),
-          ),
-        ]
-      )
-    ),
-  ));
-}
-_launchMap() async {
-  // Android
-  const url = 'geo:52.32.4.917'; // App提供者提供的schema
-  if(await canLaunch(url)) {
-    await launch(url);
-  } else {
-    // IOS
-    const url = 'http://maps.apple.com/?ll=52.32.4.917';
-    if(await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not lanch $url'
-    }
-  }
-}
-_launchURL() async {
-  const url = 'https://flutter.dev';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
-```
-
-## 生命周期
-### 1. Widget生命周期
-
-`Fluter Widget`的生命周期重点讲解`StatefulWidget`的生命周期，因为`StatelessWidget`无状态组件只有`createElement`和`build`两个生命周期方法，但是`StatefulWidget`的生命周期方法按照时期的不同可以分为三组：
-+ <font color=#9400D3>初始化时期</font>：`createState`，`initState`
-+ <font color=#9400D3>更新时期</font>：`didChangeDependencies`，`build`，`didUpdateWidget`
-+ <font color=#9400D3>销毁期</font>：`deactivate`，`dispose`
-
-```dart
-import 'package:flutter/material.dart';
-
-class WidgetLifecycle extends StatefulWidget {
-  // 当我们构建一个新的StatefulWidget时候，会立即调用这个createState
-  // 而且这个方法必须被覆盖，或者说必须重写
-  @override
-  _WidgetLifecycleState createState() => _WidgetLifecycleState();
-}
-
-class _WidgetLifecycleState extends State<WidgetLifecycle> {
-  // 创建一个变量
-  int _count = 0;
-
-
-
-  // initState方法是创建widget时调用的除构造方法外的第一个方法
-  // 类似于android中的onCreate() 和 IOS当中的viewDIdiLoad()
-  // 在这个方法中通常会做一些初始化的工作，比如channel的初始化，监听器的初始化
-  @override
-  void initState() {
-    print('----initState----');
-    super.initState();
-  }
-
-  // 当依赖的State对象改变时会调用
-  // a. 在第一次构建widget时，在initState()之后立即调用此方法
-  // b. 如果StatefulWidget依赖于InheritedWidget，那么当前Stata所依赖InheritedWidget中的变量改变时会再次调用它
-  // InheritedWidget可以高效的将数据在Widget树中向下传递，共享
-  @override
-  void didChangeDependencies() {
-    print('----didChangeDependencies----');
-    super.didChangeDependencies();
-  }
-
-  // 这个是一个必须实现的方法，在这里实现你要呈现的页面内容
-  // 它会在didChangeDependencies()方法之后立即调用
-  // 另外当调用setState之后也会再次调用该方法
-  @override
-  Widget build(BuildContext context) {
-    print('----build----');
     return Scaffold(
       appBar: AppBar(
-        title: Text('flutter widget lifecycle'),
+        title: Text('take photos'),
         leading: GestureDetector(
           onTap: (){
             Navigator.pop(context);
@@ -231,113 +170,87 @@ class _WidgetLifecycleState extends State<WidgetLifecycle> {
         ),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            RaisedButton(
-              onPressed: (){
+        child: Wrap(
+          spacing: 5,
+          runSpacing: 5,
+          children: _genImages(),
+        )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _pickImage,
+        tooltip: '选择图片',
+        child: Icon(Icons.add_a_photo),
+      ),
+    );
+  }
+  _pickImage() {
+    // 底部向上弹出一个对话框
+    showModalBottomSheet(context: context, builder: (context)=>Container(
+      height: 160,
+      child: Column(
+        children: <Widget>[
+          _item('拍照',true),
+          _item('从相册选择',false),
+        ],
+      ),
+    ));
+  }
+
+  _item(String title, bool isTakePhoto) {
+    return GestureDetector(
+      child: ListTile(
+        leading: Icon(isTakePhoto?Icons.camera_alt:Icons.photo_library),
+        title:Text(title),
+        onTap: () => getImage(isTakePhoto),
+      )
+    );
+  }
+
+  // 拍照和相册的操作
+  Future getImage(bool isTakePhoto) async {
+    Navigator.pop(context); // 关闭底部弹出的弹框
+    // 拍照=》ImagePicker.pickImage(source:ImageSource.camera)
+    // 相册=》ImagePicker.pickImage(source:ImageSource.gallery)
+    final image = await ImagePicker.pickImage(source: isTakePhoto?ImageSource.camera:ImageSource.gallery);
+
+    setState(() {
+      _images.add(image);
+    });
+  }
+
+  // 返回选择的图片列表
+  _genImages() {
+    return _images.map((file){
+      return Stack(
+        // 层叠布局，下面是图片，右上角是×号按钮
+        children: <Widget>[
+          ClipRRect(
+            // 圆角效果
+            borderRadius: BorderRadius.circular(5),
+            child: Image.file(file,width: 120,height: 90,fit: BoxFit.fill,),
+          ),
+          Positioned(
+            right: 5,
+            top: 5,
+            child: GestureDetector(
+              onTap: (){
                 setState(() {
-                  _count +=1;
+                  _images.remove(file);// 点击后，从列表中删除自己
                 });
               },
-              child: Text('click',style: TextStyle(color: Colors.deepPurple,fontSize: 26),),
+              child: ClipOval(
+                // 圆角删除按钮
+                child: Container(
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(color: Colors.black54),
+                  child: Icon(Icons.close,size:18,color:Colors.white),
+                ),
+              )
             ),
-            Text(_count.toString())
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 这个方法不常用到，当父组件需要重绘的时候才会调用到
-  // 该方法中会携带一个oldWidget参数，可以将其与当前的widget进行对比以便执行一些额外的逻辑，比如
-  // if(oldWidget.xxx != widget.xxx)
-  @override
-  void didUpdateWidget(WidgetLifecycle oldWidget) {
-    print('----didUpdateWidget----');
-    super.didUpdateWidget(oldWidget);
-  }
-
-  // 这个方法也不常用，在组件被移除时调用，在dispose之前调用
-  @override
-  void deactivate() {
-    print('----deactivate----');
-    super.deactivate();
-  }
-
-  // 这个方法比较常用，在组件被销毁的时候调用
-  // 通常在该方法中执行一些资源的释放工作，比如监听器的卸载，channel的销毁等等
-  @override
-  void dispose() {
-    print('----dispose----');
-    super.dispose();
-  }
-}
-```
-可以看到，我们进入页面点击按钮到点击返回按钮退出页面的整个过程中，生命周期的执行顺序如下：
-+ <font color=#1E90FF>----initState----</font>：进入页面即调用
-+ <font color=#1E90FF>----didChangeDependencies----</font>：进入页面即调用
-+ <font color=#1E90FF>----build----</font>：进入页面即调用
-+ <font color=#1E90FF>----build----</font>：点击按钮重新调用
-+ <font color=#1E90FF>----deactivate----</font>：退出页面即调用
-+ <font color=#1E90FF>----dispose----</font>：退出页面即调用
-
-### 2. Application的生命周期
-```dart
-import 'package:flutter/material.dart';
-
-// 如何获取Flutter应用维度的生命周期
-// WidgetBindingObserver；是一个Widgets绑定观察器，通过它我们可以监听应用的生命周期，语言的变化-
-class AppLifecycle extends StatefulWidget {
-  @override
-  _AppLifecycleState createState() => _AppLifecycleState();
-}
-
-// 1.with来复用WidgetsBindingObserver这个类中已有的特性
-class _AppLifecycleState extends State<AppLifecycle> with WidgetsBindingObserver {
-  // 2. 将此类加入监听器当中
-  @override
-  void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Application lifecycle'),
-        leading: GestureDetector(
-          onTap: (){
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back,color: Colors.white,),
-        ),
-      ),
-      body: Container(
-        child: Text('Application lifecycle'),
-      ),
-    );
-  }
-
-  // 3.重写这个方法，当App的生命周期发生变化，会回调这个方法
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    print('state=$state');
-    if(state == AppLifecycleState.paused) {
-      print('App进入后台');
-    } else if (state == AppLifecycleState.resumed) {
-      print('App进入前台');
-    } else if(state == AppLifecycleState.inactive) {
-      // 不常用，应用程序处于非活动状态，并且未接受用户输入时调用，比如：来了个电话
-    }
-  }
-
-  // 4. 组件销毁的时候移除观察器
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
+          )
+        ],
+      );
+    }).toList();
   }
 }
 ```
