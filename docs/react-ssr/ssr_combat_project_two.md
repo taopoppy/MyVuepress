@@ -176,12 +176,196 @@ app.prepare().then(()=> {
 至于`ctx.respond=false`，是为了绕过`Koa`的内置`response`处理，想要写入原始的`res` 对象而不是让`Koa`处理你的`response`,<font color=#1E90FF>说白了从始至终都是node中的ctx.res和ctx.req，而不适用koa当中自己的ctx.response和ctx.request</font>，如果有问题，可以到[koa官网](https://koa.bootcss.com/)上查看`ctx.res`和`ctx.response`的区别，以及`ctx.req`和`ctx.request`
 
 ### 4. 路由变化的钩子
+什么是`router`的钩子呢? <font color=#1E90FF>在router变化的时候，在变化的前中后都会触发一下不同的事件，通过监听事件我们可以做很多事情</font>，我们在`pages/index.js`当中添加下面的代码：
+```javascript
+// 路由的6个钩子
+const events = [
+	'routeChangeStart',
+	'routeChangeComplete',
+	'routeChangeError',
+	'beforeHistoryChange',
+	'hashChangeStart',
+	'hashChangeComplete'
+]
+
+function makeEvent(type) {
+	return (...args) => {
+		console.log(type, ...args)
+	}
+}
+
+events.forEach(event => {
+	Router.events.on(event, makeEvent(event))
+})
+```
+在正常的路由跳转都会执行三个路由的钩子：<font color=#9400D3>routeChangeStart</font>、<font color=#9400D3>beforeHistoryChange</font>、<font color=#9400D3>routeChangeComplete</font>，接收的参数也都只有一个，就是新的路由路径，比如从`localhost:3000`跳转到`localhost:3000/a/1`，则这些钩子函数能接受到的参数就是`/a/1`。
+
+而`routeChangeError`一般是在路由发生错误的时候触发，这个一般也不常用，而哈希路由变化的时候会触发两个钩子，分别是<font color=#9400D3>hashChangeStart</font>、<font color=#9400D3>hashChangeComplete</font>
+```javascript
+// pages/a.js
+import { withRouter} from 'next/router'
+import Link from 'next/link'
+
+const A = ({ router }) => <div>
+	<Link href="#AAA"><a> AAA {router.query.id}</a></Link>
+	<Link href="#BBB"><a> BBB {router.query.id}</a></Link>
+</div>
+
+export default withRouter(A)
+```
+可以看到，哈希实际上是在一个页面用来定位的，当我们点击上面的`Link`标签，就会打印出`hashChangeStart`和`hashChangeComplete`。
 
 ## 获取数据
+接下来我们来学习一下获取数据，<font color=#DD1144>getInitialProps</font>方法，<font color=#9400D3>getInitialProps方式是挂载在组件上的一个静态的方法，能够帮助我们完成数据获取的工作，我们可以在进入到某个页面中的时候提前通过这个方法获取数据，同时也可以在App当中获取全局的数据</font>
+
+这个方法为什么这么重要，<font color=#DD1144>因为这个方法可以完成客户端和服务端之间数据的同步，这个功能实际上是整个服务端渲染技术当中最大的痛点之一。</font>
+
+所以这个方法实际上是`nextjs`的数据获取规范，我们应该按照规范把数据获取的代码写在这里面。另外`nextjs`还有很多规范在里面，如果你发现按照规范你无法实现你的功能，你可能就要思考换别的框架了，毕竟`nextjs`在众多规范下使用确实比较狭隘。
+```javascript
+// pages/a.js
+import { withRouter} from 'next/router'
+import Link from 'next/link'
+
+const A = ({ router,name }) => <div>
+	<Link href="#AAA"><a> AAA {router.query.id}</a></Link>
+	<Link href="#BBB"><a> BBB {name}</a></Link>
+</div>
+
+// 给组件定义getInitialProps方法
+A.getInitialProps = async () => {
+	const promise = new Promise((resolve)=> {
+		setTimeout(()=>{
+			resolve({
+				name: 'Jokcy'
+			})
+		},1000)
+	})
+
+	return await promise
+}
+
+
+export default withRouter(A)
+```
++ <font color=#DD1144>首先要注意的就是getInitialProps方法返回的内容都会作为A组件的props被传入进A组件，可以看到在上述代码当中返回的是一个对象，对象中有name属性，在A中就会拿到name属性</font>
+
++ <font color=#DD1144>给组件定义getInitialProps方法这种行为只能在pages文件夹中的组件中出现，因为nextjs对pages文件夹下的文件有特殊的路由处理，而在其他文件夹，比如components下的公用组件中定义getInitialProps方法就没啥用</font>
+
++ <font color=#DD1144>这个方法在服务端和客户端都会执行，当然都会执行的意思是如果当前页面是客户端渲染（通过前端路由跳转进入），那就会在客户端执行了一次。如果是服务端渲染（刷新当前页面），那么在服务端执行一次，在客户端不会执行，会直接复用服务端的数据，所以这也是客户端和服务端数据能够同步的关键。</font>
+
++ <font color=#1E90FF>另外我们还能获取App全局的数据，这个是什么意思呢，就是在pages/_app.js当中获取，这个文件是个顶层app的组件，所有在pages当中的其他组件都要调用它，至于到底怎么使用我们在下面的自定义app当中会详细介绍</font>
 
 ## 自定义
 
 ### 1. App自定义
+我们在`pages`当中创建一个`_app.js`文件能够覆盖`next`当中的默认的`app.js`文件。那么这个`_app.js`有哪些作用呢？
+
++ <font color=#9400D3>固定Layout</font>：如果所有页面都有相同的东西或者布局，我们可以在这里进行处理
++ <font color=#9400D3>保持一些公用的状态</font>：使用`redux`的时候，关于初始化和一些数据的处理我们会在`_app.js`当中进行
++ <font color=#9400D3>给页面传入自定义数据</font>：页面在切换的时候都可以给页面传入一些想要传递的数据
++ <font color=#9400D3>自定义错误处理</font>：错误处理的代码也可以在这里书写
+
+<font color=#1E90FF>**① 自定义数据和状态**</font>
+
+我们最开始写的`_app.js`内容如下：
+```javascript
+// pages/_app.js
+import App from 'next/app'
+import 'antd/dist/antd.css'
+
+export default App
+```
+这种写法基本上就是啥作用都没有，和`next.js`当中默认的`app.js`是一模一样的，所以如果我们要自定义的话，就不能直接导出`App`，而要换新的写法：
+```javascript
+// pages/_app.js
+import App, { Container } from 'next/app'
+import 'antd/dist/antd.css'
+
+class MyApp extends App {
+
+	static async getInitialProps({Component}) {
+		// 1. MyApp.getInitialProps中能通过Component拿到具体要渲染页面的getInitialProps方法
+		// 2. 执行具体页面的getInitialProps方法，拿到数据，将数据传入给render当中要渲染的具体页面
+		let pageProps
+		if(Component.getInitialProps) {
+			pageProps = await Component.getInitialProps()
+		}
+		return {
+			pageProps
+		}
+	}
+
+	// 重新定义render方法
+	render(){
+		const { Component, pageProps } = this.props // 3. Component实际就是要渲染的页面
+
+		return(
+			<Container>
+				<Component {...pageProps}/> {/* 4. 将数据传入给要渲染的组件或者页面*/}
+			</Container>
+		)
+	}
+}
+
+export default MyApp
+```
++ <font color=#DD1144>可以看到我们在代码中的注释，我们自定义App必须要走上面的这4步才能正确的渲染出具体的页面</font>
++ <font color=#DD1144>其次，每次页面的切换都会调用MyApp当中的getInitialProps方法</font>
+
+<font color=#1E90FF>**② 自定义布局**</font>
+
+比如我们要在每个页面都定义一个头部，用于导航，我们可以先`components/layout.jsx`:
+```javascript
+// components/layout.jsx
+import Link from 'next/link'
+import { Button } from 'antd'
+
+export default ({children}) => (
+	<>
+		<header>
+			<Link href="/a?id=1" as="/a/1">
+				<Button>A</Button>
+			</Link>
+			<Link href="/test/b">
+				<Button>B</Button>
+			</Link>
+		</header>
+		{children}
+	</>
+)
+```
+接着我们在`pages/_app.js`当中引入即可：
+```javascript
+// pages/_app.js
+import App, { Container } from 'next/app'
+import 'antd/dist/antd.css'
+import Layout from '../components/layout'  // 1. 引入Layout组件
+
+class MyApp extends App {
+	static async getInitialProps({Component}) {
+		let pageProps
+		if(Component.getInitialProps) {
+			pageProps = await Component.getInitialProps()
+		}
+		return {
+			pageProps
+		}
+	}
+	render(){
+		const { Component, pageProps } = this.props
+		return (
+			<Container>
+				<Layout>{/* 2. 使用组件*/}
+					<Component {...pageProps}/>
+				</Layout>
+			</Container>
+		)
+	}
+}
+
+export default MyApp
+```
+
 
 ### 2. Document自定义
 
