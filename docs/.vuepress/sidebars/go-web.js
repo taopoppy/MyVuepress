@@ -2,15 +2,15 @@
 module.exports = [
   '/go-web/',
   {
-		title:'Go-web编程入门',
+		title:'Gin框架入门',
     children: [
-			
+      '/go-web/gin_one',
+			'/go-web/gin_two'
     ]
 	},
 	{
 		title:'Go流媒体网站实战',
     children: [
-			
     ]
   },
 ]

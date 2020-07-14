@@ -15,6 +15,7 @@
 
 ## Go-框架
 + [（GitChat小册）Gin 框架入门实践](https://gitbook.cn/gitchat/column/5dab061e7d66831b22aa0b44)
++ [（B站视频）基于gin框架和gorm的web开发实战](https://www.bilibili.com/video/BV1gJ411p7xC?p=1)
 
 ## Go-Web
 + [（掘金小册）基于 Go 语言构建企业级的 RESTful API 服务](https://juejin.im/book/5b0778756fb9a07aa632301e)
