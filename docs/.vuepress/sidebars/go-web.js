@@ -5,7 +5,9 @@ module.exports = [
 		title:'Gin框架入门',
     children: [
       '/go-web/gin_one',
-			'/go-web/gin_two'
+      '/go-web/gin_two',
+      '/go-web/gin_three',
+      '/go-web/gin_four'
     ]
 	},
 	{
