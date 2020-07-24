@@ -396,3 +396,173 @@ export default testHoc(MyApp) // 2. 对MyApp使用HOC模式
 <font color=#1E90FF>所以我们会使用HOC模式来在next当中去集成redux，这样react的代码和redux的代码就不会混杂写在一起，也十分利于其他功能集成在项目当中，将不同的功能拆分到不同的HOC当中，一层层去包含App组件，以这种方式扩展整个app的功能</font>
 
 ## next集成redux
+将`redux`集成到`next`当中需要考虑两个比较重要的问题，就是<font color=#DD1144>服务端如何写入数据到store</font>和<font color=#DD1144>如何同步服务端的数据到客户端</font>
+
+### 1. store的唯一性
+
+在集成之前我们要来解决一个特别重要的问题就是`store`的唯一性问题，按照之前我们写的代码，代码经过`webpack`打包之后，`store`作为被打包进入的一个模块在服务启动之后是一直运行的，<font color=#1E90FF>所以导致的一个严重的问题就是，所有的用户在服务端渲染的时候实际上公用的是同一个store，某个人修改了store当中的数据后会影响到所有的用户，而客户端却不用考虑这个问题，虽然客户端当中的store也是通用的，但是客户端只代表一个用户而已，不同的使用打开的都是不同的电脑和浏览器，也就是不同的store的拷贝而已</font>
+
+<font color=#9400D3>所以解决的方法也很简单，我们创建store的时候，每次都创建一个不同的store</font>
+
+```javascript
+// store/store.js
+// 返回一个创建store的函数
+export default function initializeStore() {
+	const store = createStore(
+		allReducers,
+		{
+			counter: initialState,
+			user:userInitialState
+		},
+		composeWithDevTools(applyMiddleware(ReduxThunk))
+	)
+	return store
+}
+```
+
+### 2. 集成Redux
+然后因为我们要使用`HOC`模式去集成`redux`到`next`当中去，所以我们将`lib/test-hoc.js`修改成为`lib/with-redux.js`：
+```javascript
+// lib/with-redux.js
+import React from 'react'
+import createStore from '../store/store.js' // 引入创建store的函数
+
+
+const isServer = typeof window ==='undefined' // 判断是否是服务端
+const _NEXT_REDUX_STORE_ = '_NEXT_REDUX_STORE_' // 定义一个变量，用于将store中的数据记录到window对象中的该属性中
+
+function getOrCreateStore(initialState) {
+	// 服务端渲染只在第一次，所以实际上都要在第一次去创造store
+	if(isServer) {
+		return createStore(initialState)
+	}
+
+	// 客户端渲染只在第一次的时候创建，后面都直接用，确保在客户端整个过程中使用的是同一个store
+	if (!window[_NEXT_REDUX_STORE_]) {
+		window[_NEXT_REDUX_STORE_] = createStore(initialState)
+	}
+
+	return window[_NEXT_REDUX_STORE_]
+}
+
+export default (Comp) => {
+	// 将WithReduxApp变为一个class的组件
+	class WithReduxApp extends React.Component {
+		constructor(props) {
+			super(props)
+			// WithReduxApp.getInitialProps导出的对象会通过props传入WithReduxApp组件当中
+			// props.initialReduxState会作为传入参数会覆盖store当中原有的数据
+			this.reduxStore = getOrCreateStore(props.initialReduxState)
+		}
+
+		render() {
+			const {Component, pageProps, ...rest} = this.props
+			if (pageProps) {
+				pageProps.test = '123'
+			}
+
+			return <Comp
+				Component={Component}
+				pageProps={pageProps}
+				{...rest}
+				reduxStore={this.reduxStore} // 把store中的数据传给组件，组件就可以获取到数据
+			/>
+		}
+	}
+
+	// 这里的WithReduxApp.getInitialProps包含了MyApp.getInitialProps的所有特性
+	// getInitialProps会在服务端渲染的时候被执行一次，客户端每次跳转也会被执行
+	// 所以在这里做store的初始化
+	WithReduxApp.getInitialProps = async (ctx) => {
+		const reduxStore = getOrCreateStore()
+
+		let appProps = {}
+		// 如果Comp下面的getInitialProps方法存在
+		if (typeof Comp.getInitialProps === 'function') {
+			appProps = await Comp.getInitialProps(ctx)
+		}
+
+		// 返回的这个对象最终会被序列化成一段字符串写在html当中返回到客户端
+		// 客户端拿到后会将其转换成js对象，再生成一个新的store
+		return {
+			...appProps,
+			initialReduxState: reduxStore.getState()
+		}
+
+	}
+
+	return WithReduxApp
+
+}
+```
+可以看到，我们使用的`store`创建函数`createStore`是可以传入参数的，也就是说除了`store`当中默认有的数据之外，我们可以传递新的数据进入，两者是可以合并的，所以我们修改一下`store`的创建函数：
+```javascript
+// store/store.js
+export default function initializeStore(state) {
+	const store = createStore(
+		allReducers,
+		Object.assign(
+			{},
+			{	// 默认store当中含有的数据
+				counter: initialState,
+				user:userInitialState
+			},
+			// 传递进来的新数据
+			state
+		),
+		composeWithDevTools(applyMiddleware(ReduxThunk))
+	)
+	return store
+}
+```
+
+
+然后我们使用`HOC`模式将`app`包裹起来：
+```javascript
+// pages/_app.js
+import App, { Container } from 'next/app'
+import Head from 'next/head'
+import 'antd/dist/antd.css'
+import Layout from '../components/layout'
+import MyContext from '../lib/my-context'
+import { Provider } from 'react-redux'
+import testHoc from '../lib/with-redux.js' // 1. 引入withReduxApp
+
+
+class MyApp extends App {
+
+	static async getInitialProps(ctx) {
+		const { Component } = ctx  // 2. 从ctx当中拿到Component，Component就是当前要显示的页面组件
+
+		let pageProps
+		if(Component.getInitialProps) {
+			pageProps = await Component.getInitialProps(ctx)
+		}
+		return {
+			pageProps
+		}
+	}
+
+	render(){
+		const { Component, pageProps,reduxStore } = this.props // 3. 拿到withReduxApp传来的reduxStore
+
+		return (
+			<Container>
+				<Head>
+					<title>Taopoppy</title>
+				</Head>
+				<Layout>
+					<Provider store={reduxStore}> {/*4. 传入到Provider供所有组件使用*/}
+						<MyContext.Provider value="test context">
+							<Component {...pageProps}/>
+						</MyContext.Provider>
+					</Provider>
+				</Layout>
+			</Container>
+		)
+	}
+}
+
+export default testHoc(MyApp)
+```
+

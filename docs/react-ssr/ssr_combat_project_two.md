@@ -342,8 +342,9 @@ import 'antd/dist/antd.css'
 import Layout from '../components/layout'  // 1. 引入Layout组件
 
 class MyApp extends App {
-	static async getInitialProps({Component,ctx}) {
+	static async getInitialProps(ctx) {
 		let pageProps
+		const { Component } = ctx
 		if(Component.getInitialProps) {
 			pageProps = await Component.getInitialProps(ctx)
 		}

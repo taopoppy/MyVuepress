@@ -33,7 +33,8 @@ module.exports = [
       '/react-ssr/ssr_combat_project_one',
       '/react-ssr/ssr_combat_project_two',
       '/react-ssr/ssr_combat_project_three',
-      '/react-ssr/ssr_combat_project_four'
+      '/react-ssr/ssr_combat_project_four',
+      '/react-ssr/ssr_combat_project_five'
     ]
   },
 ]
