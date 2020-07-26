@@ -111,3 +111,291 @@ module.exports = {
 然后授权后`github`就会跳转到`redirect_url`指定的那个地址并带上`code`，我们在注册的时候`redirect_url`指定的是`http://localhost:3001/auth`，所以它最终跳转的地址就是`http://localhost:3001/auth?code=93d84b9041add8c47824`
 
 ### 2. 请求token字段
+服务器拿到了`code`之后，需要结合一些参数去`github`服务器上请求`access_token`，请求的相关参数包含下面几个：
++ <font color=#9400D3>client_id和client_secret</font>：这两个是必须的，表示我们拥有客户端权限
++ <font color=#9400D3>code</font>：`code`本身也是必须的，表示用户给我们授权了
++ <font color=#9400D3>redirect_uri和state</font>：和上面的是一样的
+
+下面我们来使用<font color=#DD1144>restlet client</font>这个浏览器插件来发送一下`post`请求来获取一下`access_token`：
+<img :src="$withBase('/react_ssr_oauth_seven.png')" alt="">
+
+可以看到返回给我们的一串字符串`access_token=2429eeb510c604997db54f251c3f88152d81f4b0&scope=gist%2Crepo%2Cuser&token_type=bearer`，其中就包含了`access_token`还有授权的信息，和`token`的类型。<font color=#1E90FF>要注意的是，这个code是一次性的，之前就说过，不能用它来第二次请求access_token，当然它也是有过期时间的，如果已经使用不了就必须到github的授权页面重新授权，让github重新跳转并携带新的code</font>
+
+然后保存一下这个`access_token`，去请求一下`github`用户的信息
++ 请求的地址：`https://api.github.com/user`
++ 请求的头部：`Authorization： token 2429eeb510c604997db54f251c3f88152d81f4b0`
+
+<img :src="$withBase('/react_ssr_oauth_eight.png')" alt="">
+
+## OAuth-code认证和安全
+这种方式保证安全的策略有下面这几个：
++ <font color=#DD1144>一次性的code</font>，因为是一次性`code`，所以即便是泄露了也不会有影响，应该只能用一次
++ <font color=#DD1144>id+secret</font>：这种验证方式就保证了即使`code`被别人先拿到了，别人也不知道`clien_secret`，因为`clien_secret`是保存在我们自己的服务器上的，是不向外暴露的。
++ <font color=#DD1144>redirect_uri</font>：如果参数中的`redirect_uri`和我们一开始注册`OAuth Apps`的时候在`Authorization callback URL`中填的不一样，那么直接就会报错，`code`都不会返回。
+
+## cookie和session
+首先我们创建`server/session-store.js`,书写`session`和`redis`之间相关的方法：
+```javascript
+// server/session-store.js
+// 统一在和session的redis中的数据前面添加一个前缀
+function getRedisSessionId(sid) {
+  return `ssid:${sid}`
+}
+
+class RedisSessionStore {
+  // 接收一个redis的client去操作redis
+  constructor(client) {
+    this.client = client
+  }
+
+  // 获取Redis中存储的session数据
+  async get(sid) {
+    console.log('get session', sid)
+    const id = getRedisSessionId(sid)
+    const data = await this.client.get(id)
+    if (!data) {
+      return null
+    }
+    try {
+      const result = JSON.parse(data)
+      return result
+    }catch (err) {
+      console.error(err)
+    }
+  }
+
+  // 存储session数据到redis(ttl为过期时间)
+  // 外界使用应该使用毫秒，而redis中需要传入秒
+  async set(sid, sess, ttl) {
+    console.log('set session', sid)
+    const id = getRedisSessionId(sid)
+    if(typeof ttl === 'number') {
+      ttl = Math.ceil(ttl / 1000)
+    }
+    try {
+      const sessStr = JSON.stringify(sess)
+      if(ttl) { // 有过期时间
+        await this.client.setex(id, ttl, sessStr)
+      } else { // 无过期时间
+        await this.client.set(id, sessStr)
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  // 从redis当中删除某个session
+  async destroy(sid) {
+    console.log('destroy session', sid)
+    const id = getRedisSessionId(sid)
+    await this.client.del(id)
+  }
+}
+
+module.exports = RedisSessionStore
+```
+然后我们到服务端来书写代码：
+```javascript
+// server.js
+
+const session = require('koa-session')  // 1. 引入session
+const RedisSessionStore = require('./server/session-store.js') // 2. 引入RedisSessionStore
+const Redis = require('ioredis') // 3. 引入Redis
+
+// 3. 创建redis的client（全部使用默认配置）
+const redis = new Redis()
+
+app.prepare().then(()=> {
+	...
+
+	server.keys = ['Taopoppy develop Github App'] // 4. 设置一个给cookie加密的字符串
+	// 5. 配置session的配置
+	const SESSION_CONFIG = {
+		key: 'jid', // cookie的key
+		// maxAge: 60*1000, // 一分钟的过期时间（默认是86400000为一天）
+		store: new RedisSessionStore(redis)
+	}
+
+	// 6. 中间件使用
+	server.use(session(SESSION_CONFIG,server))
+
+	// 7.1. 通过访问localhost:3001/set/user可以设置cookie
+	// 7.2  cookie的key是jid，值是通过server.keys加密{name:"taopoppy",age: 18}这个对象的结果：比如155dew51re51vw1erw55gw-Udklsjsg-wdfjg12fd94
+	// 7.3 session在redis存储的的key就是155dew51re51vw1erw55gw-Udklsjsg-wdfjg12fd94，value是"{\"user\"：{\"name\":\"taopoppy\",\"age\": 18,\"_exprie\":155505366755,\"_maxAge\":86400000}"
+	router.get('/set/user', async (ctx) => {
+		ctx.session.user = {
+			name:"taopoppy",
+			age: 18
+		}
+		ctx.body = 'set session success'
+	})
+
+	// 8. 通过访问localhost:3001/delete/user可以删除cookie
+	router.get('/delete/user', async (ctx) => {
+		ctx.session = null // 设置为null为自动将之前保存的和session相关的数据从redis中删除掉
+		ctx.body = 'destroy session success'
+	})
+	...
+})
+```
+
+## Github OAuth接入
+接下来我们就要正式将其接入，我们分几步去具体实现：
+
+### 1. 创建第三方登录链接
+因为第三方授权的跳转实际上是链接的跳转，我们必须先去拼接一个我们需要的链接：
+```javascript
+// next.config.js
+const withCss = require('@zeit/next-css')
+const config = require('./config.js')   //  1. 引入config，包含client_id和client_server
+
+if (typeof require !== 'undefined') {
+	require.extensions['.css'] = file => {}
+}
+
+// 2. github授权链接的根地址
+const GITHUB_OAUTH_URL = 'https://github.com/login/oauth/authorize'
+// 3. 定义权限(当前只需要user，后续可以写成'user,repo,gits')
+const SCOPE = 'user'
+
+module.exports = withCss({
+	// 4. 在这里写所有的配置项，publicRuntimeConfig可以在客户度和服务端同时拿到
+	publicRuntimeConfig: {
+		GITHUB_OAUTH_URL,
+		OAUTH_URL: `${GITHUB_OAUTH_URL}?client_id=${config.github.client_id}&scope=${SCOPE}`
+	}
+})
+```
+然后我们有了自己拼接的链接，显示在页面上即可
+```javascript
+// pages/index.js
+import getConfig from 'next/config'  // 1. 引入getConfig
+const { publicRuntimeConfig } = getConfig() // 2. 拿到publicRuntimeConfig
+
+
+const Index = ({counter,username,rename,addcount}) => {
+	return (
+		<>
+			...
+			<a href={publicRuntimeConfig.OAUTH_URL}>去登录</a> {/* 3. 显示到页面上*/}
+		</>
+	)
+}
+```
+这样当我们点击登录的链接，就会去`github`上面授权，不过授权完毕后跳转回来的是`http://localhost:3001/auth?code=5b5c56d8d1ee54eb6327`，这个地址我们是没有的，我们需要去创建这样一个路由
+
+### 2. 创建路由
+创建一个`/auth`的路由来处理授权之后`github`跳转来的的地址，当然我们先下载个东西：
+```javascript
+yarn add axios@0.18.0
+```
+```javascript
+// server/auth.js
+const axios = require('axios')
+const config = require('../config.js')
+const { client_id, client_secret,request_token_url } = config.github
+
+module.exports =  (server) => {
+  server.use( async (ctx, next)=> {
+    if(ctx.path === '/auth') { // 如果是localhost:3001/auth就处理
+      const code = ctx.query.code
+      if(!code) {
+        ctx.body = 'code not exist'
+        return
+      }
+      // code如果存在就要去根据code和client_id、client_secret去请求github生成tokne
+      const result = await axios({
+        method: 'POST',
+        url: request_token_url,
+        data: {
+          client_id,
+          client_secret,
+          code
+        },
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      console.log(result.status,result.data)
+
+      // 判断请求token是否成功
+      // 如果code二次使用，github也会返回200，所以要排除这种情况
+      if(result.status === 200 &&(result.data &&!result.data.error)) {
+        ctx.session.githubAuth = result.data
+
+        // 拿到token我们就用token去请求一下用户信息
+        const {token_type, access_token } = result.data
+
+        const userInfoResp = await axios({
+          method: 'GET',
+          url:'https://api.github.com/user',
+          headers: {
+            'Authorization': `${token_type} ${access_token}`
+          }
+        })
+        // console.log(userInfoResp.data)
+				// 将用户信息保存在session当中
+        ctx.session.userInfo = userInfoResp.data
+
+
+        ctx.redirect('/')
+      } else {
+        const errorMsg = result.data && result.data.error
+        ctx.body = `request token failed ${result.message}`
+      }
+
+
+    } else {
+      await next()  // 其他不是/auth不经过这层处理
+    }
+  })
+}
+```
+有了这样一个函数之后，`http://localhost:3001/auth?code=5b5c56d8d1ee54eb6327`这个地址的访问就会经过上面这个中间件，并且结合`code`以及`clien_secret`和`client_id`到`github`服务器请求到`token`，我们使用该`token`获取了用户的信息，并直接保存在`redis`当中，我们到`server.js`当中去使用一下：
+```javascript
+// nextjs-project/server.js
+const auth = require('./server/auth.js')  // 1. 引入auth
+
+app.prepare().then(()=> {
+	...
+	server.use(session(SESSION_CONFIG,server))
+
+	// 2. 配置github OAuth登录，其auth函数必须在session后面
+	auth(server)
+
+	// 3. 编写测试路由
+	router.get('/api/user/info',async(ctx)=> {
+		// 4. 直接从redis当中取出用户信息返回
+		const user = ctx.session.userInfo
+		if(!user) {
+			ctx.status = 401
+			ctx.body = 'Need Login'
+		} else {
+			ctx.body = user
+			ctx.set('Content-Type', 'application/json')
+		}
+	})
+
+```
+然后我们到`pages/index.js`当中去测试一下这个路由
+```javascript
+// pages/index.js
+import { useEffect } from 'react' // 1. 引入useEffect这个钩子
+import axios from 'axios' // 2. 引入axios
+
+const Index = ({counter,username,rename,addcount}) => {
+
+	// 3. 进入组件
+	// 如果在没有登录的情况下请求localhost:3001/api/user/info是请求不成功的
+	// 如果在登录的情况下请求localhost:3001/api/user/info是成功的
+	useEffect(()=> {
+		axios.get('/api/user/info').then(resp => console.log(resp))
+	},[])
+
+
+}
+
+```
+所以当我们没有登录，访问`localhost:3001/`就请求不到用户信息，因为`redis`当中没有，登录之后，回到首页`localhost:3001`，则就会在控制台当中打印出用户信息，到这里为止，整个`Github OAuth`就算接入完成了。
+
+当然，使用用户信息并没有这么简单，而是要走服务端的流程，并且一开始用户信息就存在，我们就应该放在`redux`当中去。
