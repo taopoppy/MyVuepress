@@ -30,6 +30,7 @@ module.exports = [
     children: [
       '/learnMaterials/IM_frame',
       '/learnMaterials/node',
+      '/learnMaterials/xiaochenxu'
     ]
   },
   {
