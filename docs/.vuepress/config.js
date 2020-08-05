@@ -8,6 +8,7 @@ const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
 const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle')
 const jestSidebar = require('./sidebars/jest')
 const AlgorithmSidebar = require('./sidebars/Algorithm')
+const WeiXinRumenSiderbar = require('./sidebars/WeiXin-Rumen')
 const WeiXinSidebar = require('./sidebars/WeiXin')
 const WeiXinCombatSidebar = require('./sidebars/WeiXinCombat')
 const nodeSidebar = require('./sidebars/node')
@@ -58,12 +59,14 @@ module.exports = {
         ]
       },
       //{ text: '算法世界', link: '/Algorithm/'},
-      // { text: '小程序',
-      //   items: [
-      //     { text: '微信小程序入门和云开发', link: '/WeiXin/' },
-      //     { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' }
-      //   ]
-      // },
+      { text: '小程序',
+        items: [
+          { text: '微信小程序入门和实战', link: '/WeiXin-Rumen/'},
+          { text: '微信小程序入门和云开发', link: '/WeiXin/' },
+          { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' }
+
+        ]
+      },
       { text: '工具系列',
         items: [
           { text: 'Jest', link: '/Jest/'},
@@ -195,6 +198,7 @@ module.exports = {
       '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
+      '/WeiXin-Rumen/':WeiXinRumenSiderbar,
       '/WeiXin/':WeiXinSidebar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/node/': nodeSidebar,
