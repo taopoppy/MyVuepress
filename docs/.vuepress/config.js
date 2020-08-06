@@ -11,6 +11,7 @@ const AlgorithmSidebar = require('./sidebars/Algorithm')
 const WeiXinRumenSiderbar = require('./sidebars/WeiXin-Rumen')
 const WeiXinSidebar = require('./sidebars/WeiXin')
 const WeiXinCombatSidebar = require('./sidebars/WeiXinCombat')
+const WeiXinMoneySidebar = require('./sidebars/WeiXinMoney')
 const nodeSidebar = require('./sidebars/node')
 const nodeGraphQLSidebar = require('./sidebars/node-GraphQL')
 const nodeWeiboSidebar = require('./sidebars/node-weibo')
@@ -63,8 +64,8 @@ module.exports = {
         items: [
           { text: '微信小程序入门和实战', link: '/WeiXin-Rumen/'},
           { text: '微信小程序入门和云开发', link: '/WeiXin/' },
-          { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' }
-
+          { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' },
+          { text: '微信支付和分享',link: '/WeiXin-money/'}
         ]
       },
       { text: '工具系列',
@@ -201,6 +202,7 @@ module.exports = {
       '/WeiXin-Rumen/':WeiXinRumenSiderbar,
       '/WeiXin/':WeiXinSidebar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,
+      '/WeiXin-money/': WeiXinMoneySidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
       '/blockchain/': blockchainSidebar,
