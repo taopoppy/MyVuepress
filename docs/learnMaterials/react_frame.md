@@ -1,7 +1,7 @@
 # react资源
 
 ## react-框架
-+ [（慕课视频）React16.4开发简书项目从零基础入门到实战](https://coding.imooc.com/class/229.html)<font color=#DD1144>50%</font>
++ [（慕课视频）React16.4开发简书项目从零基础入门到实战](https://coding.imooc.com/class/229.html)
 + [（B站）精通 React - Mosh](https://www.bilibili.com/video/BV1Sb411P79t)
 + [（掘金小册）React 组合式开发实践：打造企业管理系统五大核心模块](https://juejin.im/book/5b1e15f76fb9a01e516d14a0)
 + [（掘金小册）React Hooks 与 Immutable 数据流实战](https://juejin.im/book/5da96626e51d4524ba0fd237)<font color=#DD1144>0%</font>
