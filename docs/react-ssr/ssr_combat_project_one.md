@@ -208,7 +208,7 @@ OK
 OK
 ```
 
-关于`redis`我们设置和获取数据的命令只需要知道`set`和`get`，虽然`redis`只是一个`key:value`的数据库，但是`value`可以有各种各样的数据结构。当我们我们出了`set`和`get`我们还需要知道`setex`，这个命令可以给`key`设置一个国企时间：
+关于`redis`我们设置和获取数据的命令只需要知道`set`和`get`，虽然`redis`只是一个`key:value`的数据库，但是`value`可以有各种各样的数据结构。当我们我们出了`set`和`get`我们还需要知道`setex`，这个命令可以给`key`设置一个过期时间：
 ```bash
 // 给key:value为name:taopoppy设置一个10秒的过期时间
 127.0.0.1:6379> setex name 10 taopoppy
