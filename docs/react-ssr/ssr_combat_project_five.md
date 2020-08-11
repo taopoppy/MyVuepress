@@ -49,7 +49,7 @@
 
 + <font color=#9400D3>完成认证(2)</font>：在`Github OAuth`的认证界面输入用户名和密码完成登录，并且用户要在授权窗口中点击确认后进行跳转
 
-+ <font color=#9400D3>跳转连接(3)</font>：跳转到浏览器中的某个链接，并携带`code`（比如`github`服务器跳回到我们自己的网站，并携带`code`，如`http://nextjs.w2deep.com/auth?code`=a4e2898b223e6a144f，这个`code`是一次性的，不能通过这个`code`去第二次获取`token`）
++ <font color=#9400D3>跳转连接(3)</font>：跳转到浏览器中的某个链接，并携带`code`（比如`github`服务器跳回到我们自己的网站，并携带`code`，如`http://nextjs.w2deep.com/auth?code=a4e2898b223e6a144f`，这个`code`是一次性的，不能通过这个`code`去第二次获取`token`）
 
 + <font color=#9400D3>服务器拿到code(4)</font>：浏览器向服务端发送请求，服务端拿到跳转中携带的`code`
 
@@ -238,6 +238,10 @@ app.prepare().then(()=> {
 	...
 })
 ```
+
+<img :src="$withBase('/react_ssr_cookie_session.png')" alt="cookie_session">
+
+可以看到当通过`ctx.session.xxx=yyy`设置的时候，服务端会自动在`ctx.body`的返回值中给浏览器种植`cookie`
 
 ## Github OAuth接入
 接下来我们就要正式将其接入，我们分几步去具体实现：

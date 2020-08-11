@@ -37,4 +37,10 @@ module.exports = [
       '/react-ssr/ssr_combat_project_five'
     ]
   },
+  {
+    title:'React_SSR_实战项目',
+    children: [
+      '/react-ssr/ssr_github_one',
+    ]
+  },
 ]
