@@ -201,3 +201,83 @@ export default ({children}) => {
 
 
 ## SSR同步用户信息
+SSR同步用户信息一般发生在什么情况下呢，就是在用户已经登录过后，在`cookie`有效期内，用户重新打开一个`url`,或者用户刷新了当前页面，这都是我们之前说的第一次请求服务端，要走服务端渲染的流程，此时服务端的`session`当中包含了用户的信息，我们要用户信息作为客户端`redux`的初始数据传入，此时我们先来修改`store/store.js`中的代码：
+```javascript
+// store/store.js
+import { createStore,combineReducers,applyMiddleware } from 'redux'
+import ReduxThunk from 'redux-thunk'
+import { composeWithDevTools } from 'redux-devtools-extension'
+
+const userInitialState = {}
+
+function userReducer(state = userInitialState,action) {
+	switch (action.type) {
+		default:
+			return state
+	}
+}
+
+
+const allReducers = combineReducers({
+	user: userReducer
+})
+
+export default function initializeStore(state) {
+	const store = createStore(
+		allReducers,
+		Object.assign({},{
+			user:userInitialState
+		},state),
+		composeWithDevTools(applyMiddleware(ReduxThunk))
+	)
+	return store
+}
+```
+相对于之前，我们只是删掉了其他模块，留下了用户模块，精简了一番，然后为了在请求的过程中都能拿到`session`，我们在`server.js`当中将`ctx.session`赋值给`ctx.req`，因为`nextjs`的处理函数`handle`只能处理`koa`传入的`ctx.req`和`ctx.res`：
+```javascript
+// server.js
+	server.use(async (ctx, next) => {
+		// 1. 在请求进入koa2但还没有进入到nextjs的处理函数handle之前，将ctx.session赋值给ctx.req.session
+		ctx.req.session = ctx.session
+		// 2. 因为ctx.session又进入不了handle，所以要让ctx.req将session带入nextjs 
+		await handle(ctx.req, ctx.res)
+		ctx.respond = false
+	})
+```
+然后就要在初始化`redux`的时候判断如果是服务端要将`session`中的用户信息作为初始值带入，之前的代码是：
+```javascript
+// lib/with-redux.js
+WithReduxApp.getInitialProps = async (ctx) => {
+	const reduxStore = getOrCreateStore() // 即将要做修改的地方
+	ctx.reduxStore = reduxStore
+	...
+}
+```
+修改后的代码：
+```javascript
+// lib/with-redux.js
+WithReduxApp.getInitialProps = async (ctx) => {
+	let reduxStore // 1. 创建reduxStore变量
+
+	// 2. 当服务端渲染的时候执行
+	if (isServer) {
+		const { req } = ctx.ctx
+		const session = req.session
+		
+		// 3. 如果ctx.req.session存在用户信息，将作为初始数据传入redux的初始化函数中
+		if (session && session.userInfo) {
+			reduxStore = getOrCreateStore({
+				user: session.userInfo
+			})
+		} else {
+			reduxStore = getOrCreateStore()
+		}
+	} else {
+		// 4. 否则就走正常的流程
+		reduxStore = getOrCreateStore()
+	}
+
+	ctx.reduxStore = reduxStore
+	...
+}
+```
