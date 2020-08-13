@@ -149,5 +149,106 @@ return (
 
 
 ## 用户登出功能
+用户登出功能要有两个步骤：
++ <font color=#9400D3>首先在页面上我们要通过修改store中的数据来清空客户端store的中user模块中的数据</font>
++ <font color=#9400D3>然后我们需要通过POST请求到后端来清除保存在session当中的用户数据</font>
+
+我们先来为之前登出的按钮添加点击事件：
+```javascript
+// components/layout.jsx
+import { logout } from '../store/store.js'
+
+function MyLayout ({children, user, logout}) { // 3. 引入logout函数
+	...
+
+	// 2. 在点击事件当中去执行props.logout函数
+	const handleLogout = useCallback(() => {
+		logout()
+	}, [])
+
+	const userDropDown = (
+		<Menu>
+			<Menu.Item>
+				<a href="javascript:void(0)" onClick={handleLogout}> {/*1. 给登出添加点击事件*/}
+					登出
+				</a>
+			</Menu.Item>
+		</Menu>
+	)
+
+	return (
+		...
+	)
+}
+
+// 5. 在MyLayout.props.logout函数当中去dispatch一个名字叫做logout的异步action
+const mapDispatchToProps = (dispatch) => {
+	return {
+		logout: () => {
+			dispatch(logout())
+		}
+	}
+}
+
+// 4. 添加mapDispatchToProps
+export default connect(mapStateToProps,mapDispatchToProps)(MyLayout)
+```
+
+然后我们去定义这个异步的`action`：
+```javascript
+// store/store.js
+import axios from 'axios'
+
+const userInitialState = {}
+const LOGOUT = 'LOGOUT'  // 3. 定义个actionType
+
+function userReducer(state = userInitialState,action) {
+	switch (action.type) {
+		// 4. 当action.type为LOGOUT的时候，我们清空store中的user模块的数据即可
+		case LOGOUT: {
+			return {}
+		}
+		default:
+			return state
+	}
+}
+
+// 1. 定义一个异步的action，名字叫做logout
+export function logout() {
+	return dispatch => {
+		axios.post('/logout').then(resp => {
+			if (resp.status === 200) {
+				// 2. 请求成功，就dispatch一个对象类型的action，type为LOGOUT，value为空
+				dispatch({
+					type: LOGOUT
+				})
+			} else {
+				console.log('logout failed', resp)
+			}
+		}).catch(err=> {
+			console.log('logout failed catch', err)
+		})
+	}
+}
+```
+然后页面上的事情做完后，我们来书写服务端的代码，应该只有清空了服务端的`session`，才算登出：
+```javascript
+// server/auth.js
+module.exports = (server) => {
+	...
+
+  server.use( async (ctx, next)=> {
+    const path = ctx.path
+    const method = ctx.method
+    if(path === '/logout' && method === 'POST') {
+      ctx.session = null
+      ctx.body = `logout success`
+    } else {
+      await next()
+    }
+  })
+}
+```
+
 
 ## 维持OAuth之前页面访问
