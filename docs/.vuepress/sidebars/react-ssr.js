@@ -41,6 +41,7 @@ module.exports = [
     title:'React_SSR_实战项目',
     children: [
       '/react-ssr/ssr_github_one',
+      '/react-ssr/ssr_github_two'
     ]
   },
 ]

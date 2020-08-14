@@ -2,21 +2,8 @@
 module.exports = [
   '/typescript/',
   {
-    title: '基础部分',
+    title: 'TypeScript语法入门',
     children: [
-     
     ]
   },
-  {
-    title: '进阶部分',
-    children: [
-      
-    ]
-  },
-  {
-    title: '知识整合',
-    children: [
-      
-    ]
-  }
 ]

@@ -2,7 +2,6 @@ const constructSidebar = require('./sidebars/construct')
 const typescriptSidebar = require('./sidebars/typescript')
 const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
 const FrontendSidebar = require('./sidebars/Front-end')
-const typescriptAxiosFontSidebar = require('./sidebars/typescript-axios-font')
 const FlutterSidebar = require('./sidebars/Flutter')
 const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
 const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle')
@@ -102,14 +101,13 @@ module.exports = {
           { text: 'node微服务',link: '/node-microService/'}
         ]
       },
-      // {
-      //   text: 'TS系列',
-      //   items: [
-      //     { text: 'TypeScript入门', link: '/typescript/' },
-      //     { text: 'TS重构axios前置学习', link: '/typescript-axios-font/' },
-      //     { text: 'TS重构axios项目开发', link: '/typescript-axios/' }
-      //   ]
-      // },
+      {
+        text: 'TS系列',
+        items: [
+          { text: 'TypeScript入门与实战', link: '/typescript/' },
+          { text: 'TS重构axios项目开发', link: '/typescript-axios/' }
+        ]
+      },
       {
         text: 'react',
         items: [
@@ -190,13 +188,12 @@ module.exports = {
       '/node-RESTful/': nodeRESTfulSidebar,
       '/node-weibo/':nodeWeiboSidebar,
       '/node-BFF/': nodeBFFSidebar,
-      '/typescript/': typescriptSidebar,
       '/Jest/': jestSidebar,
       '/vue-ssr/':vueSSRSidebar,
       '/vue-interview/': vueInterviewSidebar,
       '/Webpack/': WebpackSidebar,
+      '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
-      '/typescript-axios-font/':typescriptAxiosFontSidebar,
       '/Front-end/': FrontendSidebar,
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
       '/WeiXin-Rumen/':WeiXinRumenSiderbar,
