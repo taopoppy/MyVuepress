@@ -1,9 +1,12 @@
 // typescript 基础语法学习
 module.exports = [
-  '/typescript/',
+  "/typescript/",
   {
-    title: 'TypeScript语法入门',
+    title: "TypeScript语法入门",
     children: [
-    ]
+      "/typescript/ts-base-one",
+      "/typescript/ts-base-two",
+      "/typescript/ts-base-three",
+    ],
   },
-]
+];

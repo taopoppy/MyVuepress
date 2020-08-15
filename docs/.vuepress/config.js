@@ -33,6 +33,8 @@ const reactReduxSiderbar = require('./sidebars/react-redux')
 const learnMaterialsSodebar = require('./sidebars/learnMaterials')
 const reactSSRSiderbar = require('./sidebars/react-ssr')
 const FlutterKnowSidebar = require('./sidebars/Flutter-Know')
+const reactAntdSiderbar = require('./sidebars/react-antd')
+
 
 module.exports = {
   title: 'TaoPoppy',
@@ -116,6 +118,7 @@ module.exports = {
           // { text: 'React去哪儿网火车票PWA', link: '/react-quna/'},
           { text: 'React+Redux入门详解', link: '/react-redux/' },
           { text: 'React服务器渲染原理解析', link: '/react-ssr/'},
+          { text: 'React+Typescript开发组件库', link: '/react-antd/'}
           // { text: 'React+Next.js+Koa2', link: '/react-next/' },
           // { text: 'React源码深度解析', link: '/react-yuanma/'}
         ]
@@ -214,25 +217,9 @@ module.exports = {
       '/Beego/': BeegoSidebar,
       '/node-GraphQL/': nodeGraphQLSidebar,
       '/learnMaterials/': learnMaterialsSodebar,
-      '/react/':[
-        '/react/',   // 这个就是react文件夹下面额README.md文件。不是下拉的格式
-        {
-          title: 'react',
-          children: [
-            '/react/react1',
-            '/react/react2'
-          ]
-        },
-        {
-          title: 'vue',
-          children:[
-            '/react/vue1',
-            '/react/vue2'
-          ]
-        }
-      ],
       '/react-redux/': reactReduxSiderbar,
-      '/react-ssr/':reactSSRSiderbar
+      '/react-ssr/':reactSSRSiderbar,
+      '/react-antd/': reactAntdSiderbar
     }
   }
 }
