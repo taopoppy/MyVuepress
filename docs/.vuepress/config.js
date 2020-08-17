@@ -34,7 +34,7 @@ const learnMaterialsSodebar = require('./sidebars/learnMaterials')
 const reactSSRSiderbar = require('./sidebars/react-ssr')
 const FlutterKnowSidebar = require('./sidebars/Flutter-Know')
 const reactAntdSiderbar = require('./sidebars/react-antd')
-
+const WeiXinQuanZhanSidebar = require('./sidebars/WeiXin-Quanzhan')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -64,6 +64,7 @@ module.exports = {
       { text: '小程序',
         items: [
           { text: '微信小程序入门和实战', link: '/WeiXin-Rumen/'},
+          { text: '微信小程序全栈开发实战', link: '/Weixin-quanzhan/'},
           { text: '微信小程序入门和云开发', link: '/WeiXin/' },
           { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' },
           { text: '微信支付和分享',link: '/WeiXin-money/'}
@@ -203,6 +204,7 @@ module.exports = {
       '/WeiXin/':WeiXinSidebar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/WeiXin-money/': WeiXinMoneySidebar,
+      '/Weixin-quanzhan/': WeiXinQuanZhanSidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
       '/blockchain/': blockchainSidebar,
