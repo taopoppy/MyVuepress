@@ -44,7 +44,11 @@
 
 + <font color=#1E90FF>快捷键需要在编辑区域点击F1进行查看和选择</font>
 
-+ <font color=#1E90FF>项目的配置信息可以在设置-> 项目设置中看到，也可以在右上角的详情中看到</font>
++ <font color=#1E90FF>项目的配置信息可以在设置-> 项目设置中看到，也可以在右上角的详情中看到，在新版的小程序当中我们要特别注意勾选下面三个选项</font>
+  + <font color=#DD1144>增强编译</font>：帮助小程序使用一些更高阶的ES语法
+  + <font color=#DD1144>使用npm模块</font>：现在小程序可以使用npm包
+  + <font color=#1E90FF>不校验合法域名，TLS版本以及HTTPS证书</font>：小程序上线是一定要用`https`的`api`接口，但是在开发阶段一般都是`http`的接口用于测试，所以要勾选
+  <img :src="$withBase('/weixin_shezhi.png')" alt="小程序项目设置">
 
 + <font color=#9400D3>小程序的调试可以打印输出，也可以断点调试，特别要说明的断点调试是要在调试面板中的Sources中，在app.js？[sm]中打断点，然后重新点击上面的编译，程序就会停在断点处</font>
   <img :src="$withBase('/weixin_rumen_tiaoshi.png')" alt="断点调试">
@@ -54,3 +58,45 @@
   + <font color=#1E90FF>Sources</font>: 源文件
   + <font color=#1E90FF>Network</font>：监听请求
   + <font color=#1E90FF>Storage</font>：缓存情况
+
+关于编辑器的其他功能，我们在后面学习的时候再具体的介绍。
+
+## 小程序的基本结构
+
+### 1. 小程序的基本单位-Page
+按照约定俗称，小程序是由一个个的页面组成的，这些页面的文件都放在`pages`文件夹当中，但是也并非页面的文件只能放在`pages`当中，什么文件是页面需要看配置，在<font color=#DD1144>app.json</font>文件当中，所以的页面都要写在`pages`这个选项当中，才能成为小程序的页面：
+```javascript
+// app.json
+{
+  "pages":[
+    "pages/index/index",
+    "pages/logs/logs"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarTextStyle":"black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
+```
+
+<font color=#DD1144>虽然页面是小程序一个非常重要的组件，但是实际上在小程序当中，一切都是组件，这个概念非常重要</font>，接着可以看到，每个页面都是一个文件夹，下面有四个不同类型的文件，分别是 
+
++ <font color=#1E90FF>.js</font>：页面行为（英雄的技能）
++ <font color=#1E90FF>.json</font>：页面配置（英雄的天赋和符文）
++ <font color=#1E90FF>.wxml</font>：页面骨架（不同的英雄）
++ <font color=#1E90FF>.wxss</font>： 页面样式（英雄的皮肤）
+
+和`web`开发大体是一样的，只不过多了一个页面的配置，页面在小程序这个容器当中处于什么状态，如何显示都可以通过页面的`json`文件进行配置。当然这四种文件在不同的页面也不一定都需要，这些文件也不需要想`web`开发一样互相引入才能使用，只需要保证都是同一个文件名即可。
+
+### 2. 全局配置
++ `app.js`、`app.json`、`app.wxss`是三个程序级别的文件，不能修改名称，比如`app.json`和`app.wxss`当中的配置会在所有的页面生效，有点类似于我们在`web`开发当中写页面样式和全局样式一样，只不过对于相同的属性，程序会采用就近原则，即页面样式会覆盖全局样式中相同的配置。
+
++ `app.js`当中包含了应用程序的很多声明周期，这个和`react`或者`vue`当中的组件声明周期有点类似，这个我们后面会详细讲解。
+
++ `project.config.json`是项目的配置文件，比如你设置了使用`npm`，增强编译等项目设置，都会保存在文件当中，该项目在别的地方打开，会按照该文件中的设置启动，运行。有点类似于`.vscode`，项目在任何电脑上的`vscode`打开都是相同的方式和配置。
+
++ `sitemap.json`是关于搜索的配置文件，有兴趣可以在文件中给出的地址参阅文档。
