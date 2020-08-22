@@ -454,3 +454,6 @@ Search.getInitialProps = async ({ctx})=> {
 
 export default withRouter(Search)
 ```
+开发完毕后，我们来看看整体效果：
+
+<img :src="$withBase('/react_ssr_github_search_page.png')" alt="搜索页面">
