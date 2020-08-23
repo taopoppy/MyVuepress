@@ -240,9 +240,11 @@ function Index({userRepos, userStaredRepos,user,router}) {
 ## 制作Readme页面
 关于请求到一个仓库的`Readme`信息后，信息以`base64`的字符串保存在返回信息的`content`当中，我们首先要将其通过`atob`这个全局方法解码正确的`markdown`字符串，然后再通过将`markdown-it`转换成为`html`并显示在网页上
 
-但是对于服务端渲染来说：没有`window`对象，自然就没有`atob`方法，我们可以通过在`nodejs`全局添加`atob`方法来实现，下载`atob`：
+但是对于服务端渲染来说：没有`window`对象，自然就没有`atob`方法，我们可以通过在`nodejs`全局添加`atob`方法来实现，下载`atob`,顺便也把`markdown-it`和`github-markdown-css`也下载了
 ```javascript
 yarn add atob@2.1.2
+yarn add markdown-it@8.4.2
+yarn add github-markdown-css@3.0.1
 ```
 ```javascript
 // server.js
@@ -254,5 +256,56 @@ global.atob = atob
 接着我们就来编写`pages/detail/index.js`页面：
 ```javascript
 // pages/detail/index.js
-```
+import withRepoBasic from '../../components/with-repo-basic'
+import api from '../../lib/api'
+import MDRenderer from '../../components/MarkdownRenderer' // 1. 引入markdown组件
 
+function Detail({readme}){
+	return <MDRenderer content={readme.content}  isBase64={true}/> // 2. 传入字符串
+}
+
+Detail.getInitialProps = async ({ctx}) => {
+	const { owner, name } = ctx.query
+
+	const readmeResp = await api.request({
+		url: `/repos/${owner}/${name}/readme`
+	},ctx.req, ctx.res)
+
+	return {
+		readme: readmeResp.data
+	}
+
+}
+
+export default withRepoBasic(Detail,'index')
+```
+那么我们来看具体的我们自定义的`MDRenderer`组件是什么样子，我们创建`components/MarkdownRenderer.jsx`:
+```javascript
+// components/MarkdownRenderer.jsx
+import { memo, useMemo} from 'react' // 7 因为MarkdowRenderer只依赖props，所以使用memo优化
+import MarkdownIt from 'markdown-it' // 1. 引入MarkdownIt
+import 'github-markdown-css'  // 2. 引入github-markdown-css样式，markdown-body包含在其中
+
+const md = new MarkdownIt({
+	html:true, // 3. markdown当中html语法直接生成html代码
+	linkify: true // 4. markdown中的网站链接是一个真的链接，而不是一个字符串
+})
+
+
+// 5. 因为atob直接转换中文会出问题，需要将base64转换成为utf8
+function b64_to_utf8(str) {
+	return decodeURIComponent(escape(atob(str)))
+}
+
+export default memo(function MarkdowRenderer({ content, isBase64}) {
+	// 6. 是base64的字符串就进行转换
+	const markdown = isBase64 ? b64_to_utf8(content): content
+	// 8. markdown不发生变化，html就不变化
+	const html = useMemo(() => md.render(markdown), [markdown])
+
+	return <div className="markdown-body">
+		<div dangerouslySetInnerHTML={{__html:html}} /> {/* 9.展示html*/}
+</div>
+})
+```
+## 打包分析
