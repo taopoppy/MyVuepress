@@ -309,3 +309,104 @@ export default memo(function MarkdowRenderer({ content, isBase64}) {
 })
 ```
 ## 打包分析
+首先我们来安装几个工具：
+```javascript
+yarn add @zeit/next-bundle-analyzer
+yarn add cross-env@5.2.0
+```
+然后我们去修改`next.config.js`:
+```javascript
+// next.config.js
+const withBundleAnalyzer = require('@zeit/next-bundle-analyzer')  // 1. 引入withBundleAnalyzer
+
+
+if (typeof require !== 'undefined') {
+	require.extensions['.css'] = file => {}
+}
+
+// 2. 外层包裹
+module.exports = withBundleAnalyzer(withCss({
+	publicRuntimeConfig: {
+		GITHUB_OAUTH_URL:config.GITHUB_OAUTH_URL,
+		OAUTH_URL: config.OAUTH_URL
+	},
+	// 3. 下面全是相关配置
+	// analyzeServer: ["server", "both"].includes(process.env.BUNDLE_ANALYZE), // 4. 我们这里不去看服务端的js依赖关系，不需要配置这项
+  analyzeBrowser: ["browser", "both"].includes(process.env.BUNDLE_ANALYZE),
+  bundleAnalyzerConfig: {
+    server: {
+      analyzerMode: 'static',
+      reportFilename: '../bundles/server.html'
+    },
+    browser: {
+      analyzerMode: 'static',
+      reportFilename: '../bundles/client.html'
+    }
+  }
+}))
+```
+然后在`package.json`当中去配置一个命令：
+```javascript
+// package.json
+{
+  "scripts": {
+    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build"
+  },
+}
+```
+接着使用下面的命令来生成依赖图：
+```javascript
+npm run analyze:browser
+```
+
+<img :src="$withBase('/react_ssr_github_analyze.png')" alt="分析图">
+
+这个图上面可以看到左边黄色的部分就是整个项目的公用的打包文件，然后右侧是我们写的几个页面的相关打包的文件依赖图
+
+### 1. dynamic
+我们针对`detail`这个页面进行组件的异步加载，然后看看在依赖图上有什么不同的地方:
+```javascript
+// pages/detail/index.js
+// 同步加载
+// import MDRenderer from '../../components/MarkdownRenderer'
+
+// 异步加载
+import dynamic from 'next/dynamic'
+const MDRenderer = dynamic(
+	()=> import('../../components/MarkdownRenderer'),
+	{
+		loading: () => <p>loading</p>
+	}
+)
+```
+接着我们重新分析，执行`npm run analyze:browser`
+
+然后我们分析使用同步加载的时候的依赖图和使用异步加载的依赖图，先看同步加载的依赖图：
+
+<img :src="$withBase('/react_ssr_github_detail.png')" alt="detail分析图">
+
+<font color=#DD1144>当我们同步加载的时候，访问/detail/xxx页面的时候就会去请求detail.js这个js文件，而这个文件包含了两个大部分的内容，如上图第一大部分就是左边红框中的node_modules部分，第二部分就是右侧红框中的pages部分，因为之前我们以HOC的方法使用with-repo-basic的东西包裹了detail部分，所以基本上右侧红框中的上半部分就是with-repo-basic的内容，然后下半部分就是detail一些其他部分，相关大小在上面的图中都可以看到</font>
+
+<font color=#DD1144>另外，我们在dynamic方法中提供的第二个参数loading是个函数，函数的返回值将作为异步加载中给用户显示的临时组件，一般我们这里都会写一个什么等待中，或者等待的动画组件，避免在异步加载的过程中给用户显示一片空白</font>
+
+接着我们来分析使用异步加载的时候的依赖图；
+
+<img :src="$withBase('/react_ssr_github_dynamic.png')" alt="异步加载分析图">
+
+<font color=#DD1144>当我们使用了异步加载MDRenderer这个组件，访问/detail/xxx页面的时候就会去请求detail.js和1.js两个文件，也就是变成了两个http的请求，增加请求数量当然是不好的，但是好的一点是，因为上图左边青绿色部分基本都是node_module部分的东西，所以在请求的时候哈希值不会变，就会在浏览器中进行长缓存</font>
+
+### 2. 剔除moment多余的locale
+在上面的图中，无论是异步加载或者同步加载，在左侧黄色部分中的`moment.js`当中存在很多不需要`locale`，这个如果你做过多语言你就知道，这个是和不同国家语言相关的东西，在我们这个项目中是不需要的，所以我们需要修改一下配置：
+```javascript
+// next.config.js
+const webpack = require('webpack') // 1. 引入webpack
+
+module.exports = withBundleAnalyzer(withCss({
+	webpack(config) { // 2. 配置去除locale不需要的语言文件
+		config.plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/,/moment$/))
+		return config
+	},
+	...
+}))
+```
+然后我们重新分析，就会发现`moment.js`的大小一下从500多k变成了100多k。
