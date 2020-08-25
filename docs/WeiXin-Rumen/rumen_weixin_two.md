@@ -42,3 +42,68 @@
 使用`rpx`的好处就是，设计师给的750px设计稿，你在小程序使用`px`（实际在使用`pt`）,就要除以2，而`px`（实际上是`pt`）换算成`rpx`又要乘2，一来一回相当于没有变，所以可以得到结论：<font color=#9400D3>在iphone6之下，设计师给多大px，在小程序就写多大rpx，比例为1:1</font>
 
 <font color=#1E90FF>使用rpx也并不是万能的，比如有些字的大写就不需要自适应，在机型小的上面字就特别小，在机型大的屏幕上字就特别大，这个就很奇怪</font>
+
+
+## 起始页
+<font color=#1E90FF>flex称为容器布局，它最大的特点就是通过在容器上编写css可以控制容器内部组件的布局方式</font>
+
+文字居中有两种方式:
++ <font color=#DD1144>第一种就是文字的容器使用text-align：center使容器中的文字水平居中，文字本身使用line-height，值和容器高度保持一致，使文字在容器的水平居中</font>  
++ <font color=#DD1144>直接给文字的容器使用flex布局，display:flex;align-items: center;justify-content: center;</font>
+
+最后要说的就是小程序内置的`button`极其不好用，建议自己编写`view`来自己实现，样式和点击事件都很好控制。
+
+<font color=#DD1144>给小程序当前的页面添加背景色，需要给隐藏的page标签添加背景色，这个一点比较重要</font>
+
+有了上面的知识，我们来写一个简单的起始页：
+```html
+<!-- welcome.wxml -->
+<view class="container">
+  <image class="avatar" src="/images/avatar/1.png" />
+  <text class="motto">hello,taopopy</text>
+  <view class="journey-container">
+    <text class="journey">开启小程序之旅</text>
+  </view>
+</view>
+```
+```css
+/* pages/welcome/welcome.wxss */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 200rpx;
+  height: 200rpx;
+  margin-top: 160rpx;
+}
+
+.motto {
+  margin-top: 100rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.journey-container {
+  border: 1px solid #405f80; /* 一般边框不要写rpx */
+  width: 200rpx;
+  height: 80rpx;
+  border-radius: 5px;
+  text-align: center; /* 容器中的文字水平居中*/
+  font-weight: bold;
+  margin-top: 200rpx;
+}
+
+.journey {
+  font-size: 22rpx;
+  color: #405f80;
+  line-height: 80rpx;/* 字体的行高设置和容器一样。则文字垂直居中*/
+}
+
+page {
+  background-color: #b3d4db; /* 给整个页面添加背景色*/
+}
+```
