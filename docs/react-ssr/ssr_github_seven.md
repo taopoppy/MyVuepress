@@ -2,6 +2,9 @@
 + <font color=#9400D3>GET /repos/:owner/:repo/issues
 </font>：根据owner和repo来获取仓库Issues信息（[List repository issues](https://developer.github.com/v3/issues/#list-repository-issues)))）
 
++ <font color=#9400D3>GET /search/users
+</font>：查询用户（[Search users](https://developer.github.com/v3/search/#search-users)))）
+
 ## Issues页面的开发
 ```javascript
 // pages/details/issues.js
@@ -142,7 +145,9 @@ export default withRepoBasic(Issues,'issues')
 <img :src="$withBase('/react_ssr_github_issues_pages.png')" alt="issues页面">
 
 ## 创建用户搜素组件
-关于搜索的组件，我们之前在导航栏中做的那个搜索是比较贴近`ToB`，也就是面向用户，下面的这个搜索我们将采用一种中后台的方式去解决：
+关于搜索的组件，我们之前在导航栏中做的那个搜索是比较贴近`ToB`，也就是面向用户，下面的这个搜索我们将采用一种中后台的方式去解决.
+
+首先在[https://developer.github.com/v3/issues/#list-repository-issues](https://developer.github.com/v3/issues/#list-repository-issues)当中可以看到有很多`Parameters`，这些`Parameters`可以帮助我们进行删选，当然我们不会所有的都用，其中`state`、`creator`、`labels`是我们关注的几个比较重要的搜索条件
 
 
 ## Issues搜索功能
