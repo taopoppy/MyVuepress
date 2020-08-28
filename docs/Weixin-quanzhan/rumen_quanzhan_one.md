@@ -172,4 +172,38 @@ Page({
 + <font color=#1E90FF>wcc是WXML的编译器，用于将WXML文件编译成为Javascript代码</font>
 + <font color=#1E90FF>wcsc是WXSS编译器，负责将WXSS文件编译成为Javascript代码</font>
 
-小程序的视图层是在`Polymer`框架的基础之上，基于`web component`标准实现的
+小程序的视图层是在`Polymer`框架的基础之上，基于`web component`标准实现的，<font color=#1E90FF>WXML文件和WXSS文件编辑的Javascript代码和本身的JS逻辑代码会在内存当中创建一个虚拟DOM，关于运行时在持续更新状态下的数据更新，都是基于虚拟DOM实现的视图渲染，这是为了提高渲染效率</font>
+
+<img :src="$withBase('/weixinxiaochengxu_yuanshengzujian.png')" alt="">
+
+如上图，小程序除了一般的视图组件，还有原生组件，<font color=#DD1144>小程序一般将视图组件放在下面，将解析后生成的原生组件放在一般组件的上面，这个小程序在视图上复杂的地方</font>
+
+## 逻辑线程的实现
+### 1. 生命周期函数
+在小程序的页面生命周期中，有5个比较重要的生命周期函数，<font color=#9400D3>onLoad</font>、<font color=#9400D3>onShow</font>、<font color=#9400D3>onReady</font>、<font color=#9400D3>onHide</font>、<font color=#9400D3>onUnload</font>这6个生命周期函数，这些生命周期函数在整个的逻辑线程中都有体现：
+
+<img :src="$withBase('/weixinxiaochengxu_luojixiaochengtu.png')" alt="">
+
++ 当一个页面启动时，首先启动的是`onLoad`和`onShow`事件，加载完毕页面可以显示了
++ 当视图初始化装载完成以后，视图线程通过`Notify`通知逻辑线程组件已经准备好
++ 接着逻辑线程将初始化的`Data`数据发给视图线程
++ 由视图线程渲染，此时视图进入渲染状态，即图中的`First Render`
++ 视图层通知逻辑线程即将开始渲染，派发给逻辑线程`onReady`事件
++ 监听到`onReady`事件代表页面可以交互了，视图进入持续渲染状态
+
++ 在运行状态中，用户输入了事件，会触发逻辑线程的事件函数，事件函数执行之后，又通过`setData`向视图线程发送更新数据
++ 当小程序进入后台状态时，逻辑线程派发`onHide`事件
++ 当小程序进入前台状态时，逻辑线程派发`onShow`事件
++ 当小程序被销毁时，逻辑线程派发`onUnload`事件
+
+### 2. 逻辑线程的四个状态
++ <font color=#9400D3>初始化状态</font>：启动服务线程所需要的基本功能，系统的初始化工作完毕就调用自定义的`onLoad`和`onShow`，等待界面线程的初始化完成信号（上图中就是Start和Created两个部分）
++ <font color=#9400D3>等待激活状态</font>：接收到视图线程初始化完成信号后，将初始化数据发送给视图线程，等待界面线程完成初次渲染（上图中就是waiting notify部分）
++ <font color=#9400D3>激活状态</font>：受到界面线程发送来的首次渲染完成的信号后，进入激活状态，即小程序的正常运行状态，调用自定义的`onReady`函数（上图中就是Active的部分）
++ <font color=#9400D3>后台运行状态</font>：虽然在这个状态下也可以通过`setData`发送更新数据，但是这个是应该避免的（上图中就是Alive部分）
+
+
+## 总结
++ <font color=#DD1144>小程序采用的是双线程架构，两个线程都通过WeixinJSBridge与微信Native底层进行通讯，包括两者之间进行事件与数据的交换，也是通过它完成的，所以硬件能力和平台能力也是WeixinJSBridge间接提供的</font>
+
++ <font color=#DD1144>由于setData在频繁更新和大数据更新上有瓶颈，影响渲染效率，所以微信引入了WXS编程语言，一般从后端接口接收回来的初始化数据在页面onLoad之前，就塞在Data数据之中，用于视图的初始化渲染。后续的视图交互和更新，如果不与后台有关，就使用WXS语言直接在视图里完成，以便提高效率</font>
