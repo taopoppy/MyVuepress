@@ -46,7 +46,8 @@ module.exports = [
       '/react-ssr/ssr_github_four',
       '/react-ssr/ssr_github_five',
       '/react-ssr/ssr_github_six',
-      '/react-ssr/ssr_github_seven'
+      '/react-ssr/ssr_github_seven',
+      '/react-ssr/ssr_github_eight'
     ]
   },
 ]
