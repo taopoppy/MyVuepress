@@ -82,3 +82,42 @@
 有人认为这个是因为安全域名导致的，就是说字体文件中的`URL`没有位于安全域名内，访问被拒绝，<font color=#1E90FF>其实不是的，因为WXSS内加载图片和字体文件资源是允许使用外域的地址的，可能是因为兼容性导致的，建议使用ttf和woff格式的字体</font>，如果不行就使用`SVG`的方法。
 
 ### 2. 自定义图标的实现
+首先到`iconfont`阿里图标官网上去搜索几个图标，然后在将每个图标加入购物车，然后在购物车中选择添加到项目，随便哪个项目都行，接着就跳转到这个项目中，接着我们点击<font color=#DD1144>查看在线链接</font>，如下图：
+
+<img :src="$withBase('/weixinxiaochengxu_font_one.png')" alt="字体">
+
+然后就会帮助我们自动生成一段关于`@font-face`的代码,另外在每个图标下面也有属于该字体的`Unicode`码，这个码在小程序中定义字体的时候，用来区别每个不同的图标。
+
+<img :src="$withBase('/weixinxiaochengxu_font_two.png')" alt="face_font">
+
+如果你要在整个当中定义所有的图标，可以在`app.wxss`当中添加下面代码：
+```css
+@font-face {
+  font-family: 'taopoppy';  /* 给字体定义名称taopoppy */
+  src: url('//at.alicdn.com/t/font_1085003_jp62blmupcc.eot');
+  src: url('//at.alicdn.com/t/font_1085003_jp62blmupcc.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_1085003_jp62blmupcc.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_1085003_jp62blmupcc.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1085003_jp62blmupcc.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_1085003_jp62blmupcc.svg#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: 'taopoppy'; /*这里的font-family的值和上面的@font-face中的font-family的值保持一致*/
+  color:red; /*默认的图标颜色*/
+  font-size: 40px; /*默认的图标大小*/
+}
+
+.icon-taiyang::before {
+  content: '\e635'; /* Uncode之前已经说过在哪里找*/
+}
+
+.icon-cloth::before {
+  content: '\e631';
+}
+```
+有了上面的字体和不同图标的样式定义，我们在任何`.wxml`当中使用这些图标，并且依旧可以定义颜色，大小等属性覆盖在`app.wxss`当中定义的默认样式。
+```html
+<icon class="iconfont icon-taiyang" style="color:green;font-size:80px"></icon>
+<icon class="iconfont icon-cloth"></icon>
+```
