@@ -1,6 +1,15 @@
 module.exports = [
   '/WeiXin-Combat/',
   {
+    title: '云开发入门',
+    children: [
+     '/WeiXin-Combat/weixinyun_base_one',
+     '/WeiXin-Combat/weixinyun_base_two',
+     '/WeiXin-Combat/weixinyun_base_three',
+     '/WeiXin-Combat/weixinyun_base_four',
+    ]
+  },
+  {
     title: '云开发和项目构建',
     children: [
      '/WeiXin-Combat/one_cloud',
@@ -12,7 +21,7 @@ module.exports = [
     children: [
      '/WeiXin-Combat/two_swiper',
      '/WeiXin-Combat/two_playlist',
-     '/WeiXin-Combat/two_ asynchronous'
+     '/WeiXin-Combat/two_asynchronous'
     ]
   },
   {

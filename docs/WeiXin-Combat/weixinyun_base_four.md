@@ -1,7 +1,7 @@
 # 电影详情
 
 ## 详情页跳转
-**1. 跳转事件函数**
+### 1. 跳转事件函数
 
 我们在`app.json`当中我们新添加一个页面`pages/comment/comment`,然后在目录`pages`下面就会有页面`comment`,我们在上一章节说到要在电影列表页面点击评价然后进入到详情页，这里首先涉及到页面跳转的问题，我们在`movie.js`当中应该书写一个跳转到详情页的方法，然后携带电影的唯一标识符`id`,然后在进入到详情页，根据这个`id`再在详情页当中请求具体电影详情的信息，我们先要在`movie.js`当中编写跳转方法：
 ```javascript
@@ -14,7 +14,8 @@
     })
   },
 ```
-**2. 编写云函数**
+
+### 2. 编写云函数
 
 然后我们要在`comment.js`当中拿到这个页面查询字符串当中的`movieid`，不过在此之前我们要创建一个可以获取详情的云函数`getDetail`,和之前一样，因为要请求豆瓣的`API`,所以我们先在云函数中运行`npm install --save request`,再运行命令`npm install --save request-promise`,接着开始编写云函数：
 ```javascript
@@ -34,7 +35,8 @@ exports.main = async (event, context) => {
     });
 }
 ```
-**3. 获取详情信息**
+
+### 3. 获取详情信息
 
 接着我们就能在详情页面当中去在页面加载的时候根据传来的`movieid`请求电影的详情：在页面加载函数中`option`就是我们从上个页面传递到这个页面的参数
 ```javascript
@@ -71,6 +73,7 @@ exports.main = async (event, context) => {
     })
   },
 ```
+
 ## 前端页面展示
 我们这里直接将前端的`comment.wxml`和`comment.wxss`展示在这里：当然我们先引入`vant`组件
 ```html
@@ -193,6 +196,7 @@ exports.main = async (event, context) => {
 ```
 
 ## 电影评价
+
 ### 1.输入评价内容
 输入评价内容我们在前端代码绑定的是`onContentChange`处理函数。所以我们在`comment.js`当中编写：
 ```javascript
@@ -321,3 +325,19 @@ exports.main = async (event, context) => {
 <button open-type="getUserInfo" bindgetuserinfo="onGotUserInfo">获取用户信息</button>
 ```
 然后我们可以在`.js`文件中通过`onGotUserInfo`函数中的`event`拿到用户的所有信息
+
+## 上线和总结
+因为我们使用的是小程序的云开发，我们不需要购买服务器，如果上线的话我们要走下面的流程
+
++ 点击小程序开发工具的右上角有个<font color=#3eaf7c>上传按钮</font>
++ 提示`在后台将本此提交设置为体验版`
++ 然后填写<font color=#3eaf7c>版本号</font>和<font color=#3eaf7c>项目备注</font>
++ 提示有一些包文件没有上传，点击确定
++ 到微信公众平台的`管理`界面-> `版本管理`
++ 在最下面的`开发版本`的界面会看到提交版本
++ 第一次的话我们需要点击最右边的按钮选择了`设置为体验版`
++ 点击`提交审核`
++ 点击`同意并了解相关规则`
++ 来到`提交审核页面`，进行部分配置
++ 点击提交后，回到微信公众平台的`管理界面`，就会在`审核版本`的地方出现我们提交的项目
++ 等待人工审核完整我们就能点击`审核版本`界面最右面的`提交上线`，上传到线上

@@ -8,7 +8,6 @@ const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle
 const jestSidebar = require('./sidebars/jest')
 const AlgorithmSidebar = require('./sidebars/Algorithm')
 const WeiXinRumenSiderbar = require('./sidebars/WeiXin-Rumen')
-const WeiXinSidebar = require('./sidebars/WeiXin')
 const WeiXinCombatSidebar = require('./sidebars/WeiXinCombat')
 const WeiXinMoneySidebar = require('./sidebars/WeiXinMoney')
 const nodeSidebar = require('./sidebars/node')
@@ -65,7 +64,6 @@ module.exports = {
         items: [
           { text: '微信小程序入门和实战', link: '/WeiXin-Rumen/'},
           { text: '微信小程序全栈开发实战', link: '/Weixin-quanzhan/'},
-          { text: '微信小程序入门和云开发', link: '/WeiXin/' },
           { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' },
           { text: '微信支付和分享',link: '/WeiXin-money/'}
         ]
@@ -201,7 +199,6 @@ module.exports = {
       '/Front-end/': FrontendSidebar,
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
       '/WeiXin-Rumen/':WeiXinRumenSiderbar,
-      '/WeiXin/':WeiXinSidebar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,
       '/WeiXin-money/': WeiXinMoneySidebar,
       '/Weixin-quanzhan/': WeiXinQuanZhanSidebar,
