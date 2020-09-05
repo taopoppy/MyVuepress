@@ -286,20 +286,20 @@ class App extends Component {
 		}
 	}
 	render() {
-		const todos = this.getVisibleTodos() // 3. 根据filter过滤todos
+		const todos = this.getVisibleTodos() // 4. 根据filter过滤todos
 		const { filter } = this.state // 2. 拿到state
 
 		return (
 			<div>
 				<AddTodo />
 				<TodoList todos={todos}/>
-				<Footer filter={filter}/>
+				<Footer filter={filter}/> {/*3. Footer组件使用state*/}
 			</div>
 		);
 	}
 
 	getVisibleTodos = () => {
-		const currentFilter = this.state.filter
+		const currentFilter = this.state.filter // 5. filter这个state变化会影响TodoList列表的渲染结果
 		return this.state.todos.filter(item => {
 			if (currentFilter === 'active') {
 				return !item.completed

@@ -38,6 +38,7 @@ module.exports = [
     title:'react架构设计',
     children: [
       '/react-redux/jiagou_sign_one',
+      '/react-redux/jiagou_sign_two'
     ]
   },
   {
