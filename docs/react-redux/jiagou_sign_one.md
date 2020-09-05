@@ -482,3 +482,98 @@ class Footer extends Component {
 }
 ```
 
+## this写法略讲
+在我们本节最后有个比较有趣的技巧介绍一下，对比下面的代码，其中两处不同的地方我们已经标注出来
+```javascript
+import React from "react";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      text: ''
+    }
+	}
+	// 2. 第二处不同
+  handleChange=(e)=>{
+    this.setState({
+      text: e.target.value
+    })
+  }
+  render() {
+    return (
+      <div>
+        <input
+          value={this.state.text}
+          onChange={this.handleChange} /> {/* 1. 第一处不同*/}
+        {this.state.text}
+      </div>
+    );
+  }
+}
+
+export default App
+```
+<font color=#DD1144>handleChange是成员函数，类的每个成员函数在执行时的this并不是和类实例自动绑定的，而contructor和render函数在react中是自动和组件保持同一个this的。但是handleChange箭头函数的this和外层是相关的，所以handleChange当中的this和组件内部的环境是一致的，所以在箭头函数中调用this.setState就相当于调用App.setState，所以正确</font>
+
+```javascript
+import React from "react";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      text: ''
+    }
+	}
+	// 2. 第二处不同
+  handleChange(e){
+    this.setState({
+      text: e.target.value
+    })
+  } 
+  render() {
+    return (
+      <div>
+        <input
+          value={this.state.text}
+          onChange={this.handleChange.bind(this)} />{/* 1. 第一处不同*/}
+        {this.state.text}
+      </div>
+    );
+  }
+}
+
+export default App
+```
+<font color=#DD1144>上面这种写法也是正确的，因为在调用handleChange之前，提前使用bind将handleChange函数内部的this绑在了render函数中的this，因为render函数中的this就是组件App本身，所以正确。而且contructor函数的this也和组件App的this保持一致，所以你也会通常看见别人在contructor中提前书写下面的代码，效果和上面是一样的</font>
+
+```javascript
+constructor(props) {
+	super(props)
+	...
+	this.handleChange = this.handleChange.bind(this)
+}
+```
+所以上面两种写法都是正确的，唯一错误的写法就是下面这种，因为这种`handleChange`中的`this`是自己函数的`this`，自己函数上又没有`setState`这个方法 ，所以会出现错误提示，提示你`setState`是不存在的。
+```javascript
+class App extends React.Component {
+  handleChange(e){
+    this.setState({ // 这里的this就是handleChange自己的this，不是App的this，没有setState这个属性，所以报错
+      text: e.target.value
+    })
+  } 
+  render() {
+    return (
+      <div>
+        <input
+          value={this.state.text}
+          onChange={this.handleChange} /> {/* 1. 调用成员函数handleChange*/}
+        {this.state.text}
+      </div>
+    );
+  }
+}
+
+export default App
+```
