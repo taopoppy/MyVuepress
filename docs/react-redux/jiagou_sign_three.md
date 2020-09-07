@@ -22,7 +22,11 @@
 
 <font color=#DD1144>我们前面定义了三个State：text，todos，filter，然后按照组件和State的依赖关系进行State的定义位置的判断，组件和State依赖关系有两种，分别是<font color=#9400D3>组件中的用户操作会修改State</font>和<font color=#9400D3>组件的UI渲染受State的影响</font>，现在哪些组件可以作为容器性的组件也是这个判断依据，AddTodo组件可以修改text，而且输入框中的显示受text的影响；TodoList组件的展示受todos和filter影响，起修改也会影响todos；Footer组件中的点击操作会影响filter，所以这三个组件都应该作为容器性组件进行和Redux中的数据交互</font>
 
-所以我们接下来创建容器性组件。
+所以我们接下来创建容器性组件。不过首先要先下载：
+```javascript
+npm install react-redux@5.0.7
+```
+
 
 ## 容器性组件
 ### 1. TodoListContainer
@@ -30,7 +34,7 @@
 我们需要像下面这样来创建`TodoList`的容器性组件，创建`src/containers/TodoListContainer.js`:
 ```javascript
 // src/containers/TodoListContainer.js
-import { connect } from 'redux'
+import { connect } from 'react-redux'
 import TodoList from '../components/TodoList'
 import { toggleTodo } from '../actions'
 
@@ -63,7 +67,7 @@ export default connect(mapStateToProps, mapDispatchProps)(TodoList)
 
 ```javascript
 // src/containers/AddTodoContainer.js
-import { connect } from 'redux'
+import { connect } from 'react-redux'
 import AddTodo from '../components/AddTodo'
 import { addTodo, setTodoText } from '../actions'
 
@@ -83,3 +87,154 @@ export default connect(mapStateToProps, mapDispatchProps)(AddTodo)
 ```
 
 ### 3. FooterContainer
+创建`src/containers/FooterContainer.js`编写内容如下
+
+```javascript
+// src/containers/FooterContainer.js
+import { connect } from 'react-redux'
+import Footer from '../components/Footer'
+import { setFilter } from '../actions'
+
+// Footer组件中可以拿到this.props.filter
+const mapStateToProps = (state) => ({
+	filter: state.filter
+})
+
+// Footer组件中可以拿到this.props.setFilter
+const mapDispatchProps = (dispatch) => ({
+	setFilter: filter => dispatch(setFilter(filter))
+})
+
+
+export default connect(mapStateToProps, mapDispatchProps)(Footer)
+```
+
+### 4. 整合容器性组件
+上面写好了三个容器性组件，我们需要做两件事情，<font color=#1E90FF>将容器性组件整合到App.js当中</font>和<font color=#1E90FF>修改原来的UI型组件</font>
+
+<font color=#1E90FF>**① 将容器性组件整合到App.js当中**</font>
+
+我们将上面三个容器型组件整合到`App.js`当中，可以看到，相比于我们之前的在`App.js`当中定义很多状态，这个`App.js`就非常简洁和简单了。
+```javascript
+// src/components/App.js
+import React, { Component } from 'react';
+import AddTodoContainer from '../containers/AddTodoContainer'
+import TodoListContainer from '../containers/TodoListContainer'
+import FooterContainer from '../containers/FooterContainer'
+
+class App extends Component {
+	render() {
+
+		return (
+			<div>
+				<AddTodoContainer />
+				<TodoListContainer />
+				<FooterContainer />
+			</div>
+		);
+	}
+}
+export default App;
+```
+
+然后我们将`Redux`中的`store`通过`react-redux`中的`Provider`组件注入到`App.js`组件中：
+```javascript
+// src/store.js
+import { createStore } from 'redux'
+import rootReducer from './reducers/index'
+const store = createStore(rootReducer)
+export default store
+```
+```javascript
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+import store from './store'
+import { Provider } from 'react-redux'
+
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+
+```
+
+
+
+
+<font color=#1E90FF>**② 修改原来的UI型组件**</font>
+
+```javascript
+// src/components/AddTodo.js
+import React, { Component } from 'react';
+class AddTodo extends Component {
+	render() {
+
+		return (
+			<div>
+				{/* 1. 简约写法*/}
+				{/* <input value={this.props.text} onChange={(e)=> this.props.setTodoText(e.target.value) }/> */}
+				{/* <button onClick={()=> this.props.addTodo(this.props.text)}>Add</button> */}
+				<input value={this.props.text} onChange={this.handleChange }/>
+				<button onClick={this.handleClick}>Add</button>
+			</div>
+		);
+	}
+
+	handleChange = (e) => {
+		this.props.setTodoText(e.target.value)
+	}
+
+	handleClick = () => {
+		this.props.addTodo(this.props.text)
+	}
+}
+
+export default AddTodo;
+```
+可以看到，我们注释当中给了一种比较简约的写法，但是我们还是推荐非注释的写法，这样`UI`层面上的代码就比较简单，不要将事件处理的函数都写在`render`函数当中的`UI`代码当中。
+
+```javascript
+// src/components/Footer.js
+import React, { Component } from 'react';
+
+class Footer extends Component {
+	render() {
+		// 这种写法是给this.props.setFilter起了个别名setVisibilityFilter，代码中可以使用别名
+		// const { filter, setFilter: setVisibilityFilter } = this.props
+		const { filter, setFilter } = this.props
+
+		return (
+			<div>
+				<span>show:</span>
+				<button disabled={filter === "all"} onClick={()=> {setFilter("all")}}>All</button>
+				<button disabled={filter === "active"} onClick={()=> {setFilter("active")}}>Active</button>
+				<button disabled={filter === "completed"} onClick={()=> {setFilter("completed")}}>Completed</button>
+			</div>
+		);
+	}
+}
+export default Footer;
+```
+因为我们之前写的方法是`setVisibilityFilter`，但是我们在`FooterContainer`中传来的是`setFilter`，所以你可以像上面注释中给`this.props.setFilter`起了个别名`setVisibilityFilter`，代码中可以使用`setVisibilityFilter`。也可以像我上面非注释的代码一样，统统改为和`FooterContainer`传来的`setFilter`，比较好理解一点
+
+## 使用总结
+我们使用了`react-redux`后将组件分为了容器性组件和展示型组件
++ <font color=#1E90FF>展示型组件负责UI的展示，它不关心数据从哪里来，也不关心数据怎么修改</font>
++ <font color=#1E90FF>而容器性组件关心数据从何而来以及怎么修改数据</font>
+
+整个我们这个`TodoList`使用`Redux`、`React`、`react-redux`的流程如下：
+
+
+
+但是我们还有两个特别重要点：
+
+<font color=#DD1144>**① 我们应该尽量在较低级别的组件中使用react-redux去连接redux**</font>
+
+
+<font color=#1E90FF>**② 容器性组件和展示型组件的合并**</font>
+
