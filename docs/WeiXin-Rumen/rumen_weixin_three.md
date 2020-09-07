@@ -56,3 +56,25 @@
 这样我们就很方便的通过添加新的编译模式来提高我们开发当前页面的效率。
 
 ### 2. swiper和swiper-item
+关于`swiper`组件我们要说几个比较重要的点：
+
+<font color=#1E90FF>**① 轮播图的大小设置**</font>
+
+<font color=#DD1144>轮播图的大小设置主要是在swiper和image上，因为swiper是一个容器，而swiper-item实际上是和swiper保持一致大小的，所以我们需要将swiper和image设置成一样大小的，这样就能保证图片在容器当中正常的轮播</font>，比如下面代码所示：
+
+```html
+<!--pages/posts/posts.wxml-->
+<view>
+  <swiper>
+    <swiper-item>
+      <image src="/images/post/bl.png"></image>
+    </swiper-item>
+  </swiper>
+</view>
+```
+```css
+/* pages/posts/posts.wxss */
+swiper { width: 100%; height: 460rpx; }
+
+swiper image { width: 100%; height: 460rpx; }
+```
