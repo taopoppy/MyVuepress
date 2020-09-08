@@ -78,3 +78,29 @@ swiper { width: 100%; height: 460rpx; }
 
 swiper image { width: 100%; height: 460rpx; }
 ```
+
+<font color=#1E90FF>**② 属性设置（字符串和JS表达式的区别）**</font>
+
+我们首先记住两条重要的规则：
++ <font color=#9400D3>属性设置当中字符串就是用双引号引起来的，比如`next-margin="10px"`，但是js表达式是双引号当中再使用双中括号包裹的，比如<code>auto-play="</code><code>{{</code><code>false</code><code>}}</code><code>"</code></font>
++ <font color=#9400D3>属性设置当中凡是以字符串类型给非字符值类型属性赋值的，都会发生隐式类型转换</font>
+
+在组件当中的关于数字属性的设置好多人会发现这样一个问题：<font color=#1E90FF>`time="1000"`和`time="`<code>{{</code>`1000`<code>}}</code>`"`两者效果一样</font>：这就是因为第二条规则，字符串`"1000"`会默认转换成为数字类型的`1000`，所以两者效果都是一样的。
+
+在组件当中的关于布尔属性的设置好多人会发现这样一个问题，<font color=#1E90FF>比如轮播图的自动播放的属性，设置成为auto-play="true"是有效的，设置成为auto-play="false"是无效的</font>，就是因为`"true"`依旧是字符串，只不过是非空的字符串，在隐士类型转换当中会变成布尔类型的`true`，而`"false"`也是非空的字符串，也会被转换成为布尔类型的`true`，所以这样设置无效。
+
+```html
+<!--pages/posts/posts.wxml-->
+<swiper
+  indicator-dots="{{false}}"
+  autoplay="{{true}}"
+/>
+```
+所以如果组件的属性是`boolean`类型的话，尽量按照我们上面代码的这样设置，无论是语义还是逻辑都不会出错。当然了也有的人喜欢偷懒，喜欢像下面这样的方式去设置布尔值，也可以，不过从规范的角度还是推荐上面的写法：
+```html
+<!--pages/posts/posts.wxml-->
+<swiper
+  indicator-dots=""
+  autoplay
+/>
+```
