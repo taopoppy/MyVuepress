@@ -229,12 +229,14 @@ export default Footer;
 
 整个我们这个`TodoList`使用`Redux`、`React`、`react-redux`的流程如下：
 
-
+<img :src="$withBase('/react_redux_jiagou_react_redux.png')" alt="react-redux流程图">
 
 但是我们还有两个特别重要点：
 
 <font color=#DD1144>**① 我们应该尽量在较低级别的组件中使用react-redux去连接redux**</font>
 
+这个就是我们之前说的如果在父组件`App.js`当中链接了`redux`，那么`App`就要将从`redux`当中拿到的所有数据以`props`的方式向下传递，这就有性能的问题，如果不使用`shouldupdateprops`这种生命周期函数来优化相关的所有子组件，那么就会有重复渲染的问题。<font color=#1E90FF>所以我们尽量在较低级别的组件中使用react-redux去连接redux，保证最小程度state的修改导致最小数量的组件渲染</font>
 
 <font color=#1E90FF>**② 容器性组件和展示型组件的合并**</font>
 
+对于一些不需要复用的组件，我们是可以将展示型组件和容器性组件进行合并的，后续我们会展示这样的一些信息。

@@ -225,3 +225,176 @@ import store from './store'
 上面我们写的这些代码实际上单纯只是`redux`的代码，和`React`没有什么关系，<font color=#DD1144>我们之前说Redux和React分开能让项目的视图层和状态管理层解耦，这是没有错的，但是如果你看过我们之前的代码，你就会发现，视图层和状态管理层只是在逻辑上分开了，在代码层面还没有分开，因为一个组件内的React代码和Redux代码还在耦合，所以我们后面需要使用react-redux来在代码层面上将其分开</font>
 
 <font color=#9400D3>所以React，Redux，React-Redux三者使用好了能在逻辑上和代码上让视图层和状态管理层彻底解耦</font>
+
+## Redux-异步Action
+异步`Action`的概念我们在之前也说了，但是我们这里来在之前的基础上拓展一下，看一下<font color=#1E90FF>怎么创建异步Action</font>和<font color=#1E90FF>拓展reducer</font>
+
+### 1. 创建异步Action
+
+```javascript
+// src/action/index.js
+import {
+	FETTH_TODOS_REQUEST,
+	FETTH_TODOS_SUCCESS,
+	FETTH_TODOS_FAILURE
+} from './actionTypes'
+
+// 开始请求的action
+const fetchTodosRequest = () => ({
+	type: FETTH_TODOS_REQUEST
+})
+// 请求成功的action
+const fetchTodosSuccess = (data) => ({
+	type: FETTH_TODOS_SUCCESS,
+	data
+})
+// 请求失败的action
+const fetchTodosFailure = (error) => ({
+	type: FETTH_TODOS_FAILURE,
+	error
+})
+
+// 请求数据的异步Action
+export const fetchTodos = () => {
+	return (dispatch) => {
+		dispatch(fetchTodosRequest()) // 请求开始
+		return fetch("./mock/todos.json").then(
+			response => {
+				response.json().then(data => {
+					dispatch(fetchTodosSuccess(data)) // 请求成功
+				})
+			},
+			error => {
+				dispatch(fetchTodosFailure(error)) // 请求失败
+				console.log("An error occurred" + error)
+			}
+		)
+	}
+}
+
+```
+可以看到，我们请求的过程和请求成功和请求失败这三个过程都有对应的不同的`action`。
+
+### 2. 拓展reducer
+
+之前我们在`reducer/todos.js`当中默认的`todos`是个数组，但是如果数组中的数据是通过发送请求得来的，<font color=#1E90FF>我们想通过特定的数据结构来知道请求到底进行的如果</font>，现在我们修改一下结构，然后根据这个结构去修改：
+```javascript
+// src/reducers/todos.js
+import { ADD_TODO,TOGGLE_TODO,FETTH_TODOS_FAILURE,FETTH_TODOS_SUCCESS,FETTH_TODOS_REQUEST } from '../actions/actionTypes'
+// 数据结构
+const initialState = {
+	isFetching: false,
+	error: null,
+	data: []
+}
+
+const reducer = (state = initialState, action) => {
+	switch (action.type) {
+		case FETTH_TODOS_REQUEST:
+			return {
+				...state,
+				isFetching:true // isFetching为true可以知道当前正在请求中
+			}
+		case FETTH_TODOS_SUCCESS:
+			return {
+				...state,
+				isFetching: false, // isFetching为false可以知道当前请求结束
+				data: action.data  // data有数据表示现在请求成功
+			}
+		case FETTH_TODOS_FAILURE:
+			return {
+				...state,
+				isFetching: false,// isFetching为false可以知道当前请求结束
+				error: action.error, //error有数据表示请求失败，可以通过error值知道如何失败
+			}
+		default:
+			return {
+				...state,
+				data: todos(state.data, action) // 我们将之前的todos这个reducer作为子reducer包含在内
+			}
+	}
+}
+
+const todos = (state = [], action) => {
+	switch(action.type) {
+		case ADD_TODO:
+			return [...state,
+				{
+					id: action.id,
+					text: action.text,
+					completed: false
+				}
+			]
+		case TOGGLE_TODO:
+			return state.map(todo => {
+				return todo.id === action.id ? {...todo, completed: !todo.completed } : todo
+			})
+		default:
+			return state
+	}
+}
+
+export default reducer
+```
+这样修改之后，我们在`TodoListContainer.js`当中就要修改一下代码，因为现在数据结构变化了，我们之前可以通过`state.todos`直接拿到数组，现在通过`state.todos`拿到的是个对象，我们还要进入这个对象拿到数组：
+```javascript
+// src/containers/TodoListContainer.js
+const mapStateToProps = (state) => ({
+	// todos: getVisibleTodos(state.todos, state.filter) // 修改前
+	todos: getVisibleTodos(state.todos.data, state.filter) // 修改后
+})
+```
+
+### 3. 集成redux-thunk
+首先下载`redux-thunk`:
+```javascript
+npm install redux-thunk@2.3.0
+```
+
+接着我们集成到`redux`当中：
+```javascript
+// src/store.js
+import { createStore, applyMiddleware } from 'redux' // 1. 引入applyMiddleware
+import rootReducer from './reducers/index'
+import thunkMiddleware from 'redux-thunk' // 2. 引入redux-thunk
+
+const store = createStore(rootReducer,applyMiddleware(thunkMiddleware)) // 3. 作为中间件集成在redux当中
+
+export default store
+```
+
+### 4. 使用异步Action
+因为请求数据的代码我们已经从组件的`componentDidmount`当中抽离到异步`Action`当中，所以我们只需要将异步的`action`传入到组件当中即可：
+```javascript
+// src/containers/TodoListContainer.js
+import { fetchTodos } from '../actions' // 1. 引入异步action
+
+// TodoList组件中可以拿到this.props.fetchTodos
+const mapDispatchProps = (dispatch) => ({
+	fetchTodos: () => dispatch(fetchTodos()) // 2. 传入展示型组件当中
+})
+```
+```javascript
+// src/components/TodoList.js
+class TodoList extends Component {
+	componentDidMount(){
+		this.props.fetchTodos() // 展示型组件当中使用容器性组件传来的action
+	}
+}
+```
+
+<font color=#9400D3>现在你可以清楚的看到我们使用react、redux、redux-thunk、react-redux这些东西清楚的搭建了一个TodoList的应用，redux在逻辑上解耦了视图层和状态层，react-redux也在代码层面解耦了视图层和状态层，redux-thunk抽离了组件中的数据请求，所有的东西都让react组件的代码更加简单和单纯</font>
+
+## Redux调试工具
+有两种方式来使用`Redux`的调试工具，两种方式的使用前提都是要在浏览器中安装`redux-devtools`扩展工具。
+
+### 1. 浏览器插件
+参考地址：[https://github.com/zalmoxisus/redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension)
+
+关于这种用法我们在之前就用过，可以参考之前的文档[redux-thunk的创建](www.taopoppy.cn/react-redux/react_redux_advanced_two.html#_1-redux-thunk的创建)
+
+
+### 2. 项目依赖库
+参考地址：[https://github.com/reduxjs/redux-devtools](https://github.com/reduxjs/redux-devtools)
+
+这种我们在`nextjs`当中使用过：[redux-devtool](www.taopoppy.cn/react-ssr/ssr_combat_project_four.html#redux-devtool)

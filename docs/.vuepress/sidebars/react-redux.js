@@ -30,22 +30,23 @@ module.exports = [
     ]
   },
   {
-    title:'Hooks基础到进阶',
-    children: [
-    ]
-  },
-  {
     title:'react架构设计',
     children: [
       '/react-redux/jiagou_sign_one',
       '/react-redux/jiagou_sign_two',
-      '/react-redux/jiagou_sign_three'
+      '/react-redux/jiagou_sign_three',
+      '/react-redux/jiagou_sign_four'
     ]
   },
   {
     title:'react架构实战',
     children: [
       '/react-redux/jiagou_project_one',
+    ]
+  },
+  {
+    title:'Hooks基础到进阶',
+    children: [
     ]
   }
 ]
