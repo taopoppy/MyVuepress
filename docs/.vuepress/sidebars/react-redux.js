@@ -30,16 +30,19 @@ module.exports = [
     ]
   },
   {
-    title:'react架构设计',
+    title:'react架构设计理论',
     children: [
       '/react-redux/jiagou_sign_one',
       '/react-redux/jiagou_sign_two',
       '/react-redux/jiagou_sign_three',
-      '/react-redux/jiagou_sign_four'
+      '/react-redux/jiagou_sign_four',
+      '/react-redux/jiagou_sign_five',
+      '/react-redux/jiagou_sign_six',
+      '/react-redux/jiagou_sign_seven',
     ]
   },
   {
-    title:'react架构实战',
+    title:'react架构设计实战',
     children: [
       '/react-redux/jiagou_project_one',
     ]
