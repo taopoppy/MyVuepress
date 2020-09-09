@@ -104,3 +104,34 @@ swiper image { width: 100%; height: 460rpx; }
   autoplay
 />
 ```
+
+### 3. flex布局思路
+现在我们开发列表当中的一项的时候，我们使用`flex`布局的第一个重点：<font color=#DD1144>就是先考虑方向</font>，比如各部分在整体是垂直分布的，那实际上我们关注的重点就应该是每一行。
+
+我们开发的时候，前端页面代码的书写顺序应该是<font color=#9400D3>骨架</font> -> <font color=#9400D3>元素</font> -> <font color=#9400D3>属性</font> -> <font color=#9400D3>数据</font> -> <font color=#9400D3>样式</font>
+
+比如我们写列表的某一项的时候，因为是垂直布局，应该先这样写：
+```html
+  <view>
+    <!-- 第一行元素 -->
+    <view>
+      <image src="/images/post/crab.png"></image>
+      <text>Nov 18 2020</text>
+    </view>
+    <!-- 第二行元素 -->
+    <text>2020LPL夏季季后赛观赛指南</text>
+    <!-- 第三行元素 -->
+    <image src="/images/post/sls.jpg"></image>
+    <!-- 第四行元素 -->
+    <text>老干爹获得了感觉</text>
+    <!-- 第五行元素 -->
+    <view>
+      <image src="/images/icon/share-anti.png"></image>
+      <text>92</text>
+      <image src="/images/icon/chat.png"></image>
+      <text>102</text>
+    </view>
+  </view>
+```
+
+<font color=#1E90FF>实际上，如果你按照这样方式去书写前端代码，你会发现你有了大局观的思维，代码写起来十分的顺畅和简单，<font color=#DD1144>真的没有必要一个个组件从0到1的挨个写，那样会很累，改变一下自己的写法会让自己进步很多</font></font>

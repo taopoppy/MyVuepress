@@ -44,7 +44,7 @@
 		+ action.js
 		+ reducer.js
 
-<font color=#1E90FF>这种模式基本是利于功能的开发和拓展，很多github上的项目都是这样，但是这样的方式也有问题，不同的功能模块之间会出现状态耦合的情况，项目越大，这种情况就越明显</font>
+<font color=#1E90FF>这种模式基本是利于功能的开发和拓展，很多github上的项目都是这样，但是这样的方式也有问题，不同的功能模块之间会出现状态耦合的情况，项目越大，这种情况就越明显。简单的时候就是不同的功能模块可能会使用store中相同的数据，而却在各自的reducer进行维护和修改，既会造成store当中有大量重复性的数据，也会有不同模块维护的同一个状态但在不同的模块中表现不一致的风险</font>
 
 ### 3. Ducks
 这种项目的组织方式最开始来源于：[https://github.com/erikras/ducks-modular-redux](https://github.com/erikras/ducks-modular-redux)
