@@ -286,3 +286,8 @@ export const getVisibleTodos = createSelector(
 )
 ```
 通过这样的改造，我们去修改`text`是不会造成`getVisibleTodos`的重新计算的，你可以通过在`getVisibleTodos`函数当中打印日志或者在浏览器当中打断点来测试一下。<font color=#DD1144>更关键的是像immutable和reselect都并不是redux必须需要的，都是在redux的性能感觉明显有问题的才会用到，像我们这个Demo实际压根都用不到这些，在复杂的项目当中也要根据需求去具体使用和集成</font>
+
+## 结构流程图
+经过整个`TodoList`的架构思路整理，我们可以总结出下面这幅图:
+
+<img :src="$withBase('/react_redux_jiagou_finish.png')" alt="">
