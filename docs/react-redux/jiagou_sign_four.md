@@ -25,7 +25,7 @@ npm install react-router-dom@4.3.0
 ```
 要保证`react-router`的正常使用，我们需要在所有的`UI`组件的外层包裹一层`Router`的组件，它会创建一个上下文，保证路由的正常工作。在浏览器当中常见的路由实现有两个，分别是：<font color=#9400D3>BrowserRouter</font>和<font color=#9400D3>HashRouter</font>
 
-<font color=#1E90FF>**① BrowserRouter**</font>
+### 1. BrowserRouter
 
 之前说`react-router-dom`是将`react-route`和`web-api`做绑定，这些`web-api`具体指的就是<font color=#9400D3>HTML5 history API</font>，利用这些`pushState`、`replaceState`等方法实现在客户端实现路由的操作。
 
@@ -80,7 +80,7 @@ export default Nav;
 ```
 上面这个实际上就是最简单的使用，我们清楚的明白`react-router-dom`的工作原理：<font color=#1E90FF>无论你请求什么地址，返回的都是同一个html，其中携带了额外的js，当中就包含了react-router-dom的代码，它会拦截到当前路由，根据路由的不同决定显示什么组件</font>
 
-<font color=#1E90FF>**② HashRouter**</font>
+### 2. HashRouter
 
 <font color=#DD1144>哈希路由是使用url的hash部分作为路由信息，是通过使用页面不同的哈希和不同的组件之间做映射来完成的</font>，<font color=#1E90FF>哈希的出现主要为了兼容老版本浏览器，因为老版本的浏览器不支持history的API，所以通过哈希的变化来实现路由的变化。但是这样的情况在现在已经很少了，而且哈希的本身含义就是页面的定位，其逻辑也不符合路由的需求</font>
 
@@ -159,6 +159,8 @@ export default App;
 + `Route component`
 + `Route render`
 + `Route children`
+
+这三个方式都可以拿到`this.props`，里边会有这样一堆属性：<font color=#9400D3>history</font>、<font color=#9400D3>location</font>、<font color=#9400D3>match</font>
 
 ### 1. component
 这个是我们前面一直将的方法，这种方式有两种用法；
