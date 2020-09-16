@@ -114,6 +114,7 @@ const mapStateToProps = (state) => ({
 我们现在来书写一个简单的中间件，如果下面的代码你看不懂，你也可以记住先记住它的写法，然后我们后面有机会来手写一个`Redux`来帮助你彻底理解`Redux`和`Redux`的中间件，创建`src/middlewares/logger.js`
 ```javascript
 // 打印派发的action和下一次的state
+// next方法实际就是下一个中间件的dispatch方法
 const logger = ({getState, dispatch}) => next => action => {
 	console.group(action.type)
 	console.log('dispatching:', action)
