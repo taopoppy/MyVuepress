@@ -45,6 +45,7 @@ module.exports = [
     title:'react架构设计实战',
     children: [
       '/react-redux/jiagou_project_one',
+      '/react-redux/jiagou_project_two'
     ]
   },
   {

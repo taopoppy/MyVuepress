@@ -17,9 +17,19 @@
 	+ <font color=#DD1144>高效</font>：框架，组件库，Mock平台，构建部署工具等
 
 + 前端的架构更多的是<font color=#9400D3>页面</font>的抽象，解耦和组合
-	+ <font color=#1E90FF>抽象</font>
+	+ <font color=#9400D3>抽象</font>
 		+ <font color=#1E90FF>页面UI抽象</font> -> <font color=#1E90FF>组件</font>
 		+ <font color=#1E90FF>通用逻辑抽象</font> -> <font color=#1E90FF>状态模块，网络请求，异常处理等</font>
+	+ <font color=#9400D3>解耦</font>
+		+ <font color=#1E90FF>UI层和状态层解耦（逻辑上）</font> -> <font color=#1E90FF>使用redux</font>
+		+ <font color=#1E90FF>UI层和状态层解耦（代码上）</font> -> <font color=#1E90FF>使用react-redux</font>
+		+ <font color=#1E90FF>UI层和状态层通过接口通信</font> -> <font color=#1E90FF>Selectors/Reselect</font>
+		+ <font color=#1E90FF>UI层和网络请求逻辑解耦</font> -> <font color=#1E90FF>使用redux-thunk</font>
+		+ <font color=#1E90FF>...</font>
+	+ <font color=#9400D3>组合</font>
+		+ <font color=#1E90FF>页面开发</font> -> <font color=#1E90FF>就是组合，因为不同的页面就是不同的UI层、不同的逻辑层（状态层，网络请求、错误处理等）相互组合的结果</font>
+		+ <font color=#1E90FF>功能开发</font> -> <font color=#1E90FF>合理的使用第三方库的操作也是组合的一种</font>
+		+ <font color=#1E90FF>部分优化</font> -> <font color=#1E90FF>部分优化会借助到很多工具，这些工具要合理和有效的集成在项目中，也是一种组合行为</font>
 
 <img :src="$withBase('/react_redux_jiagou_shizhan_jiagoutu.png')" alt="架构图">
 
@@ -333,11 +343,18 @@ export default reducer
 ```
 
 ### 2. redux中间件
-可以看到啊，这只是首页的一个请求，我们就要写这么多的代码，试想，首页如果有10多个乃至20多个请求，这些代码要重复写20遍，整个`redux`所有的代码加起来估价要上万了。<font color=#1E90FF>但是你可以看到这个一个请求的代码实际有点类似于模板，所有的请求几乎都是这个模式，所以我们需要将这种模板似的代码进行抽象，用一个action去描述，并且在中间件当中去处理呢</font>
+可以看到啊，这只是首页的一个关于产品领域的状态请求，我们就要写这么多的代码，试想，首页如果有10多个乃至20多个请求，这些代码要重复写20遍，整个`redux`所有的代码加起来估价要上万了。<font color=#1E90FF>但是你可以看到这个一个请求的代码实际有点类似于模板，所有的请求几乎都是这个模式，所以我们需要将这种模板似的代码进行抽象，用一个action去描述，并且在中间件当中去处理呢</font>
 
 我们使用一个`action`来描述对这种数据请求的处理，它的结构应该是这样的：
 ```javascript
-{
+// 普通的action
+action = {
+	type: "XXX",
+	data: "yyy",
+	...
+}
+// 数据请求的action
+action = {
 	FETCH_DATA: {
 		types: ['request','success','fail'],
 		endpoint: url,
@@ -345,10 +362,11 @@ export default reducer
 			id: "product_id",
 			name: "products"
 		}
-	}
+	},
+	...
 }
 ```
-`FETCH_DATA`是用来表示获取数据的，`types`数据中的三个元素分别代表请求中，请求成功，请求失败的`action`,`endpoint`表示请求的`url`地址是什么,`schema`是代表领域实体的结构，因为领域实体的数据需要做偏平化的处理，比如数组转化成`key-value`的数据结构,`id`就代表了在领域数据中哪个属性能够代表这个数据的`id`值，`name`表示当前处理的是哪个领域实体，所以这些`schema`应该定义在每个领域实体状态文件当中，比如商品领域：
+`FETCH_DATA`是用来表示获取数据的`action`，`types`数据中的三个元素分别代表请求中，请求成功，请求失败的`action`,`endpoint`表示请求的`url`地址是什么,`schema`是代表领域实体的结构，因为领域实体的数据需要做偏平化的处理，比如数组转化成`key-value`的数据结构,`id`就代表了在领域数据中哪个属性能够代表这个数据的`id`值，`name`表示当前处理的是哪个领域实体，所以这些`schema`应该定义在每个领域实体状态文件当中，比如商品领域：
 ```javascript
 // src/redux/modules/entities/products.js
 export const schema = {
@@ -413,6 +431,10 @@ export default store => next => action => {
 
 //执行网络请求
 const fetchData = (endpoint, schema) => {
+	// 这里我们只用了get方法，实际上我们还可以在FETCH_DATA定义一个method来表示http请求是get还是post
+	// 然后传入fetchData的参数就是三个，method，endpoint, schema
+	// if (method === "GET") return get(endpoint).then(...)
+	// if (method === "POST") return post(endpoint).then(...)
   return get(endpoint).then(data => {
     return normalizeData(data, schema)
   })
@@ -462,7 +484,7 @@ export const actions = {
     }
   },
 }
-
+// 定义了一个包含[FETCH_DATA]数据请求的action结构
 const fetchLikes = (endpoint) => ({
   [FETCH_DATA]: {
     types: [
@@ -490,26 +512,34 @@ const reducer = (state = {}, action) => {
 
 export default reducer;
 ```
+这样不仅节省了代码而且更重要的是，<font color=#1E90FF>这里反映了redux中通过第一层的页面状态去获取第二层领域状态的过程</font>
+
 在首页请求到了数据后也应该保存在`products`领域的状态文件当中：
 ```javascript
 // src/redux/modules/entities/products.js
 export const schema = {
-	name: "products",
-	id: "id"
+  name: 'products',
+  id: 'id',
 }
 
-const reducer = (state ={}, action) => {
-	if(action.response && action.res.products) {
-		return {
-			...state,
-			...action.response.products
-		}
-	}
-	return state
+const reducer = (state = {}, action) => {
+	// 因为一个action进入reducer，所有reducer的相关模块都要去判断这个action是否是需要自己处理
+	// 而一般根据action.type判断是否符合reducer处理的条件
+	// 但是这里是根据action的其他属性进行判断，同样合理，action.type的判断方式只是业界标准，并非程序标准
+  if(action.response && action.response.products) {
+    return {...state, ...action.response.products}
+  }
+  return state;
 }
 
-export default reducer
+export default reducer;
 ```
+到这里好多人都看不懂，我们需要一个流程图来仔细解释：
+
+<img :src="$withBase('/react_redux_jiagou_middle_api.png')" alt="">
+
+<font color=#1E90FF>当在首页派发redux/home模块中的loadLikes这个异步action的时候，通过redux-thunk中间件的时候发现是异步的，就执行函数，函数执行的时候使用dispatch(这里不是next)派发了一个普通对象的action，这个action经过redux-thunk后进入我们自定义的api这个redux中间件，先使用next派发了一个type为HOME/FETCH_LIKES_REQUEST的action，进入store和reducer的处理，然后又向服务器发送请求，请求成功使用next派发一个type为HOME/FETCH_LIKES_SUCCESS的action，然后经过store后，在reducer处理的时候同时修改了home模块和entities/products模块这两个模块的状态</font>
+
 最后，集成中间件：
 ```javascript
 // src/redux/store.js
@@ -526,3 +556,117 @@ if (process.env.NODE_ENV !== "production" && window.__REDUX_DEVTOOLS_EXTENSION__
 ```
 
 ## 通用错误处理
+通用错误处理包含两个内容：<font color=#9400D3>错误信息组件</font> 和 <font color=#9400D3>redux中设计错误状态</font>
+
+### 1. 错误信息的组件
+我们首先在公用组件文件夹`components`当中定义一个`ErrorToast`组件，然后书写代码：
+```javascript
+// src/components/ErrorToast/index.js
+import React, { Component } from 'react';
+import './style.css'
+
+class ErrorToast extends Component {
+	componentDidMount() {
+		this.timer = setTimeout(() => {
+			// clearError函数可以将错误信息重置
+			this.props.clearError()
+		}, 3000)
+	}
+	componentWillUnmount() {
+		if (this.timer) {
+			clearTimeout(this.timer)
+		}
+	}
+	render() {
+		const { msg }  = this.props
+		return (
+			<div className="errorToast">
+				<div className="errorToast_text">
+					{ msg }
+				</div>
+			</div>
+		);
+	}
+}
+export default ErrorToast;
+```
+这个组件是比较简单的，其中调用组件的时候，只需要传入`msg`和`clearError`这个清除错误的函数。样式的内容我们就不在这里展示了，有兴趣的话可以参照[taopoppy/fontdemo](https://github.com/taopoppy/fontdemo/tree/master/dianping-react)
+
+### 2. 错误状态
+关于通用错误处理，我们需要知道，通用错误处理是基础前端的状态之一，所以我们需要在`app`这个模块当中去定义错误信息：
+```javascript
+// src/redux/modules/app.js
+
+// actionTypes
+export const types = {
+	CLEAR_ERROR: "APP/CLEAR_ERROR" // 清除错误
+}
+
+// actionCreators
+export const actions ={
+	clearError: () => ({
+		type: types.CLEAR_ERROR
+	})
+}
+
+const initialState = {
+	error: null
+}
+
+const reducer = (state = initialState, action) => {
+	const { type, error } = action
+	if (type === types.CLEAR_ERROR) {
+		return {...state, error:null}
+	} else if (error) {
+		// 通过判断action对象当中是否含有error属性来进行判断
+		// 这是除了通过action.type的第二种判断action的方法
+		return {...state, error: error}
+	}
+	return state
+}
+
+export default reducer
+
+// selector函数
+export const getError = (state) => {
+	return state.app.error
+}
+```
+有了这样的状态定义，我们可以直接`redux.app.error`有值的时候，在全局调起我们前面书写的`ErrorToast`组件来显示错误；
+```javascript
+// src/containers/App/index.js
+import React from 'react';
+import ErrorToast from '../../components/ErrorToast/index'
+import { connect } from 'react-redux'
+import { actions as appActions ,getError } from '../../redux/modules/app'
+import './style.css';
+import { bindActionCreators } from 'redux';
+
+class App extends React.Component {
+	render() {
+		const { error, appActions: { clearError }} = this.props
+		return (
+			<div className="App">
+				{  error ? <ErrorToast msg={error} clearError={clearError}/> : null}
+			</div>
+		);
+	}
+}
+
+// state是redux的总state，props是当前容器型组件接收到的props
+const mapStateToProps = (state, props) => {
+	return {
+		error: getError(state)
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		// 使用bindActionCreators后可以直接在组件当中发送action，而不需要调用dispatch来发送action
+		// 因为直接从redux当中的app模块中的actionCreators拿了过来
+		appActions: bindActionCreators(appActions, dispatch)
+	}
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(App);
+```
