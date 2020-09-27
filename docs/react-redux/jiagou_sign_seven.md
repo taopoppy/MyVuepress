@@ -291,3 +291,7 @@ export const getVisibleTodos = createSelector(
 经过整个`TodoList`的架构思路整理，我们可以总结出下面这幅图:
 
 <img :src="$withBase('/react_redux_jiagou_finish.png')" alt="">
+
+另外，我们整个`React`架构设计理论相关的知识点，我们也使用图来表述一下：
+
+<img :src="$withBase('/react_redux_jiagou_zongjie.png')" alt="">

@@ -46,7 +46,9 @@ module.exports = [
     children: [
       '/react-redux/jiagou_project_one',
       '/react-redux/jiagou_project_two',
-      '/react-redux/jiagou_project_three'
+      '/react-redux/jiagou_project_three',
+      '/react-redux/jiagou_project_four',
+      '/react-redux/jiagou_project_five',
     ]
   },
   {
