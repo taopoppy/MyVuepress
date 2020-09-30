@@ -670,3 +670,6 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);
 ```
+
+## 总结
+<img :src="$withBase('/react_redux_jiagou_sign_mindmaster.png')" alt="学习图谱">
