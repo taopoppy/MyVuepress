@@ -2,6 +2,13 @@
 module.exports = [
   '/learnMaterials/',
   {
+    title: "读书是一辈子的事",
+    children: [
+      '/learnMaterials/book',
+      '/learnMaterials/ArtOfCommunication'
+    ]
+  },
+  {
 		title:'前端语言框架',
     children: [
       '/learnMaterials/jsts_frame',
