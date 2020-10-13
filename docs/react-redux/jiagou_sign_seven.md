@@ -292,6 +292,6 @@ export const getVisibleTodos = createSelector(
 
 <img :src="$withBase('/react_redux_jiagou_finish.png')" alt="">
 
-另外，我们整个`React`架构设计理论相关的知识点，我们也使用图来表述一下：
+另外，我们整个`React`架构设计理论相关的知识点，我们也使用图来表述一下：（友情提示，相关知识点会不断补充，所以最新的图可以到[mindmaster官网](https://mm.edrawsoft.cn/store)搜索`React架构设计理论概图`，第一个结果就是最新的图）
 
 <img :src="$withBase('/react_redux_jiagou_zongjie.png')" alt="">
