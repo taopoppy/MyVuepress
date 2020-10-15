@@ -95,7 +95,7 @@
 
 ## 状态模块定义
 ### 1. Redux模块两层化概念
-我们知道<font color=#DD1144>状态是决定整个前端应用的展示以及前端数据流正常工作的核心</font>，我们前面已经说过前端架构的抽象大多是页面的抽象，页面UI的抽象就是组件，这是不需要我们抽象的，使用`react`本身就是组件化的抽象，那我们通用逻辑的抽象就有下面这些：
+我们知道<font color=#DD1144>状态是决定整个前端应用的展示以及前端数据流正常工作的核心</font>，我们前面已经说过前端架构的抽象大多是页面的抽象，页面UI的抽象就是组件，这是不需要我们抽象的，使用`react`本身就是组件化的抽象，那我们通用逻辑的抽象中的状态功能模块就有下面这些：
 + <font color=#DD1144>领域实体</font>：商品，店铺，订单，评论等信息
 + <font color=#DD1144>各个页面的UI状态（普通的UI状态）</font>：多选框，输入框的内容等
 + <font color=#DD1144>前端基础状态（特殊的UI状态）</font>：登录态，全局异常信息，各个页面共享的UI状态，俗称通用前端状态
@@ -191,7 +191,7 @@ const rootReducer = combineReducers({
 })
 export default rootReducer
 ```
-其余具体的`redux`状态文件，全部用下面代码所谓临时填充：
+其余具体的`redux`状态文件，全部用下面代码进行临时填充：
 ```javascript
 const reducer = (state ={}, action) => {
 	return state
@@ -427,6 +427,19 @@ export default store => next => action => {
 			error: error.message || "获取数据失败"
 		}))
 	)
+	// 下面这种写法也一样
+	// return fetchData(endpoint, schema)
+	// .then(
+	// 	response => next(actionWith({
+	// 		type: successType,
+	// 		response
+	// 	})),
+	// ).catch(
+	// 	error => next(actionWith({
+	// 		type: failureType,
+	// 		error: error.message || "获取数据失败"
+	// 	}))
+	// )
 }
 
 //执行网络请求
@@ -556,6 +569,14 @@ if (process.env.NODE_ENV !== "production" && window.__REDUX_DEVTOOLS_EXTENSION__
 ```
 
 ## 通用错误处理
+错误处理是建立在前面的网络请求层当中的，我们先来理清网络请求的过程，首先在`src/utils/request.js`当中的`get`方法中返回一个`Promise`，然后到`src/redux/middleware/api.js`当中的`fetchData`方法中返回一个`Promise`,这里的`Promise`请注意，并没有`catch`，也就是说`get`当中发生的错误会继续传递下去，并最终在中间件`api`当中的执行`fetchData().then()`的时候走到`error`的处理函数中，那么关系整个`fetch`请求的知识点我们要讲一下：
+
+<img :src="$withBase('/react_jiagou_fetch.png')" alt="">
+
+可以很清楚的看到`get`方法返回一个`Promise`，其`Promise`携带的`then`和`catch`都有三种写法，各自的第一和第二种方法效果相同，不写的话，其`value`或者`err`就会原原本本传递到下一个`Promise`上。
+
+<font color=#DD1144>但是特别要注意在catch的第三种写法中，如果写的是return err，那么这个err传递到下一个Promise当中就变成了下一个Promise中的value，所以要让错误继续传递下去，要么不写，要么就必须使用Promise.reject来携带这个err，这样才能在下一个Promise当中的catch中截获到这err</font>
+
 通用错误处理包含两个内容：<font color=#9400D3>错误信息组件</font> 和 <font color=#9400D3>redux中设计错误状态</font>
 
 ### 1. 错误信息的组件

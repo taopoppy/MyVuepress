@@ -7,13 +7,13 @@
 ```javascript
 // src/redux/modules/home.js
 const initialState = {
-	// 猜你喜欢模块
-	likes: {
+  // 猜你喜欢模块
+  likes: {
     isFetching: false, // 是否正在请求
     pageCount:0, // 分页标记
     ids:[] // 商品id数组
-	},
-	// 超值特惠模块
+  },
+  // 超值特惠模块
   discounts: {
     isFetching: false,
     ids:[]
@@ -60,7 +60,7 @@ export const actions = {
   // 加载超值特惠商品的数据
   loadDiscounts: () => {
     return (dispatch, getState) => {
-			// 判断是否有缓存
+      // 判断是否有缓存
       const { ids } = getState().home.discounts
       if (ids.length > 0) {
         return null

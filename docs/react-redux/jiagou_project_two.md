@@ -250,7 +250,7 @@ class LikeList extends Component {
   render() {
     const {data, loadTimes} = this.state;
     return (
-			// 8. 获取likeList最外层的div的ref
+      // 8. 获取likeList最外层的div的ref
       <div ref={this.myRef} className="likeList">
         <div className="likeList__header">猜你喜欢</div>
         <div className="likeList__list">
@@ -261,11 +261,11 @@ class LikeList extends Component {
           }
         </div>
         {
-					loadTimes < 3 ?
-					( // 3. 当加载次数小于3的时候，我们会自动加载数据，这里展示一个加载的组件
+          loadTimes < 3 ?
+          ( // 3. 当加载次数小于3的时候，我们会自动加载数据，这里展示一个加载的组件
             <Loading/>
-					):
-					( // 4. 当加载次数> 3的时候，我们就展示查看更多的连接
+          ):
+          ( // 4. 当加载次数> 3的时候，我们就展示查看更多的连接
             <a className="likeList__viewAll">
               查看更多
             </a>
@@ -276,12 +276,12 @@ class LikeList extends Component {
   }
 
   componentDidMount() {
-		// 5. 添加对滚动事件的监听，处理函数是handleScroll
+    // 5. 添加对滚动事件的监听，处理函数是handleScroll
     document.addEventListener("scroll", this.handleScroll);
   }
 
   componentDidUpdate() {
-		// 14. 如果已经自动加载了两次，就应该解除对scroll的监听
+    // 14. 如果已经自动加载了两次，就应该解除对scroll的监听
     if(this.state.loadTimes >=3 && !this.removeListener) {
       document.removeEventListener("scroll", this.handleScroll);
       this.removeListener = true;
@@ -289,7 +289,7 @@ class LikeList extends Component {
   }
 
   componentWillUnmount() {
-		// 16. 当监听没有被移除的时候，我们就要去移除，如果已经移除，就不需要重复移除了
+    // 16. 当监听没有被移除的时候，我们就要去移除，如果已经移除，就不需要重复移除了
     if(!this.removeListener) {
       document.removeEventListener("scroll", this.handleScroll)
     }
@@ -297,15 +297,15 @@ class LikeList extends Component {
 
   // 6. 处理屏幕滚动事件，实现加载更多的效果
   handleScroll = () => {
-		// 9，scrollTop为页面滚动的距离（兼容）
+    // 9，scrollTop为页面滚动的距离（兼容）
     const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-		// 10. screenHeight为屏幕可视高度
-		const screenHeight = document.documentElement.clientHeight;
-		// 11. likeList组件距离顶部的距离
-		const likeListTop = this.myRef.current.offsetTop;
-		// 12. likeListHeight为组件内容的高度
-		const likeListHeight = this.myRef.current.offsetHeight;
-		// 13. 滑动距离如果超过了我们计算出来的滑动距离，说明已经滑动到当前LikeList的底部了
+    // 10. screenHeight为屏幕可视高度
+    const screenHeight = document.documentElement.clientHeight;
+    // 11. likeList组件距离顶部的距离
+    const likeListTop = this.myRef.current.offsetTop;
+    // 12. likeListHeight为组件内容的高度
+    const likeListHeight = this.myRef.current.offsetHeight;
+    // 13. 滑动距离如果超过了我们计算出来的滑动距离，说明已经滑动到当前LikeList的底部了
     if(scrollTop >= likeListHeight + likeListTop - screenHeight) {
       const newData = this.state.data.concat(dataSource);
       const newLoadTimes = this.state.loadTimes + 1;
