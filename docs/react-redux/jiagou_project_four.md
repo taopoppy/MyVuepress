@@ -1,6 +1,6 @@
 # 团购详情页开发-UI
 
-## 页面分析和组件划分
+## 页面分析和组件划分(重要)
 <img :src="$withBase('/react_redux_jiagou_tuangouxiangqingye.png')" alt="">
 
 我们可以从上往下看到：
@@ -58,7 +58,7 @@ export default ProductDetail;
 ```
 后续编写的组件会逐个向里面添加。
 
-## 团购基本信息
+## 团购基本信息(ProductOverview)
 创建团购基本信息组件：`src\containers\ProductDetail\components\ProductOverview\index.js`，然后按照惯例，我们需要先书写静态的页面：
 ```javascript
 // src\containers\ProductDetail\components\ProductOverview\index.js
@@ -128,7 +128,7 @@ class ProductDetail extends Component {
 export default ProductDetail;
 ```
 
-## 商户基本信息
+## 商户基本信息(ShopInfo)
 创建商户基本信息组件：`src\containers\ProductDetail\components\ShopInfo\index.js`，按照惯例，我们先来写静态页面：
 ```javascript
 // src\containers\ProductDetail\components\ShopInfo\index.js
@@ -191,7 +191,7 @@ class ProductDetail extends Component {
 export default ProductDetail;
 ```
 
-## 团购详情
+## 团购详情(Detail)
 创建团购详情的组件：`src\containers\ProductDetail\components\Detail\index.js`，按照惯例，我们先来写静态页面：
 ```javascript
 // src\containers\ProductDetail\components\Detail\index.js
@@ -279,7 +279,7 @@ class ProductDetail extends Component {
 export default ProductDetail;
 ```
 
-## 购买须知
+## 购买须知(Remark)
 创建购买须知的组件：`src\containers\ProductDetail\components\Remark\index.js`，按照惯例，我们先来写静态页面：
 ```javascript
 // src\containers\ProductDetail\components\Remark\index.js
