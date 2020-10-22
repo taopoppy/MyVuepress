@@ -51,6 +51,10 @@ module.exports = [
       '/react-redux/jiagou_project_five',
       '/react-redux/jiagou_project_six',
       '/react-redux/jiagou_project_seven',
+      '/react-redux/jiagou_project_eight',
+      '/react-redux/jiagou_project_nine',
+      '/react-redux/jiagou_project_ten',
+      '/react-redux/jiagou_project_eleven',
     ]
   },
   {
