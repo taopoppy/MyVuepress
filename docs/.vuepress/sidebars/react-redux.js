@@ -60,6 +60,7 @@ module.exports = [
   {
     title:'Hooks基础到进阶',
     children: [
+      '/react-redux/hooks_newfunction'
     ]
   }
 ]
