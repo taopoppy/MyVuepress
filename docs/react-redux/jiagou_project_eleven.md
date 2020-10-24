@@ -329,3 +329,8 @@ export const actions = {
 };
 ```
 在真实的开发当中，持久化存储要看是什么登录方式了，如果是后端也保存有登录状态，那就必须让前端登录状态和后端要保持一致。
+
+## Redux DevTools
+最后我们用合成的一张图来展示每次请求派发的`action`和对应`redux`中数据相应的变化：
+
+<img :src="$withBase('/react_redux_login_reduxdev.png')" alt="">

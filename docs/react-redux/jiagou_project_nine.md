@@ -174,3 +174,13 @@ const mapStateToProps = (state, props) => {
 export default connect(mapStateToProps, null)(SearchResult);
 ```
 最后我们回到搜索结果页中的每个组件，将`Mock`数据全部改为传递进入组件的`props`，代码可以在[github](https://github.com/taopoppy/fontdemo/tree/master/dianping-react/src/containers/SearchResult/components)当中查看。
+
+## Redux DevTools
+我们下面要将首页的请求的真实数据和最终数据保存在`redux`的形式展示给大家，首先是我们在首页请求的`Mock`的格式：
++ [related.json](https://github.com/taopoppy/fontdemo/blob/master/dianping-react/public/mock/shops/related.json)
+
+最后我们用合成的一张图来展示每次请求派发的`action`和对应`redux`中数据相应的变化：
+
+<img :src="$withBase('/react_redux_searchdetail_reduxdev.png')" alt="">
+
+值得一提的是在上图中剩下的五个`action`都是在搜索页面中发生的，而不是在搜索结果页，但是我们将搜索页和搜索结果页当中的`state`和`action`写在了一起，所以会有交织的情况发生。

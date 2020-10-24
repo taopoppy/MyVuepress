@@ -118,9 +118,9 @@ export const types = {
   FETCH_PRODUCT_DETAIL_SUCCESS: 'DETAIL/FETCH_PRODUCT_DETAIL_SUCCES',
   FETCH_PRODUCT_DETAIL_FAILURE: 'DETAIL/FETCH_PRODUCT_DETAIL_FAILURE',
   // 获取关联店铺信息
-  FETCH_SHOP_REQUEST: 'DETAIL/FETCH_PRODUCT_DETAIL_REQUEST',
-  FETCH_SHOP_SUCCESS: 'DETAIL/FETCH_PRODUCT_DETAIL_SUCCES',
-  FETCH_SHOP_FAILURE: 'DETAIL/FETCH_PRODUCT_DETAIL_FAILURE',
+  FETCH_SHOP_REQUEST: 'DETAIL/FETCH_SHOP_REQUEST',
+  FETCH_SHOP_SUCCESS: 'DETAIL/FETCH_SHOP_SUCCESS',
+  FETCH_SHOP_FAILURE: 'DETAIL/FETCH_SHOP_FAILURE',
 }
 
 // actionCreator（异步action）
@@ -326,3 +326,12 @@ export default connect(
 ```
 
 连接成功`redux`之后，按照传给每个组件的就是实际的数据了，我们只需要回到前面每个组件当中修改静态数据为`props`传入组件的数据即可。这里就不再展示，具体代码可以到[github仓库](https://github.com/taopoppy/fontdemo/tree/master/dianping-react/src/containers/ProductDetail/components)中仔细查看。
+
+## Redux DevTools
+我们下面要将首页的请求的真实数据和最终数据保存在`redux`的形式展示给大家，首先是我们在首页请求的`Mock`的格式：
++ [p-i00.json](https://github.com/taopoppy/fontdemo/blob/master/dianping-react/public/mock/product_detail/p-100.json)
++ [s-10.json](https://github.com/taopoppy/fontdemo/blob/master/dianping-react/public/mock/shops/s-10.json)
+
+最后我们用合成的一张图来展示每次请求派发的action和对应redux中数据相应的变化：
+
+<img :src="$withBase('/react_redux_detail_reduxdev.png')" alt="">

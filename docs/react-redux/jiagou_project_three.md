@@ -302,3 +302,13 @@ class App extends React.Component {
 }
 ```
 然后我们到首页的组件当中将之前的需要的`a`标签全部换成`Link`即可，这部分就不列举了，具体代码可以在[github仓库](https://github.com/taopoppy/fontdemo/tree/master/dianping-react)中查看
+
+## Redux DevTools展示
+我们下面要将首页的请求的真实数据和最终数据保存在`redux`的形式展示给大家，首先是我们在首页请求的`Mock`的格式：
++ [discounts.json](https://github.com/taopoppy/fontdemo/blob/master/dianping-react/public/mock/products/discounts.json)
++ [likes.json](https://github.com/taopoppy/fontdemo/blob/master/dianping-react/public/mock/products/likes.json)
+
+
+最后我们用合成的一张图来展示每次请求派发的`action`和对应`redux`中数据相应的变化：
+
+<img :src="$withBase('/react_redux_home_reduxdev.png')" alt="">

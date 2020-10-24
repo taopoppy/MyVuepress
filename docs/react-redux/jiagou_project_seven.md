@@ -402,3 +402,12 @@ export default connect(
 )(Search);
 ```
 最后我们到各个子组件当中，将之前的`mock`数据全部换成父组件传递过来的`props`即可，代码可以在[github](https://github.com/taopoppy/fontdemo/tree/master/dianping-react/src/containers/Search/components)上自行查到。
+
+## Redux DevTools
+我们下面要将首页的请求的真实数据和最终数据保存在`redux`的形式展示给大家，首先是我们在首页请求的`Mock`的格式：
++ [popular.json](https://github.com/taopoppy/fontdemo/blob/master/dianping-react/public/mock/keywords/popular.json)
++ [related.json](https://github.com/taopoppy/fontdemo/blob/master/dianping-react/public/mock/keywords/related.json)
+
+最后我们用合成的一张图来展示每次请求派发的`action`和对应`redux`中数据相应的变化：
+
+<img :src="$withBase('/react_redux_search_reduxdev.png')" alt="">
