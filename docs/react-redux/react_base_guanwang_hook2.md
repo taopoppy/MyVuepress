@@ -25,7 +25,7 @@ export default MyFunction;
 
 <font color=#1E90FF>**① 调用useState方法的时候做了什么**</font>
 
-它定义一个<font color=#9400D3>State变量</font>。我们的变量叫`count`， 但是我们可以叫他任何名字，比如`banana`。这是一种在函数调用时保存变量的方式 —— `useState`是一种新方法，它与`class`里面的`this.state`提供的功能完全相同。<font color=#DD1144>一般来说，在函数退出后变量就会”消失”，而state中的变量会被React保留。</font>
+它定义一个<font color=#9400D3>State变量</font>。我们的变量叫`count`， 但是我们可以叫他任何名字，比如`banana`。这是一种在函数调用时保存变量的方式 —— `useState`是一种新方法，它与`class`里面的`this.state`提供的功能完全相同。<font color=#DD1144>一般来说，在函数退出后变量就会”消失”，而state中的变量会被React保留（这个应该和JS闭包有关）。</font>
 
 <font color=#1E90FF>**② useState需要哪些参数**</font>
 

@@ -27,7 +27,7 @@ function Example() {
 
 而副作用的概念就比较广了，包括数据获取，设置订阅和手动修改DOM等等都属于副作用
 
-官网给我们一个更好理解的概念就是：<font color=#DD1144>如果你熟悉React class的生命周期函数，你可以把useEffect Hook看做componentDidMount，componentWillUnmount、componentDidUpdate、ComponentWillUpdate和这四个函数的组合</font>
+官网给我们一个更好理解的概念就是：<font color=#DD1144>如果你熟悉React class的生命周期函数，你可以把useEffect Hook看做componentDidMount，componentWillUnmount、componentDidUpdate、ComponentWillUpdate和这四个函数之间不同的组合</font>
 
 在`React`组件中有两种常见副作用操作：需要清除的和不需要清除的。我们来更仔细地看一下他们之间的区别。
 

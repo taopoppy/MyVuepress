@@ -22,7 +22,6 @@ module.exports = [
       '/react-redux/react_base_guanwang_hook3',
       '/react-redux/react_base_guanwang_hook4',
       '/react-redux/react_base_guanwang_hook5',
-      '/react-redux/react_base_guanwang_hook6',
     ]
   },
   {

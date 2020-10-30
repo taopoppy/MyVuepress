@@ -20,7 +20,7 @@
 
 当我阅读完`Effect Hook`之后，才明白为什么复杂组件会变的难以理解，难以理解的地方有两点
 + <font color=#9400D3>某一功能相关的代码会分散到不同的生命周期当中，造成关注点的分离</font>
-+ <font color=#9400D3>组件的性能优化需要做很多判断和额外的生命周期函数</font>
++ <font color=#9400D3>组件的性能优化需要做很多判断和使用额外的生命周期函数</font>
 
 而`Hook`的写法能让这些复杂的问题统统简化。
 
@@ -68,8 +68,26 @@
 ## Hook使用规则
 官网是这样介绍规则的，有两条规则和一个插件推荐，我们就记住就可以了：
 + <font color=#DD1144>只能在函数最外层调用 Hook。不要在循环、条件判断或者子函数中调用</font>
-+ <font color=#DD1144>只能在 React 的函数组件中调用 Hook。不要在其他 JavaScript 函数中调用。</font>
++ <font color=#DD1144>只能在React的函数或者自定义Hook中调用Hook。不要在其他普通JavaScript函数中调用。</font>
 
-更多的规则我们会在后面的[Hook规则](https://zh-hans.reactjs.org/docs/hooks-rules.html)中再说。
+为此需要说明的就是：<font color=#9400D3>React靠的是Hook调用的顺序来知道state与useState之间的对应关系，所以我们需要保证每次渲染的Hook的调用次数和调用顺序和我们代码书写的一致，所以如果我们在条件语句或者判断循环语句中使用Hook，那么每次hook的调用次数和顺序必然不一样</font>
+
+<font color=#1E90FF>所以我们应该尽量的将这些判断循环语句写在hook里，而不是把hook写在判断循环语句中</font>，如下：
+
+```javascript
+// 🔴 在条件语句中使用 Hook 违反第一条规则
+if (name !== '') {
+	useEffect(function persistForm() {
+		localStorage.setItem('formData', name);
+	});
+}
+
+useEffect(function persistForm() {
+	// 👍 将条件判断放置在 effect 中
+	if (name !== '') {
+		localStorage.setItem('formData', name);
+	}
+});
+```
 
 推荐的一个插件就是[linter 插件](https://www.npmjs.com/package/eslint-plugin-react-hooks)
