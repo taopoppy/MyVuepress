@@ -25,7 +25,7 @@ function Example() {
 ```
 之前我们说：<font color=#1E90FF>Effect Hook是帮助我们在函数组件中实现和类组件生命周期效果的一系列函数</font>，但是这种理解只能断章取义的理解一部分的`Effect Hook`，真正全面理解`Effect Hook`只有一句话：<font color=#DD1144>Effect Hook是能给函数组件增加操作副作用能力的函数</font>
 
-而副作用的概念就比较广了，包括数据获取，设置订阅和手动修改DOM等等都属于副作用
+而副作用的概念就比较广了，<font color=#DD1144>因为react的本质是数据渲染视图，而数据获取，设置订阅和手动修改DOM等等都和数据渲染视图没有直接联系，所以称之为副作用</font>
 
 官网给我们一个更好理解的概念就是：<font color=#DD1144>如果你熟悉React class的生命周期函数，你可以把useEffect Hook看做componentDidMount，componentWillUnmount、componentDidUpdate、ComponentWillUpdate和这四个函数之间不同的组合</font>
 

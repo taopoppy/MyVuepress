@@ -9,6 +9,8 @@
 
 <font color=#1E90FF>这段话虽然有点难懂，可以回想一下，我们之前使用react-redux的时候是通过在总的App组件上强制添加Provider属性的，这个是让所有组件复用redux当中的状态的一种方法。但是涉及到嵌套地狱最典型的还是HOC高阶组件，为了给某个组件强制添加它需要的属性，需要使用HOC方式将组件放在高阶组件当中，然后通过添加属性的方式让组件可以拥有某个状态，但是这种方式可以回想一下，使用react-redux的时候是这样，使用自定义HOC也是这样，所以最终我们看到一个组件的时候，实际它表现出来的状态可能不仅仅是组件本身代码中体现出来的状态，还有各种高阶组件添加到其中的状态，这样继续添加继续嵌套，<font color=#9400D3>组件本身的状态结构就发生了变化，而且通过HOC进入组件的状态之间的关系不清楚，复用状态逻辑在各个不同的组件之间就很难做</font></font>
 
+总结：<font color=#DD1144>无论是render props还是高阶组件都相当于在组件之上增加了无渲染效果的组件层次，在层次体验和性能方面都有问题</font>
+
 ### 2. 复杂组件变得难以理解
 我们首先来看看官网怎么说的：
 
@@ -22,7 +24,7 @@
 + <font color=#9400D3>某一功能相关的代码会分散到不同的生命周期当中，造成关注点的分离</font>
 + <font color=#9400D3>组件的性能优化需要做很多判断和使用额外的生命周期函数</font>
 
-而`Hook`的写法能让这些复杂的问题统统简化。
+而`Hook`的写法能让这些和<font color=#1E90FF>生命周期</font>和<font color=#1E90FF>状态</font>相关的复杂的问题统统简化。
 
 ### 3. 难以理解的Class
 我们首先来看看官网是怎么说的：
@@ -30,6 +32,8 @@
 `除了代码复用和代码管理会遇到困难外，我们还发现 class 是学习 React 的一大屏障。你必须去理解 JavaScript 中 this 的工作方式，这与其他语言存在巨大差异。还不能忘记绑定事件处理器。没有稳定的语法提案，这些代码非常冗余。大家可以很好地理解 props，state 和自顶向下的数据流，但对 class 却一筹莫展。即便在有经验的 React 开发者之间，对于函数组件与 class 组件的差异也存在分歧，甚至还要区分两种组件的使用场景。另外，React 已经发布五年了，我们希望它能在下一个五年也与时俱进。就像 Svelte，Angular，Glimmer等其它的库展示的那样，组件预编译会带来巨大的潜力。尤其是在它不局限于模板的时候。最近，我们一直在使用 Prepack 来试验 component folding，也取得了初步成效。但是我们发现使用 class 组件会无意中鼓励开发者使用一些让优化措施无效的方案。class 也给目前的工具带来了一些问题。例如，class 不能很好的压缩，并且会使热重载出现不稳定的情况。因此，我们想提供一个使代码更易于优化的 API。为了解决这些问题，Hook 使你在非 class 的情况下可以使用更多的 React 特性。 从概念上讲，React 组件一直更像是函数。而 Hook 则拥抱了函数，同时也没有牺牲 React 的精神原则。Hook 提供了问题的解决方案，无需学习复杂的函数式或响应式编程技术。`
 
 <font color=#1E90FF>这段话的意思就是Class本身不作为Javascript一种适合的开发方式会给开发者带来很多问题，而React组件本质就是函数，所以class的方式显得有点另类</font>
+
+<font color=#DD1144>但实质上还是this的问题，因为this会引发不同的函数写法导致不同的效果，比如内敛函数过渡创建新的句柄，类成员函数不能保证this等等。带给开发者的就是踩坑问题和使用门槛</font>
 
 ## Hook的概念
 官网是这样介绍`Hook`的：
@@ -90,4 +94,29 @@ useEffect(function persistForm() {
 });
 ```
 
-推荐的一个插件就是[linter 插件](https://www.npmjs.com/package/eslint-plugin-react-hooks)
+推荐的一个插件就是[linter 插件](https://www.npmjs.com/package/eslint-plugin-react-hooks),使用起来十分简单：
+
+首先我们要下载插件：
+```javascript
+# npm
+npm install eslint-plugin-react-hooks --save-dev
+
+# yarn
+yarn add eslint-plugin-react-hooks --dev
+```
+
+然后我们在`package.json`当中配置即可：
+```javascript
+"eslintConfig"{
+  "plugins": [
+    // ...
+    "react-hooks"
+  ],
+  "rules": {
+    // ...
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}
+```
+
