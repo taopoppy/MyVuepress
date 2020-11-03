@@ -411,7 +411,7 @@ const refContainer = useRef(initialValue);
 <font color=#DD1144>本质上，useRef就像是可以在其.current属性中保存一个可变值的“盒子”。它可以很方便地保存任何可变值，其类似于在class中使用实例字段的方式。这是因为它创建的是一个普通Javascript对象。而useRef()和自建一个{current: ...}对象的唯一区别是，useRef会在每次渲染时返回同一个ref对象。</font>
 
 ### 2. useRef的用途
-<font color=#1E90FF>**① 命令式访问子组件**</font>
+<font color=#1E90FF>**① 获取子组件或者DOM节点的句柄**</font>
 
 一个常见的用例便是命令式地访问子组件：
 ```javascript
@@ -433,7 +433,7 @@ function TextInputWithFocusButton() {
 
 当`ref`对象内容发生变化时，`useRef`并不会通知你。变更`.current`属性不会引发组件重新渲染。如果想要在`React`绑定或解绑`DOM`节点的`ref`时运行某些代码，则需要使用回调`ref`来实现。
 
-<font color=#1E90FF>**② 定时器**</font>
+<font color=#1E90FF>**② 渲染周期之间共享数据的存储**</font>
 
 ```javascript
 import React, { useState } from "react";
@@ -488,3 +488,5 @@ function App() {
 export default App;
 
 ```
+
+关于`useRef`实际上涉及到的是一个<font color=#9400D3>闭包陷阱</font>的问题，我们在`react`服务端渲染的时候讲过，所以可以到[闭包陷阱](https://www.taopoppy.cn/react-ssr/ssr_combat_project_three.html#%E9%97%AD%E5%8C%85%E9%99%B7%E9%98%B1)仔细体会一下。
