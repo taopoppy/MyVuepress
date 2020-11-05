@@ -96,4 +96,13 @@ class Child extends React.Component {
 
 在这两种情况下，`React`的事件对象`e`会被作为第二个参数传递。如果通过箭头函数的方式，事件对象必须显式的进行传递，而通过`bind`的方式，事件对象以及更多的参数将会被隐式的进行传递
 
+关于这种事件的写法我们在[this写法略讲](taopoppy.cn/react-redux/jiagou_sign_one.html#this写法略讲)有对绑定写法和箭头函数写法更细致的分析。
+
 ## 条件渲染
+没啥可用的信息，初学者可以到官网上[条件渲染](https://zh-hans.reactjs.org/docs/conditional-rendering.html)通读一遍即可。
+
+## 列表&Key
+关于在渲染列表的时候为什么要提供`key`值，我们之前就在[Diff算法](taopoppy.cn/react-redux/react_advanced_one.html#_3-diff算法)简单的讲解过。
+
+## 表单
+和表单相关的[受控组件](https://zh-hans.reactjs.org/docs/forms.html#controlled-components)和[非受控组件](https://zh-hans.reactjs.org/docs/uncontrolled-components.html)可以直接在官网上看。

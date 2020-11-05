@@ -17,7 +17,7 @@ module.exports = [
       '/react-redux/react_base_guanwang1',
       '/react-redux/react_base_guanwang2',
       '/react-redux/react_base_guanwang3',
-      
+      '/react-redux/react_base_guanwang4'
     ]
   },
   {

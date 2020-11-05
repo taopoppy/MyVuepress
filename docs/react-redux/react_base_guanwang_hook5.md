@@ -295,6 +295,55 @@ const handleButtonClick = useMemo(
 	[dispatchCounter]
 )
 ```
+<font color=#DD1144>值得注意的是如果，第二个参数数组当中如果有依赖useState或者useReducer返回的第二个参数，例如setState或者dispatchState，就可以省略不写，因为setState这些修改状态的函数标识是不会变的</font>，比如下面的例子
+
+```javascript
+import React, { useState, useCallback, memo } from "react";
+
+const Child = memo(function Child({ handleClick }) {
+  console.log("child");
+  return (
+    <>
+      <button onClick={handleClick}>click</button>
+    </>
+  );
+});
+
+function App() {
+  const [count, setCount] = useState(0);
+  const [name, dispatchName] = useReducer(nameReducer, "1");
+
+
+  const handleClick = useCallback(() => {
+    setCount((preCount) => preCount + 1);
+  }, []);
+
+  // 这种写法和上面是一样效果
+  // const handleClick = useCallback(() => {
+  //   setCount((preCount) => preCount + 1);
+  // }, [setCount]);
+
+  const handleClick1 = useCallback(() => {
+    dispatchName({type: "add"})
+  },[])
+
+  // 这种写法和上面是一样的效果
+  // const handleClick1 = useCallback(() => {
+  //   dispatchName({type: "add"})
+  // },[dispatchName])
+
+  return (
+    <>
+      <p>{count}</p>
+      <Child handleClick={handleClick} />
+      <Child handleClick={handleClick1} />
+    </>
+  );
+}
+
+export default App;
+```
+
 同时我们依然需要使用`memo`来包裹子组件：
 ```javascript
 const Child = memo(function Child({ onButtonClick }) {

@@ -34,6 +34,8 @@ const reactSSRSiderbar = require('./sidebars/react-ssr')
 const FlutterKnowSidebar = require('./sidebars/Flutter-Know')
 const reactAntdSiderbar = require('./sidebars/react-antd')
 const WeiXinQuanZhanSidebar = require('./sidebars/WeiXin-Quanzhan')
+const FrontadvanceSidebar = require('./sidebars/Front-advance')
+const OptimizationSidebar = require('./sidebars/optimization')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -70,8 +72,9 @@ module.exports = {
       },
       { text: '工具系列',
         items: [
-          { text: 'Jest', link: '/Jest/'},
-          { text: 'Webpack',link: '/Webpack/'}
+          { text: '前端自动化测试', link: '/Jest/'},
+          { text: '前端工程化',link: '/Webpack/'},
+          { text: '前端性能优化', link: '/Optimization/'}
         ]
       },
       // {
@@ -169,16 +172,17 @@ module.exports = {
       {
         text: '前端系列',
         items: [
-          { text: '前端架构', link: '/Front-end/' },
+          { text: '前端初级面试', link: '/Front-end/' },
+          { text: '前端中级面试', link: '/Front-advance/'}
         ]
       },
-      {
-        text: '区块链',
-        items: [
-          { text: '深入浅区块链',link: '/blockchain/'},
-          { text: 'Node+React开发区块链', link:'/node-blockchain/'}
-        ]
-      }
+      // {
+      //   text: '前端面试',
+      //   items: [
+      //     { text: '深入浅区块链',link: '/blockchain/'},
+      //     { text: 'Node+React开发区块链', link:'/node-blockchain/'}
+      //   ]
+      // }
     ],
     sidebarDepth: 3,
     lastUpdated: 'Last Updated', // string | boolean
@@ -197,6 +201,8 @@ module.exports = {
       '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/Front-end/': FrontendSidebar,
+      '/Front-advance/': FrontadvanceSidebar,
+      '/Optimization/':OptimizationSidebar,
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
       '/WeiXin-Rumen/':WeiXinRumenSiderbar,
       '/WeiXin-Combat/': WeiXinCombatSidebar,

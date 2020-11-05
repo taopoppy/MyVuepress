@@ -120,3 +120,141 @@ yarn add eslint-plugin-react-hooks --dev
 }
 ```
 
+## TodoList
+我们这里给出一个`TodoList`的`demo`，使用`react hooks`编写的，希望你在学习完毕后能回头来仔细看看这个例子，可以直接运行这个例子，如果你会根据`react DevTools`观察渲染过程，可以通过操作这个例子看看组件的更新和渲染流程，以及渲染性能的优化，如果你不会，最简单的就是根据打印台中的信息观察组件的渲染流程。
+```javascript
+import React, { useState, useCallback, useRef, useEffect, memo } from "react";
+import "./styles.css";
+
+let idSeq = Date.now();
+
+function App() {
+  console.log("App");
+  const [todos, setTodos] = useState([]);
+
+  // 添加列表项
+  const addTodo = useCallback((todo) => {
+    setTodos((todos) => [todo, ...todos]);
+  }, []);
+  // 删除列表项
+  const removeTodo = useCallback((id) => {
+    setTodos((todos) =>
+      todos.filter((todo) => {
+        return todo.id !== id;
+      })
+    );
+  }, []);
+
+  // 修改列表项状态
+  const toggleTodo = useCallback((id) => {
+    setTodos((todos) =>
+      todos.map((todo) => {
+        return todo.id === id ? { ...todo, complete: !todo.complete } : todo;
+      })
+    );
+  }, []);
+
+  // 从localStorage中读取信息
+  useEffect(() => {
+    const todosStr = localStorage.getItem("_$_todos_") || "[]";
+    setTodos(JSON.parse(todosStr));
+  }, []);
+
+  // todo发生改变的时候去写入localStorage
+  useEffect(() => {
+    localStorage.setItem("_$_todos_", JSON.stringify(todos));
+  }, [todos]);
+
+  return (
+    <div className="todo-list">
+      <Control addTodo={addTodo} />
+      <Todos removeTodo={removeTodo} toggleTodo={toggleTodo} todos={todos} />
+    </div>
+  );
+}
+
+const Control = memo(function Control(props) {
+  console.log("Control");
+  const { addTodo } = props;
+  const inputRef = useRef();
+
+  // 没有向任何子组件传递，不需要使用useCallback
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const newText = inputRef.current.value.trim();
+
+    if (newText.length === 0) {
+      return;
+    }
+    addTodo({
+      id: ++idSeq,
+      text: newText,
+      complete: false
+    });
+
+    inputRef.current.value = "";
+  };
+
+  return (
+    <div className="control">
+      <h1>todos</h1>
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          ref={inputRef}
+          className="new-todo"
+          placeholder="what needs to be done"
+        />
+      </form>
+    </div>
+  );
+});
+
+const TodoItem = memo(function TodoItem(props) {
+  console.log("TodoItem");
+  const {
+    todo: { id, text, complete },
+    toggleTodo,
+    removeTodo
+  } = props;
+
+  const onChange = () => {
+    toggleTodo(id);
+  };
+
+  const onRemove = () => {
+    removeTodo(id);
+  };
+
+  return (
+    <li className="todo-item">
+      <input type="checkbox" onChange={onChange} checked={complete} />
+      <label className={complete ? "complete" : ""}>{text}</label>
+      <button onClick={onRemove}>&#xd7;</button>
+    </li>
+  );
+});
+
+const Todos = memo(function Todos(props) {
+  console.log("Todos");
+  const { todos, toggleTodo, removeTodo } = props;
+
+  return (
+    <ul>
+      {todos.map((todo) => {
+        return (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            toggleTodo={toggleTodo}
+            removeTodo={removeTodo}
+          />
+        );
+      })}
+    </ul>
+  );
+});
+
+export default App;
+
+```

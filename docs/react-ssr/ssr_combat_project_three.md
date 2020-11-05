@@ -390,6 +390,7 @@ function TextB() {
 
 <img :src="$withBase('/react_ssr_bibao1.png')" alt="闭包图2">
 
+更合理的解释是官网在介绍组件的`state`的时候提到的：<font color=#DD1144>每只要在相同的DOM节点中渲染&lt;Clock /&gt; ，就仅有一个Clock组件的class实例被创建使用</font>，所以，<font color=#1E90FF>正是因为这个class的实例在相同的DOM节点中渲染存在唯一性，所以class中的this无论组件更新多少次，都指向唯一的class实例，所以this从头到尾是不变的。</font>
 
 那么这种在函数编程的世界里，这种现象是正确的，但是与我们通常的业务是不符合的，我们尽量规避，或者经过上面两种写法的对比，我们就知道：<font color=#9400D3>如果想实时的用到最新的值，就应该在每次新的闭包当中将变化的对象赋值给同一个对象，和以前的this一样，从头到尾this对象本身不变，变的只是对象当中的属性而已</font>，按照这样的思路我们可以这样解决：
 

@@ -115,12 +115,19 @@ ReactDOM.render(
 
 总结： <font color=#9400D3>Props就是通过JSX语法调用组件时给组件传递的attributes和children</font>
 
+这句话你压根不需要死记硬背，因为`JSX`是`React.createElement`的语法糖，而`React.createElement`函数本身只需要三个参数，第一个标签名称，后面两个分别是属性`attributes`和子内容`children`，所以当然`props`只有`attributes`和`children`这两部分。
+
 当你了解了什么是`Props`后，还要记住它非常重要的一个特性：<font color=#DD1144>组件无论是使用函数声明还是通过 class 声明，都决不能修改自身的props</font>
 
 ## 组件的state
 <font color=#1E90FF>State与props类似，但是state是私有的，并且完全受控于当前组件</font>
 
-每次组件更新时`render`方法都会被调用，但只要在相同的`DOM`节点中渲染&lt;Clock /&gt; ，就仅有一个`Clock`组件的`class`实例被创建使用。这就使得我们可以使用如`state`或生命周期方法等很多其他特性。
+每次组件更新时`render`方法都会被调用，<font color=#DD1144>但只要在相同的DOM节点中渲染&lt;Clock /&gt; ，就仅有一个Clock组件的class实例被创建使用</font>。这就使得我们可以使用如`state`或生命周期方法等很多其他特性。
+
+::: tip
+<font color=#3eaf7c>只要在相同的DOM节点中渲染&lt;Clock /&gt; ，就仅有一个Clock组件的class实例被创建使用。这句话还可以用来解释React Hooks的闭包陷阱，正是因为这个class的实例在相同的DOM节点中渲染存在唯一性，所以class中的this无论组件更新多少次，都指向唯一的class实例，所以this从头到尾是不变的。</font>
+:::
+
 ```javascript
 class Clock extends React.Component {
   constructor(props) {
@@ -167,6 +174,12 @@ ReactDOM.render(
 + <font color=#9400D3>不要直接修改State，而是应该使用setState，构造函数是唯一可以给 this.state赋值的地方</font>
 
 + <font color=#9400D3>出于性能考虑，React可能会把多个setState()调用合并成一个调用。因为this.props和this.state可能会异步更新，所以你不要依赖他们的值来更新下一个状态</font>
+  ```javascript
+  // 可以依赖前一次渲染的值
+  this.setState((preState, preProps) => ({
+    counter: preState.counter + preProps.increment
+  }));
+  ```
 
 + <font color=#9400D3>数据是向下流动的，任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件。</font>
 

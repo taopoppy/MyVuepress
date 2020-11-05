@@ -1,4 +1,4 @@
-// 重学前端，建立架构
+// 前端初级面试
 
 module.exports = [
   '/Front-end/',
