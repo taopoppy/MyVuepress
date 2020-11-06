@@ -12,13 +12,15 @@ module.exports = [
     ]
   },
   {
-    title:'react官网超精读',
+    title:'react官网专题',
     children: [
-      '/react-redux/react_base_guanwang1',
-      '/react-redux/react_base_guanwang2',
-      '/react-redux/react_base_guanwang3',
-      '/react-redux/react_base_guanwang4',
-      '/react-redux/react_base_guanwang5'
+      '/react-redux/react_base_guanwang_jsx',
+      '/react-redux/react_base_guanwang_component',
+      '/react-redux/react_base_guanwang_event',
+      '/react-redux/react_base_guanwang_sign',
+      '/react-redux/react_base_guanwang_codesplit',
+      '/react-redux/react_base_guanwang_errorboundary',
+      '/react-redux/react_base_guanwang_axios'
     ]
   },
   {
@@ -65,7 +67,8 @@ module.exports = [
       '/react-redux/react_base_guanwang_hook2',
       '/react-redux/react_base_guanwang_hook3',
       '/react-redux/react_base_guanwang_hook4',
-      '/react-redux/react_base_guanwang_hook5'
+      '/react-redux/react_base_guanwang_hook5',
+      '/react-redux/react_base_guanwang_hook6'
     ]
   }
 ]
