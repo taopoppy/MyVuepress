@@ -133,10 +133,9 @@ class MyComponent extends React.Component {
 不过这里要提醒的是：<font color=#DD1144>解决事件处理的异常我们一开始提出的是使用try-catch，但是有些人觉得大量的使用try-catch不好，所以衍生出了window.onerror，而window.onerror的问题是错误细节不好分析，所以有衍生出了装饰器</font>
 
 ::: tip
-<font color=#9400D3>但是实际上在事件处理器内部会发生关于JS各种各样的问题，我们必须要搞清楚所有JS所有会发生的异常和错误类型，然后根据可能会发生的错误类型去使用不同的错误处理方法，而不是找出一个固化的最佳实践去一劳永逸，所以请仔细阅读下面的Javascript的错误处理</font>
+<font color=#9400D3>但是实际上在事件处理器内部会发生关于JS各种各样的问题，我们必须要搞清楚所有JS所有会发生的异常和错误类型，然后根据可能会发生的错误类型去使用不同的错误处理方法，而不是找出一个固化的最佳实践去一劳永逸，所以请仔细阅读[Javascript的错误处理](taopoppy.cn/react-redux/jiagou_jserror.html)</font>
 :::
 
-## Javascipt的错误处理
 
 
 
@@ -144,8 +143,3 @@ class MyComponent extends React.Component {
 
 + [捕获 React 异常](https://juejin.im/post/6844904047313420295)
 + [React中如何优雅的捕捉事件错误](https://www.cnblogs.com/cloud-/p/9366234.html)
-+ [如何优雅处理前端异常？](http://jartto.wang/2018/11/20/js-exception-handling/)
-+ [嘿，不要给 async 函数写那么多 try/catch 了](https://mp.weixin.qq.com/s/-GIIs1VseDhojexI2HQ-tA)
-+ [Javascript错误处理大全（重点）](https://mp.weixin.qq.com/s/K5nzTWSMgDPq0gO2SIa4Uw)
-+ [你不知道的前端异常处理（万字长文，建议收藏）（重点）](https://mp.weixin.qq.com/s/wyfcSjGvgDU-iuPm8k7exQ)
-+ [JavaScript错误处理完全指南（重点）](https://www.infoq.cn/article/glS9HjuSGhQMLL1zowwN)

@@ -19,8 +19,8 @@ module.exports = [
       '/react-redux/react_base_guanwang_event',
       '/react-redux/react_base_guanwang_sign',
       '/react-redux/react_base_guanwang_codesplit',
+      '/react-redux/react_base_guanwang_context',
       '/react-redux/react_base_guanwang_errorboundary',
-      '/react-redux/react_base_guanwang_axios'
     ]
   },
   {
@@ -49,6 +49,8 @@ module.exports = [
     title:'react架构设计实战',
     children: [
       '/react-redux/jiagou_project_one',
+      '/react-redux/jiagou_jserror',
+      '/react-redux/jiagou_axios',
       '/react-redux/jiagou_project_two',
       '/react-redux/jiagou_project_four',
       '/react-redux/jiagou_project_six',
