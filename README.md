@@ -15,6 +15,3 @@ npm run docs:dev
 
 里面的知识来自于慕课网，极客时间等诸多学习平台，本人每天都在学习，每天都在更新，如果你有兴趣，可以star一下，并且留言给我。
 
-## 快速克隆
-
-<a href='gitclone.com'><img src='https://gitclone.com/img/title.ico' style='width:300px;' alt='gitclone快速克隆' title='快速克隆'/></a>
