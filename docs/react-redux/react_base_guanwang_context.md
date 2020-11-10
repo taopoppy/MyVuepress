@@ -125,7 +125,8 @@ class MyClass extends React.Component {
 
 这种方法需要一个函数作为子元素（function as a child）。这个函数接收当前的`context`值，并返回一个`React`节点。传递给函数的`value`值等价于组件树上方离这个`context`最近的`Provider`提供的`value`值。如果没有对应的`Provider`，`value`参数等同于传递给 `createContext()`的`defaultValue`。
 
-::: warning注意
+::: warning
+注意
 想要了解更多关于 “函数作为子元素（function as a child）” 模式，详见[render props](https://zh-hans.reactjs.org/docs/render-props.html)。
 :::
 
@@ -204,6 +205,9 @@ class App extends React.Component {
     return (
       <MyContext.Provider value={{something: 'something'}}>
         <Toolbar />
+        <MyContext.Consumer>
+          {value => <p>{value.something}</p>}
+        </MyContext.Consumer>
       </MyContext.Provider>
     );
   }
@@ -214,12 +218,15 @@ function App(props){
 	return (
 		<MyContext.Provider value={() => console.log("yes")}>
 			<Toolbar />
+      <MyContext.Consumer>
+          {value => <p>{value.something}</p>}
+      </MyContext.Consumer>
 		</MyContext.Provider>
 	);
 }
 ```
 
-<font color=#DD1144>无论是类组件或者函数组件，组件在每次更新的时候，会重新执行render函数（类组件）或者重新生成闭包（函数组件），所以类似于上述的临时对象和内联函数的写法，在组件每次更新的时候，这个Provider.value值就是新生成的东西，所以组件每次更新就会强制性的去更新consumer的子组件或者useContext的返回值，造成性能损耗，我们正确的做法就是让Provider.value变成一个不可变值，不可变值的意思就是我们如果不通过this.setState（类组件）或者setState（函数组件）这些方法去刻意改变它的时候，在组件变化更新过程中，都是唯一的值。所以我们为了防止这种情况，应该将value状态提升到父节点的state里</font>
+<font color=#DD1144>无论是类组件或者函数组件，组件在每次更新的时候，会重新执行render函数（类组件）或者重新生成闭包（函数组件），所以类似于上述的临时对象和内联函数的写法，在组件每次更新的时候，这个Provider.value值就是新生成的东西，所以组件每次更新就会强制性的去更新包括Provider在内的子组件和consumer的子组件或者useContext的返回值（表现在上述代码中的就是Toobar和MyContext.Consumer都要重新渲染），造成性能损耗，我们正确的做法就是让Provider.value变成一个不可变值，不可变值的意思就是我们如果不通过this.setState（类组件）或者setState（函数组件）这些方法去刻意改变它的时候，在组件变化更新过程中，都是唯一的值。所以我们为了防止这种情况，应该将value状态提升到父节点的state里</font>
 
 ```javascript
 // 类组件
@@ -252,8 +259,220 @@ function App(props){
 ```
 
 ## Context优化
+### 1. children和memo
+我们之前说`Provider`当中`value`值在变化的时候会强制性的更新包括`Provider`在内的子组件，我们现在来举个特别典型的例子：
+```javascript
+import React, { useContext, useState } from "react";
 
+const ThemeContext = React.createContext();
+
+export function ChildNonTheme() {
+  console.log("不关心皮肤的子组件渲染了");
+  return <div>我不关心皮肤，皮肤改变的时候别让我重新渲染！</div>;
+}
+
+export function ChildWithTheme() {
+  const theme = useContext(ThemeContext);
+  return <div>我是有皮肤的哦~ {theme}</div>;
+}
+
+export default function App() {
+  const [theme, setTheme] = useState("light");
+  const onChangeTheme = () => setTheme(theme === "light" ? "dark" : "light");
+  return (
+    <ThemeContext.Provider value={theme}>
+      <button onClick={onChangeTheme}>改变皮肤</button>
+      <ChildWithTheme />
+      <ChildNonTheme />
+      <ChildNonTheme />
+    </ThemeContext.Provider>
+  );
+}
+```
+`ChildWithTheme`是需要根据主题变化的子组件，`ChildNonTheme`是和主题变化无关的子组件，但是你会发现，但我们的点击切换主题皮肤的按钮后`ChildNonTheme`也会随之重新渲染，这个就是没有必要的渲染，我们的解决方法有：<font color=#9400D3>children</font>和<font color=#9400D3>memo</font>
+
+<font color=#1E90FF>**① children**</font>
+
+```javascript
+function ThemeApp({ children }) {
+  const [theme, setTheme] = useState("light");
+  const onChangeTheme = () => setTheme(theme === "light" ? "dark" : "light");
+  return (
+    <ThemeContext.Provider value={theme}>
+      <button onClick={onChangeTheme}>改变皮肤</button>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeApp>
+      <ChildWithTheme />
+      <ChildNonTheme />
+      <ChildNonTheme />
+    </ThemeApp>
+  );
+}
+```
+为什么这种方式可以防止`ChildNonTheme`重新渲染，我们要想了解本质，就要先去知道为什么没有使用`children`的时候会渲染`ChildNonTheme`:
+
+<font color=#DD1144>本质上是由于React是自上而下递归更新，<ChildNonTheme /> 这样的代码会被babel翻译成React.createElement(ChildNonTheme) 这样的函数调用，React官方经常强调props是immutable的，所以在每次调用函数式组件的时候，都会生成一份新的 props 引用</font>。来看下`createElement`的返回结构：
+```javascript
+const childNonThemeElement = {
+  type: 'ChildNonTheme',
+  props: {} // <- 这个引用更新了
+}
+```
+正是由于这个新的`props`引用，导致`ChildNonTheme`这个组件也重新渲染了。
+
+而使用了`children`之后，<font color=#DD1144>ThemeApp内部的更新完全不会触发外部的 React.createElement，所以会直接复用之前的element结果，本质就是ChildNonTheme和ThemeContext.Provider由包含关系变成了平行关系</font>
+
+<font color=#1E90FF>**② memo**</font>
+
+首先，一说到`memo`就有人开始反对，不是之前在`Context`陷阱那一章说的是：`当组件上层最近的MyContext.Provider更新时，该Hook会触发重渲染，并使用最新传递给MyContext provider的context value值。即使祖先使用React.memo或 shouldComponentUpdate，也会在组件本身使用useContext时重新渲染`。那为什么这里又说`memo`可以用来优化呢？
+
+我想说的是：<font color=#9400D3>这里使用memo优化的对象和上面强制性渲染的对象，不是相同的，使用memo可以优化的部分是Provider的子组件，但并非Consumer或者使用useContext的子组件。强制性渲染的是Provider子组件中Consumer或者使用useContext的子组件</font>
+
+<img :src="$withBase('/react_redux_guanwang_context_provider.png')" alt="">
+
+::: tip
+<font color=#9400D3>我们针对Provider的所有子组件，分为Consumer(或useContext)和其他子组件，针对Consumer子组件我们只要避免陷入Context陷阱正常渲染即可，而其他子组件我们要使用children和memo保证他们不要做无必要或者多余的渲染</font>
+:::
+
+所以我们来看怎么对其他子组件进行`memo`优化
+```javascript
+import React, { useContext, useState, memo } from "react";
+const ThemeContext = React.createContext();
+// memo包裹
+export const ChildNonTheme = memo(function ChildNonTheme() {
+  console.log("不关心皮肤的子组件渲染了");
+  return <div>我不关心皮肤，皮肤改变的时候别让我重新渲染！</div>;
+});
+// memo包裹
+export const ChildWithTheme = memo(function ChildWithTheme() {
+  const theme = useContext(ThemeContext);
+  return <div>我是有皮肤的哦~ {theme}</div>;
+});
+
+export default function App() {
+  const [theme, setTheme] = useState("light");
+  const onChangeTheme = () => setTheme(theme === "light" ? "dark" : "light");
+  return (
+    <ThemeContext.Provider value={theme}>
+      <button onClick={onChangeTheme}>改变皮肤</button>
+      <ChildWithTheme />
+      <ChildNonTheme />
+      <ChildNonTheme />
+    </ThemeContext.Provider>
+  );
+}
+```
+所以`memo`看起来其实更方便一点。
+
+### 2. 用法优化
+用法优化有很多，我们通常会用到的就是：<font color=#9400D3>对象分离</font>、<font color=#9400D3>自定义封装</font>、<font color=#9400D3>回调地狱封装</font>
+
+<font color=#1E90FF>对象分离说的就是当Provider的value是对象的时候，其中对象的不同属性被引用到不同的组件当中时，最好拆分为不同的Context，否则某个属性被引用的组件的更新会影响其他属性被引用的组件的更新</font>
+
+```javascript
+import React, { useContext, useState } from "react";
+import "./styles.css";
+
+const LogContext = React.createContext();
+
+function LogProvider({ children }) {
+  const [logs, setLogs] = useState([]);
+  const addLog = (log) => setLogs((prevLogs) => [...prevLogs, log]);
+  return (
+    <LogContext.Provider value={{ logs, addLog }}>
+      {children}
+    </LogContext.Provider>
+  );
+}
+
+function Logger1() {
+  const { addLog } = useContext(LogContext);
+  console.log('Logger1 render')
+  return (
+    <><p>一个能发日志的组件1</p><button onClick={() => addLog("logger1")}>发日志</button>
+    </>
+  );
+}
+
+function LogsPanel() {
+  const { logs } = useContext(LogContext);
+  return logs.map((log, index) => <p key={index}>{log}</p>);
+}
+
+export default function App() {
+  return (
+    <LogProvider>
+      {/* 写日志 */}
+      <Logger1 />
+      {/* 读日志 */}
+      <LogsPanel />
+    </LogProvider>
+  );
+}
+```
+
+可以看到: `LogContext`的`value`是个对象，两个属性`logs`和`addLog`分别被引入到了`Logger1`和`LogsPanel`组件当中，任意一个属性的变化都会让`Logger1`和`LogsPanel`组件都重新渲染，我们希望的是：`logs`属性变化只会让`LogsPanel`组件更新，<font color=#1E90FF>所以我们最好是将对象的属性拆分到不同的Context中去，同时利用Context优化方式和React Hooks优化方式避免互相影响</font>
+
+```javascript
+import React, { useContext, useState, useCallback } from "react";
+import "./styles.css";
+
+const LogDispatchContext = React.createContext();
+const logShowContext = React.createContext();
+
+function LogProvider({ children }) {
+  const [logs, setLogs] = useState([]);
+  const addLog = useCallback(
+    // useCallback优化
+    (log) => setLogs((prevLogs) => [...prevLogs, log]),
+    []
+  );
+  return (
+    // logs和addLog拆分到不同的Context当中去
+    <LogDispatchContext.Provider value={addLog}>
+      <logShowContext.Provider value={logs}>{children}</logShowContext.Provider>
+    </LogDispatchContext.Provider>
+  );
+}
+
+function Logger1() {
+  const addLog = useContext(LogDispatchContext);
+  console.log("Logger1 render");
+  return (
+    <>
+      <p>一个能发日志的组件1</p>
+      <button onClick={() => addLog("logger1")}>发日志</button>
+    </>
+  );
+}
+
+function LogsPanel() {
+  const logs = useContext(logShowContext);
+  return logs.map((log, index) => <p key={index}>{log}</p>);
+}
+
+export default function App() {
+  return (
+    <LogProvider>
+      {/* 写日志 */}
+      <Logger1 />
+      {/* 读日志 */}
+      <LogsPanel />
+    </LogProvider>
+  );
+}
+
+```
+
+后面的<font color=#9400D3>自定义封装</font>和<font color=#9400D3>回调地狱封装</font>都是代码层面的优化，能使代码更简单和健壮，这里就不做详细介绍了，有兴趣的参照[Context代码组织](https://juejin.im/post/6889247428797530126#heading-3)和[组合 Providers](https://juejin.im/post/6889247428797530126#heading-4)
 
 **参考资料**
+
 
 + [我在大厂写React，学到了什么？性能优化篇](https://juejin.im/post/6889247428797530126)
