@@ -21,6 +21,7 @@ module.exports = [
       '/react-redux/react_base_guanwang_codesplit',
       '/react-redux/react_base_guanwang_context',
       '/react-redux/react_base_guanwang_errorboundary',
+      '/react-redux/react_base_guanwang_refs'
     ]
   },
   {
