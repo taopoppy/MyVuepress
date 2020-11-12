@@ -424,9 +424,8 @@ function hocButtonone(Component) {
     }
 
     render() {
-      const { forwardedRef, ...rest } = this.props;
       // 2. 继续将forwardedRef传递
-      return <Component forwardedRef={forwardedRef} {...rest} />;
+      return <Component {...this.props} />;
     }
   }
   return HocButtonOne;
@@ -438,9 +437,8 @@ function hocButtontwo(Component) {
       console.log("hocButtontwo");
     }
     render() {
-      const { forwardedRef, ...rest } = this.props;
       // 3. 继续将forwardedRef传递
-      return <Component forwardedRef={forwardedRef} {...rest} />;
+      return <Component {...this.props} />;
     }
   }
   return HocButtonTwo;
