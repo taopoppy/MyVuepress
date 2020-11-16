@@ -23,7 +23,8 @@ module.exports = [
       '/react-redux/react_base_guanwang_errorboundary',
       '/react-redux/react_base_guanwang_refs',
       '/react-redux/react_base_guanwang_hoc',
-      '/react-redux/react_base_guanwang_render_props'
+      '/react-redux/react_base_guanwang_render_props',
+      '/react-redux/react_base_guanwang_typecheck'
     ]
   },
   {

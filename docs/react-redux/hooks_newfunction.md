@@ -205,3 +205,12 @@ export default React.memo(MyComponent, areEqual);
 + 类组件的深层对比：`shouldComponentUpdate`
 + 函数组件浅层对比：`memo(component)`
 + 函数组件深层对比：`memo(component,areEqual)`
+
+## Memo拓展数据流
+`memo`本身是和优化有关的，我们来说说从过去到现在优化的方式和顺序
+
++ <font color=#1E90FF>PureComponent</font>：类组件的浅层对比
++ <font color=#1E90FF>ShouldComponentUpdate(SCU)</font>：类组件的深层、浅层对比，深层对比不太好写，容易发生极端情况，消耗性能
++ <font color=#1E90FF>memo</font>：函数组件当中的浅对比
++ <font color=#1E90FF>immutable.js数据结构+PurComponent/memo </font>：较好的方式
++ <font color=#1E90FF>immer.js</font>：更简单的方式

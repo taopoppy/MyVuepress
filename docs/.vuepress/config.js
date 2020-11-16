@@ -120,6 +120,7 @@ module.exports = {
           // { text: 'React去哪儿网火车票PWA', link: '/react-quna/'},
           { text: 'React+Redux入门详解', link: '/react-redux/' },
           { text: 'React服务器渲染原理解析', link: '/react-ssr/'},
+          { text: 'React网易云Webapp', link: 'react-webapp'},
           { text: 'React+Typescript开发组件库', link: '/react-antd/'}
           // { text: 'React+Next.js+Koa2', link: '/react-next/' },
           // { text: 'React源码深度解析', link: '/react-yuanma/'}

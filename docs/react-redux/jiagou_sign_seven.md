@@ -2,7 +2,64 @@
 
 ## Immutable.js
 
-### 1. Immutable的常规使用
+### 1. immutable中的方法
+<font color=#1E90FF>**① fromJS**</font>
+
+它的功能是将 JS 对象转换为 immutable 对象。
+```javascript
+import {fromJS} from 'immutable';
+const immutableState = fromJS ({
+    count: 0
+});
+```
+
+大家以后会经常在`redux`的`reducer`文件中看到这个`api`, 是`immutable`库当中导出的方法。
+
+<font color=#1E90FF>**② toJS**</font>
+
+和`fromJS`功能刚好相反，用来将`immutable`对象转换为`JS`对象。但是值得注意的是，这个方法并没有在`immutable`库中直接导出，而是需要让`immutable`对象调用。比如:
+```javascript
+const jsObj = immutableState.toJS ();
+```
+
+<font color=#1E90FF>**③ get/getIn**</font>
+
+用来获取`immutable`对象属性。通过与`JS`对象的对比来体会一下：
+```javascript
+//JS 对象
+let jsObj = {a: 1};
+let res = jsObj.a;
+//immutable 对象
+let immutableObj = fromJS (jsObj);
+let res = immutableObj.get ('a');
+//JS 对象
+let jsObj = {a: {b: 1}};
+let res = jsObj.a.b;
+//immutable 对象
+let immutableObj = fromJS (jsObj);
+let res = immutableObj.getIn (['a', 'b']);// 注意传入的是一个数组
+```
+
+<font color=#1E90FF>**④ set**</font>
+
+用来对`immutable`对象的属性赋值。
+```javascript
+let immutableObj = fromJS ({a: 1});
+immutableObj.set ('a', 2);
+```
+
+<font color=#1E90FF>**⑤ merge**</font>
+
+新数据与旧数据对比，旧数据中不存在的属性直接添加，旧数据中已存在的属性用新数据中的覆盖。
+```javascript
+let immutableObj = fromJS ({a: 1});
+immutableObj.merge ({
+    a: 2,
+    b: 3
+});// 修改了 a 属性，增加了 b 属性
+```
+
+### 2. Immutable的常规使用
 <font color=#DD1144>Immutable.js是用来操作不可变对象的js库</font>
 
 一般当我们在`reducer`当中根据`action.type`的不同要返回新的`state`的时候，我们通常会使用`Object.assign`或者`ES6`的扩展语法，这些方法在处理层级比较复杂的`state`对象的时候，效率是比较低下的，要对每一层级的属性进行递归和拷贝，<font color=#1E90FF>而Immutable.js内部做了很多的优化，简化的操作并且提高了效率</font>
@@ -153,7 +210,7 @@ const mapStateToProps = (state) => ({
 })
 ```
 
-### 2. Immutable的优化
+### 3. Immutable的优化
 虽然我们在前面已经完成的介绍了`Immutable`的时候，也对我们的`TodoList`项目进行了修改，但我们会发现一个比较严重的问题，<font color=#1E90FF>当我们在输入框当中去输入东西的时候，我们会发现每次的输入都会导致Todolist组件的重新渲染</font>
 
 这个我们要简单分析一下流程：<font color=#DD1144>我们修改了输入框中的内容，每次的修改都会去派发新的action然后修改store当中的数据，当store当中数据被修改之后，是先经过react-redux传递过来，进入到每个容器性组件，也就是说store变化会引起所有容器性组件的mapStateToProps的重新执行，一旦发现UI组件需要的props有发生改变变成了新的对象，就会去重新渲染连接的UI组件</font>
@@ -213,6 +270,27 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, mapDispatchProps)(toJS(TodoList)) //3. 在高阶组件内部将todos从immutable类型转化成为普通的js类型
 ```
 通过高阶组件的使用，我们就既正常引入了`Immutable.js`，也同时防止了它对UI组件的侵入，<font color=#DD1144>但是你会发现使用了这个库，它对项目的整体侵入性很强，我们需要改的地方很多，如果你的项目不是很大，且store当中的数据层级不是很多，结构不复杂，不推荐使用的，我们一定要根据需求去搭建架构，去决定是否使用某些工具</font>
+
+### 4. immutable数据流
+`immutable`数据一种利用结构共享形成的持久化数据结构，一旦有部分被修改，那么将会返回一个全新的对象，并且原来相同的节点会直接共享。
+
+具体点来说，`immutable`对象数据内部采用是<font color=#DD1144>多叉树</font>的结构，凡是有节点被改变，那么它和与它相关的所有上级节点都更新。
+
+这里有一个[原理图](https://user-gold-cdn.xitu.io/2019/10/20/16de7a154c8b30b8?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)用来展示整个过程。
+
+<font color=#DD1144>只更新了父节点，比直接比对所有的属性简直强太多，并且更新后返回了一个全新的引用，即使是浅比对也能感知到数据的改变。因此，采用 immutable 既能够最大效率地更新数据结构，又能够和现有的 PureComponent (memo) 顺利对接，感知到状态的变化，是提高 React 渲染性能的极佳方案</font>。
+
+不过，`immutable.js`的缺点就是
++ 对项目的侵入性比较大（这个问题我们已经在[React架构设计高级思想](https://www.taopoppy.cn/react-redux/jiagou_sign_seven.html#immutable-js)当中详细的说明过了）
++ `immutable`和`js`的对象并不相同，需要调用`toJS`或者`fromJS`进行转换。
+
+
+## immer.js
+我们后面还会详细讨论`immer.js`，敬请期待。
+
++ [immer.js:也许更适合你的immutable js库](https://juejin.im/post/6844904111402385422)
++ [immer.js 使用文档及在Redux项目中的实践](https://juejin.im/post/6844904024693555213)
+
 
 ## Reselect
 <font color=#DD1144>Reselect的作用是减少重复性的计算</font>
