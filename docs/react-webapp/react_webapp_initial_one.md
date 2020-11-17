@@ -121,7 +121,7 @@ import {createGlobalStyle} from'styled-components';
 export const IconStyle = createGlobalStyle`
 @font-face {font-family: "iconfont";
   src: url ('iconfont.eot?t=1565320061289'); /* IE9 */
-  src: url ('iconfont.eot?t=1565320061289#iefix' ... 省略 base64 巨长字符) format ('embedded-opentype'), /* IE6-IE8 */
+  src: url ('iconfont.eot?t=1565320061289#iefix' ... 省略 base64 长字符) format ('embedded-opentype'), /* IE6-IE8 */
   url ('data:application/x-font-woff2;charset=utf-8) format ('woff2'),
   url ('iconfont.woff?t=1565320061289') format ('woff'),
   url ('iconfont.ttf?t=1565320061289') format ('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
@@ -138,6 +138,8 @@ export const IconStyle = createGlobalStyle`
 ...
 `
 ```
+上述的具体代码请到[我的仓库](https://github.com/taopoppy/cloud-music)查看具体的代码。
+
 
 接下来, 把字体引入`App.js`中。
 ```javascript

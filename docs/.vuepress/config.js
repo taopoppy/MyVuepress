@@ -36,6 +36,7 @@ const reactAntdSiderbar = require('./sidebars/react-antd')
 const WeiXinQuanZhanSidebar = require('./sidebars/WeiXin-Quanzhan')
 const FrontadvanceSidebar = require('./sidebars/Front-advance')
 const OptimizationSidebar = require('./sidebars/optimization')
+const reactWebAppSiderbar = require('./sidebars/react-webapp')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -119,8 +120,8 @@ module.exports = {
           // { text: 'React实战大众点评WebApp', link: '/react-dazhong/'},
           // { text: 'React去哪儿网火车票PWA', link: '/react-quna/'},
           { text: 'React+Redux入门详解', link: '/react-redux/' },
+          { text: 'React网易云Webapp', link: '/react-webapp/'},
           { text: 'React服务器渲染原理解析', link: '/react-ssr/'},
-          { text: 'React网易云Webapp', link: 'react-webapp'},
           { text: 'React+Typescript开发组件库', link: '/react-antd/'}
           // { text: 'React+Next.js+Koa2', link: '/react-next/' },
           // { text: 'React源码深度解析', link: '/react-yuanma/'}
@@ -225,7 +226,8 @@ module.exports = {
       '/learnMaterials/': learnMaterialsSodebar,
       '/react-redux/': reactReduxSiderbar,
       '/react-ssr/':reactSSRSiderbar,
-      '/react-antd/': reactAntdSiderbar
+      '/react-antd/': reactAntdSiderbar,
+      '/react-webapp/': reactWebAppSiderbar,
     }
   }
 }
