@@ -1,5 +1,12 @@
 # 项目骨架搭建
 
+::: danger
+css分析
++ <font color=#9400D3>justify-content</font>：如何分配顺着弹性容器主轴
+  + <font color=#1E90FF>space-between</font>：均匀排列每个元素，首个元素放置于起点，末尾元素放置于终点
+  + <font color=#1E90FF>space-around</font>：均匀排列每个元素，每个元素周围分配相同的空间
+:::
+
 初始项目的搭建主要分为三个部分进行:
 
 + <font color=#1E90FF>路由的配置和应用部分</font>
@@ -99,6 +106,11 @@ export default React.memo (Home);
 
 ::: tip
 我们可以看到，上述这种路由的配置和我们之前在[React-Router基本思想](https://taopoppy.cn/react-redux/jiagou_sign_four.html#react-router%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3)，虽然方式不太一样，最终都是要转换成Router组件的，只不过在这里我们是通过写配置，配置通过react-router-config转换成了Route组件，而在[React-Router基本思想](https://taopoppy.cn/react-redux/jiagou_sign_four.html#react-router%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3)当中我们是直接写Router组件的
+
+这两种写法也各有优劣
++ 配置写法的优点在于简单，而且通过配置的方式很容易实现每个页面都显示header和footer，只需要将header和footer的显示放在一级路由当中。
++ 直接写Router组件的方式的优点在于利于多人合作，实现footer和header的方式可以直接在组建当中书写，也或者通过高阶组件或者自定义hook的方式。
+
 :::
 
 ## 公共组件开发
@@ -159,7 +171,7 @@ export const Top = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding: 5px 10px;
-  background: ${style ["theme-color"]};
+  background: ${style["theme-color"]};
   &>span {
     line-height: 40px;
     color: #f1f1f1;
@@ -198,6 +210,7 @@ export const TabItem = styled.div`
   align-items: center;
 `
 ```
+
 然后最终在`Home`组件当中使用；
 ```javascript
 import React from 'react';

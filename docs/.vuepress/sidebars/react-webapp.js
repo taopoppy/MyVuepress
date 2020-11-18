@@ -8,4 +8,10 @@ module.exports = [
 			'/react-webapp/react_webapp_initial_project'
     ]
   },
+  {
+    title:'首页开发',
+    children: [
+      '/react-webapp/react_webapp_home_swiper'
+    ]
+  }
 ]
