@@ -11,7 +11,8 @@ module.exports = [
   {
     title:'首页开发',
     children: [
-      '/react-webapp/react_webapp_home_swiper'
+      '/react-webapp/react_webapp_home_swiper',
+      '/react-webapp/react_webapp_home_scroll'
     ]
   }
 ]

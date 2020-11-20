@@ -539,3 +539,25 @@ export default App;
 ```
 
 关于`useRef`实际上涉及到的是一个<font color=#9400D3>闭包陷阱</font>的问题，我们在`react`服务端渲染的时候讲过，所以可以到[闭包陷阱](https://www.taopoppy.cn/react-ssr/ssr_combat_project_three.html#%E9%97%AD%E5%8C%85%E9%99%B7%E9%98%B1)仔细体会一下。
+
+
+## useImperativeHandle
+```javascript
+useImperativeHandle(ref, createHandle, [deps])
+```
+<font color=#9400D3>useImperativeHandle 可以让你在使用 ref 时自定义暴露给父组件的实例值</font>。在大多数情况下，应当避免使用`ref`这样的命令式代码。`useImperativeHandle`应当与`forwardRef`一起使用：
+
+```javascript
+const FancyInput = forwardRef((props, ref)=> {
+  const inputRef = useRef();
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus();
+    }
+  }));
+  return <input ref={inputRef} ... />;
+})
+
+export default FancyInput;
+```
+在本例中，渲染`<FancyInput ref={inputRef} />`的父组件可以调用`inputRef.current.focus()`。
