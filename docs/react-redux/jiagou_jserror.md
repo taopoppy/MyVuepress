@@ -12,3 +12,4 @@
 + [Javascript错误处理大全（重点）](https://mp.weixin.qq.com/s/K5nzTWSMgDPq0gO2SIa4Uw)
 + [你不知道的前端异常处理（万字长文，建议收藏）（重点）](https://mp.weixin.qq.com/s/wyfcSjGvgDU-iuPm8k7exQ)
 + [JavaScript错误处理完全指南（重点）](https://www.infoq.cn/article/glS9HjuSGhQMLL1zowwN)
++ [JavaScript Errors 指南](https://mp.weixin.qq.com/s/8bKmCZ-HKgJzN0vF_Ne6ew)

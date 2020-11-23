@@ -14,3 +14,8 @@
 
 
 [github项目地址](https://github.com/taopoppy/cloud-music)
+
+在整个项目当中，我们也会重点讲很多问题：我们会在这里一个个列出：
+
++ <font color=#1E90FF>图片懒加载</font>
++ <font color=#1E90FF>redux缓存</font>

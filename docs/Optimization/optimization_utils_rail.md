@@ -60,7 +60,49 @@ docker run -d -p 4001:80 --network="host" -e "SERVER_URL=http://localhost:4000/w
 现在就可以直接到浏览器，打开`localhost:4000`就可以用了
 
 ## LightHouse
+### 1. 工具使用
+<font color=#1E90FF>**① 第三方包**</font>
+
+`LightHouse`不仅能给我们生成一个完成的报告，还会针对性的给我们提出建议。最开始的时候`LightHouse`是以`npm`包的形式出现的，需要全局下载：
+```javascript
+npm install -g lighthouse
+```
+当前最新的版本是`lighthouse@6.0.0`，使用方法也很简单，直接使用`lighthouse`加网址即可：
+```javascript
+lighthouse http://www.bilibili.com
+```
+默认会自动打开一个`Chrome`浏览器窗口对移动版的网址进行测试，然后会以`html`的文件形式进行输出，在浏览器打开即可
+```javascript
+  Printer html output written to C:\Users\Administrator\Desktop\m.bilibili.com
+020-11-23_16-13-46.report.html +98ms
+```
+<img :src="$withBase('/optimization_lighthouse_screen.png')" alt="lighthouse">
+
+<font color=#1E90FF>**② 浏览器内置Dev**</font>
+
+打开浏览器开发工具，在`Audits`当中内置了`LightHouse`，其有很多参数可以选择，比较方便
+
+<font color=#1E90FF>**③ 浏览器插件**</font>
+
+在`Chrome Store`当中可以搜索到`lighthouse`插件，不过需要翻墙，使用方法和上述两种基本一致。
+
+### 2. Metrics指标
+
+在`Metrics`当中最关心的几个指标
++ <font color=#1E90FF>First Contentful Paint</font>:第一个有绘制的东西出现的时间
++ <font color=#1E90FF>Speed index</font>：速度指数，小于4秒为优，这个只是个指导性的指标，像电商网站无论怎么做都不会比百度这些官网优秀，因为内容不一样，复杂度会更高
++ <font color=#1E90FF>Largest Contentful Paint</font>：绘制最大的内容所花费的时间
++ <font color=#1E90FF>Time to Interactive</font>：什么时候用户可以和网站开始交互了
++ <font color=#1E90FF>Total Blocking Time</font>：阻塞的总时间
+
+### 3. Opportunities指路
+接着往下就是`Opportunities`，这个部分是告诉你可以优化哪些部分，并且通过优化之后可以达到的一个结果：
++ <font color=#1E90FF>Remove unused JavaScript</font>：移除一些没有用的`JS`代码，可能将后面页面用到的`JS`在首屏就加载了出来。
++ <font color=#1E90FF>Eliminate render-blocking resources</font>：消除阻塞阻塞加载
+
+还有很多项目，我们就不一一解释了，可以到具体的官网去查，另外在后面我们还会去实践。
 
 ## Chrome DevTools
+
 
 ## 性能测量API
