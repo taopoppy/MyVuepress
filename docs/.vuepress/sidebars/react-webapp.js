@@ -5,6 +5,7 @@ module.exports = [
     title: '技术专题',
     children: [
       '/react-webapp/react_webapp_important_scroll',
+      '/react-webapp/react_webapp_important_debounce',
       '/react-webapp/react_webapp_important_lazyload',
       '/react-webapp/react_webapp_important_reduxsave'
     ]
@@ -29,6 +30,8 @@ module.exports = [
     title:'歌手列表',
     children: [
       '/react-webapp/react_webapp_singer_horlist',
+      '/react-webapp/react_webapp_singer_list',
+      '/react-webapp/react_webapp_singer_scrolloptimization',
     ]
   }
 ]
