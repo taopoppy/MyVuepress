@@ -162,6 +162,29 @@ export default App;
 
 这三个方式都可以拿到`this.props`，里边会有这样一堆属性：<font color=#9400D3>history</font>、<font color=#9400D3>location</font>、<font color=#9400D3>match</font>
 
+<font color=#9400D3>值得注意的是，我们这里说的能拿到this.props.history、this.props.location、this.props.match这些路由属性的组件是最外层的组件，比如component={Home}当中Home组件就是最外层的组件，但是Home组件当中会有很多子组件，这些子组件是直接拿不到history、location、match这些属性的，有两种方法：</font>
+
++ <font color=#1E90FF>将父组件中props对象中的history属性传给子组件</font>
+  ```javascript
+  // 父组件
+  function Father(props) {
+    return(
+      <Children history={props.history}></Children>
+    )
+  }
+  ```
+
++ <font color=#1E90FF>将子组件使用withRouter包裹</font>
+  ```javascript
+  import { withRouter } from 'react-router-dom';
+  function Children(props) {
+  }
+
+  export default React.memo(withRouter(Children));
+  ```
+
+
+
 ### 1. component
 这个是我们前面一直将的方法，这种方式有两种用法；
 ```javascript
