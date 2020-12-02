@@ -10,12 +10,12 @@ import { CSSTransition } from 'react-transition-group' // 引入react-transition
 function Album(props) {
 	return(
 		<CSSTransition
-			in={showStatus}  // 动画的状态
-			timeout={500}    // 动画的时间
-      classNames="fly" // 动画css的前缀，默认是fade
-      appear={true}    // 页面第一次也会出现动画
-      unmountOnExit    // 隐藏的时候消除DOM
-      onExited={props.history.goBack} // 退出的时候执行返回前一个页面
+          in={showStatus}  // 动画的状态
+          timeout={500}    // 动画的时间
+          classNames="fade" // 动画css的前缀，默认是fade
+          appear={true}    // 页面第一次也会出现动画
+          unmountOnExit    // 隐藏的时候消除DOM
+          onExited={props.history.goBack} // 退出的时候执行返回前一个页面
 		>
 			...
 		</CSSTransition>
@@ -23,7 +23,7 @@ function Album(props) {
 }
 ```
 
-然后我们需要通过`fly-`前缀打头的一些列`classNames`当中书写效果，比如这样：
+然后我们需要通过`fade-`前缀打头的一些列`classNames`当中书写效果，比如这样：
 ```css
 .fade-enter, .fade-appear {
 	opacity: 0;
@@ -113,7 +113,7 @@ function Album(props) {
 		<CSSTransition
 			in={showStatus}  // 动画的状态
 			timeout={500}    // 动画的时间
-      classNames="fly" // 动画css的前缀，默认是fade
+      classNames="fade" // 动画css的前缀，默认是fade
       appear={true}    // 页面第一次也会出现动画
       unmountOnExit    // 隐藏的时候消除DOM
       onExited={props.history.goBack} // 退出的时候执行返回前一个页面
@@ -167,7 +167,7 @@ function Album(props) {
 }
 ```
 
-### style-components
+### 1. style-components
 `Album/index.js`内容如下：
 ```javascript
 import { Container } from './style.js'
