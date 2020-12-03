@@ -238,3 +238,32 @@ export const Container = styled.div`
 ```
 
 总结一句话，就是：<font color=#DD1144>原封不动从animate.css源码当中抄过来，并且将keyframes的名称写在react-transition-group给我们规定的className当中</font>
+
+## 优化
+::: danger
+<font color=#DD1144>值得注意的是，使用动画效果最主要的是要流畅，如果在使用动画的过程中出现了闪动和抖动的问题出现，基本上是动画开始和结束的那一帧出了问题，所以我们在上面的代码只写了fly-enter-active, fly-appear-active, fly-exit-active这几个动画过程，还有fade-enter、fade-appear、fade-enter-done、fade-appear-done、fade-exit和fade-exit-done这些关键的开始和结尾帧，需要在这些里面添加对应的css代码</font>
+:::
+
+比如说我们前面在`style-components`当中提供的动画实际上就有闪动效果，我们需要根据`animate.css`源码当中的`keyframes`当中的关键的`from`、`to`、`0%`、`100%`找到对应的`css`代码，粘贴到这里来测试一下。
+
+```javascript
+export const Container = styled.div`
+  &.fly-enter-active, &.fly-appear-active {
+		animation-name: ${backInDown};
+		animation-timing-function: ease-out;
+		animation-duration: 300ms;
+  }
+  // 经过测试发现在backOutDown出场动画的第一帧添加初始效果会避免闪动效果
+  &.fly-exit {
+    transform: translateY(700px) scale(1);
+    opacity: 0;
+  }
+  &.fly-exit-active {
+		animation-name: ${backOutDown};
+		animation-timing-function: ease-in;
+		animation-duration: 300ms;
+  }
+`
+```
+
+这种优化不是特定的，不同的动画有不同的效果，也可能有不同的问题，所以我们需要自己进行测试才能找到最优的效果
