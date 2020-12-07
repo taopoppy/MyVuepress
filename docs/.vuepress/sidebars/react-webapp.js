@@ -42,7 +42,10 @@ module.exports = [
   {
     title: '歌单详情',
     children: [
-      '/react-webapp/react_webapp_songlist_transform'
+      '/react-webapp/react_webapp_songlist_transform',
+      '/react-webapp/react_webapp_songlist_template',
+      '/react-webapp/react_webapp_songlist_datalevel',
+      '/react-webapp/react_webapp_songlist_optimization_byme'
     ]
   }
 ]
