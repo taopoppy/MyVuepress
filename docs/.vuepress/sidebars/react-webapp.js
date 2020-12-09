@@ -47,5 +47,14 @@ module.exports = [
       '/react-webapp/react_webapp_songlist_datalevel',
       '/react-webapp/react_webapp_songlist_optimization_byme'
     ]
+  },
+  {
+    title: '歌手主页',
+    children: [
+      '/react-webapp/react_webapp_people_component',
+      '/react-webapp/react_webapp_people_dom',
+      '/react-webapp/react_webapp_people_data',
+      '/react-webapp/react_webapp_people_optimization_byme'
+    ]
   }
 ]
