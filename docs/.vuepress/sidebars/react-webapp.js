@@ -8,6 +8,8 @@ module.exports = [
       '/react-webapp/react_webapp_important_debounce',
       '/react-webapp/react_webapp_important_lazyload',
       '/react-webapp/react_webapp_important_reduxsave',
+      '/react-webapp/react_webapp_important_css_transition',
+      '/react-webapp/react_webapp_important_css_transform',
       '/react-webapp/react_webapp_important_animate',
       '/react-webapp/react_webapp_important_architecture'
     ]
