@@ -10,6 +10,7 @@ module.exports = [
       '/react-webapp/react_webapp_important_reduxsave',
       '/react-webapp/react_webapp_important_css_transition',
       '/react-webapp/react_webapp_important_css_transform',
+      '/react-webapp/react_webapp_important_css_animation',
       '/react-webapp/react_webapp_important_animate',
       '/react-webapp/react_webapp_important_architecture'
     ]
@@ -57,6 +58,13 @@ module.exports = [
       '/react-webapp/react_webapp_people_dom',
       '/react-webapp/react_webapp_people_data',
       '/react-webapp/react_webapp_people_optimization_byme'
+    ]
+  },
+  {
+    title: '歌曲播放',
+    children: [
+      '/react-webapp/react_webapp_player_data',
+      '/react-webapp/react_webapp_player_animation'
     ]
   }
 ]
