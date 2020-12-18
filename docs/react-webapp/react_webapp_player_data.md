@@ -156,7 +156,6 @@ function Player (props) {
   )
 }
 
-// 映射 Redux 全局的 state 到组件的 props 上
 const mapStateToProps = state => ({
   fullScreen: state.getIn (["player", "fullScreen"]),
   playing: state.getIn (["player", "playing"]),
@@ -168,7 +167,6 @@ const mapStateToProps = state => ({
   sequencePlayList: state.getIn (["player", "sequencePlayList"])
 });
 
-// 映射 dispatch 到 props 上
 const mapDispatchToProps = dispatch => {
   return {
     togglePlayingDispatch (data) {
