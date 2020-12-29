@@ -65,7 +65,9 @@ module.exports = [
     children: [
       '/react-webapp/react_webapp_player_data',
       '/react-webapp/react_webapp_player_animation',
-      '/react-webapp/react_webapp_player_processbar'
+      '/react-webapp/react_webapp_player_processbar',
+      '/react-webapp/react_webapp_player_playsong',
+      '/react-webapp/react_webapp_player_playfunc'
     ]
   }
 ]
