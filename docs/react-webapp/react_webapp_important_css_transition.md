@@ -35,7 +35,7 @@ div {
   transition-delay: 1s, 0s;
 }
 ```
-意思就是`opacity`属性的动画延迟是1s，过渡时间是2s，`left`属性的
+意思就是`opacity`属性的动画延迟是1s，过渡时间是2s，`left`属性的动画延迟是0s，过渡时间是4s
 
 
 ### 1. transition-property

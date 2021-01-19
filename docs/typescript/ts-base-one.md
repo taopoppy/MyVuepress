@@ -11,7 +11,7 @@
 上面这个解释有下面几个要点：
 
 - <font color=#DD1144>TS 是 JS 的超集</font>：TS 除了包含所有的 JS 语法特性，还拥有自己独特的语法特性，所以我们学习 TS,实际上只是在学习 TS 中剔除 JS 语法外的新语法特定
-- <font color=#DD1144>静态的代码类型</font>：JS 代码中的类型都是动态类型，也就是在变量当中保存的值的类型可以随时变化，<font color=#DD1144>但是 TS 当中一旦变量存储的数据的类型确定，就不能在更改，并且这个变量上就拥有了该类型所有的属性和方法</font>
+- <font color=#DD1144>静态的代码类型</font>：JS 代码中的类型都是动态类型，也就是在变量当中保存的值的类型可以随时变化，<font color=#DD1144>但是 TS 当中一旦变量存储的数据的类型确定，就不能在更改，并且这个变量上就拥有了该类型所有的属性和方法（请牢记）</font>
 - <font color=#DD1144>TS 无法直接运行</font>：TS 代码需要通过自己的编译器成为 JS 代码才能在浏览器或者 Node 当中去使用，你可以在[https://www.typescriptlang.org/play](https://www.typescriptlang.org/play)这个网址左侧写任何 TS 代码，右侧就会翻译成为 JS 代码
 
 ### 2. TS 的优势

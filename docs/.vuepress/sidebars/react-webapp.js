@@ -12,7 +12,8 @@ module.exports = [
       '/react-webapp/react_webapp_important_css_transform',
       '/react-webapp/react_webapp_important_css_animation',
       '/react-webapp/react_webapp_important_animate',
-      '/react-webapp/react_webapp_important_architecture'
+      '/react-webapp/react_webapp_important_eventloop',
+      '/react-webapp/react_webapp_important_architecture',
     ]
   },
   {
@@ -67,7 +68,9 @@ module.exports = [
       '/react-webapp/react_webapp_player_animation',
       '/react-webapp/react_webapp_player_processbar',
       '/react-webapp/react_webapp_player_playsong',
-      '/react-webapp/react_webapp_player_playfunc'
+      '/react-webapp/react_webapp_player_playfunc',
+      '/react-webapp/react_webapp_player_eventloop',
+      '/react-webapp/react_webapp_player_optimization_byme'
     ]
   }
 ]
