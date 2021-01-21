@@ -231,7 +231,7 @@ let c: Color = Color.Green;
 ```
 枚举类型提供的一个便利是你可以由枚举的值得到它的名字。 例如，我们知道数值为`2`，但是不确定它映射到`Color`里的哪个名字，我们可以查找相应的名字：
 
-## interface 接口
+## interface接口
 `interface`是对某种自定义类型进行复用的一种技术，某种自定义类型会在多个地方重复使用，我们即可将其抽象为一种接口拿出定义：
 ```typescript
 interface Person {
@@ -286,6 +286,26 @@ const setPersonName = (person: Person, name: string) => {
 	person.name = name // 报错，name属性不能被修改
 }
 ```
+上述的代码并没有展示这么一条关键的准则：<font color=#9400D3> 只读属性的初始化只能在声明时或构造函数里。</font>
+```typescript
+// 第一种（声明时）
+class Person {
+	readonly name:string = 'taopoppy'
+}
+const person = new Person()
+console.log(person.name) // taopoppy
+
+// 第二种（构造函数当中）
+class Person {
+	readonly name: string
+	constructor(name: string) {
+		this.name = name
+	}
+}
+const person = new Person('taopoppy')
+console.log(person.name) // taopoppy
+```
+
 
 ### 3. 字面量的强校验
 我们来看一个比较重要的问题：
