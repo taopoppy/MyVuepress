@@ -7,6 +7,7 @@ module.exports = [
       "/typescript/ts-base-one",
       "/typescript/ts-base-two",
       "/typescript/ts-base-three",
+      "/typescript/ts-base-four"
     ],
   },
 ];
