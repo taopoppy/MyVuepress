@@ -10,4 +10,10 @@ module.exports = [
       "/typescript/ts-base-four"
     ],
   },
+  {
+    title: "TypeScript语法进阶",
+    children: [
+      "/typescript/ts-advanced-one",
+    ],
+  },
 ];

@@ -1,8 +1,8 @@
-# Webpack从入门进阶
+# 前端工程化
 
-随着前端工程越来越复杂，我们需要很多不同的模块，但是当我们的模块达到成百上千个，我们就不可能引入成百上千个js文件了，这个时候我们就需要使用工具来管理我们的项目
+关于前端工程化有这么几个学习地方，当然本人也会根据自己的项目实战经验在文章当中增砖添瓦
 
-`webpack`就是这样的工具，三大框架的脚手架工具都开始使用`webpack`来做底层代码的构建，得益于其他工具无法实现的功能，学会了`webpack`不仅仅能帮助你更好的分析业务逻辑的层次，也能在前端工程化建设方面更上一层楼。
-
-相对于之前的版本，`webpack4`构建速度更快，内置了很多配置，同时对于`webpack`的版本变更，我们需要做的就是：<font color=#DD1144>在学习如何配置的同时学会怎么去查阅官方文档</font>
-
++ [带你入门前端工程化](https://woai3c.gitee.io/introduction-to-front-end-engineering/#%E7%AE%80%E4%BB%8B)
++ [(拉钩教育)前端工程化精讲](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=416&sid=20-h5Url-0#/sale)
++ [(拉钩教育)前端基础建设与架构30讲](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=584&sid=20-h5Url-0#/sale)
++ [前端工程化体系先导课](https://www.bilibili.com/video/BV1uf4y1k7cp)

@@ -209,7 +209,7 @@ const arr: (number | string | boolean)[]
 元组的概念是：<font color=#DD1144>元组类型允许表示一个已知元素数量和类型的数组，各元素的类型不必相同</font>
 ```typescript
 // 这个数组长度只能为3，且第一个元素类型必须是字符串，第二个元素必须为数字类型，第三个必须是布尔类型
-let teacher:[string, number, booler]
+let teacher:[string, number, boolean]
 ```
 
 ### 3. 枚举（Enum）
@@ -217,7 +217,8 @@ let teacher:[string, number, booler]
 
 ```typescript
 enum Color {Red, Green, Blue}
-let c: Color = Color.Green;
+console.log(Color.Green, typeof Color.Green); // 1 number
+console.log(Color[0], typeof Color[0]); // Red string
 ```
 默认情况下，从`0`开始为元素编号。 你也可以手动的指定成员的数值。 例如，我们将上面的例子改成从`1`开始编号：
 ```typescript
@@ -227,7 +228,7 @@ let c: Color = Color.Green;
 或者，全部都采用手动赋值：
 ```typescript
 enum Color {Red = 1, Green = 2, Blue = 4}
-let c: Color = Color.Green;
+let c: Color = Color.Green; // 2
 ```
 枚举类型提供的一个便利是你可以由枚举的值得到它的名字。 例如，我们知道数值为`2`，但是不确定它映射到`Color`里的哪个名字，我们可以查找相应的名字：
 
@@ -255,7 +256,7 @@ const setPersonName = (person: Person, name: string) => {
 接口里的属性不全都是必需的。 有些是只在某些条件下存在，或者根本不存在。 可选属性在应用`option bags`模式时很常用，即给函数传入的参数对象中只有部分属性赋值了。
 ```typescript
 interface Person {
-  name: string;
+	name: string;
 	age?: number
 }
 
