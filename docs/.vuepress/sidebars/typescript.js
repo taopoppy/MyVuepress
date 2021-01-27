@@ -14,6 +14,8 @@ module.exports = [
     title: "TypeScript语法进阶",
     children: [
       "/typescript/ts-advanced-one",
+      "/typescript/ts-advanced-two",
+      "/typescript/ts-advanced-three"
     ],
   },
 ];

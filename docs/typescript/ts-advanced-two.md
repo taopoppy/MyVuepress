@@ -1,4 +1,4 @@
-# 高级类型
+# Typescript高级类型
 
 ## 联合类型与类型保护
 ```typescript

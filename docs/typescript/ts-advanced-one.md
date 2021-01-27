@@ -47,7 +47,7 @@
 "declaration": true,        //  生成相应的 .d.ts文件。
 "declarationMap": true,
 "sourceMap": true,
-"outFile": "./",            // 将输出文件合并为一个文件。合并的顺序是根据传入编译器的文件顺序
+"outFile": "./",            // （重要）将输出文件合并为一个文件。合并的顺序是根据传入编译器的文件顺序
 "outDir": "./",             // （重要）指定编译的输出目录
 "rootDir": "./",            // （重要）指定编译的入口目录
 "composite": true,
