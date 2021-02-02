@@ -156,3 +156,48 @@ function getFirstElement<T>(parmas:T[]):T {
 // getFirstElement函数定义就是这种类型，所以getFirstElement可以赋值给func
 const func: <T>(params: T[]) => T = getFirstElement
 ```
+
+### 5. keyof
+我们首先来看这段代码：
+```typescript
+interface Person {
+	name: string;
+	age: number;
+	gender: string;
+}
+
+class Teacher {
+	constructor(private info:Person) {}
+	getInfo(key:string) {
+		return this.info[key] //这里会标红
+	}
+}
+
+const teacher = new Teacher({
+	name: 'taopoppy',
+	age: 25,
+	gender: 'man'
+})
+
+const test = teacher.getInfo('name')
+console.log(test)
+```
+上面的代码会在注释的地方标红，原因是：<font color=#DD1144>由于保护措施，并不能保证你输入的名称就是name，age或者gender三者之一，如果输入其他的东西就会获得undefined，所以系统希望你输入的必须是name，age或者gender三者之一</font>
+
+所以我们可以按照下面这种方式来写：
+```typescript
+class Teacher {
+	constructor(private info:Person) {}
+	getInfo<T extends keyof Person>(key:T): Person[T] {
+		return this.info[key]
+	}
+}
+```
+这样书写是什么意思呢?
++ <font color=#1E90FF>keyof Person是属性遍历的写法</font>
++ <font color=#1E90FF>T extends keyof Person写法的意思就是T的类型就是Person所有属性名称的集合</font>
++ <font color=#1E90FF>key：T表示key的值只能是Person的属性名称之一</font>
+
+这样一番书写，在实际调用`getInfo`方法的时候，无论是返回值还是函数参数，鼠标放上去的时候类型就是唯一的。
+
+所以通过上面的代码你还会发现：<font color=#9400D3>定义类型，不单单能将类型定义为string，number等等这种JS类型，还能定义为一个固定的JS类型值。这样的类型限定范围就更小了，也更严格了</font>
