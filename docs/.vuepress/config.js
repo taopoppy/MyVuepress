@@ -1,5 +1,4 @@
 const constructSidebar = require('./sidebars/construct')
-const typescriptSidebar = require('./sidebars/typescript')
 const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
 const FrontendSidebar = require('./sidebars/Front-end')
 const FlutterSidebar = require('./sidebars/Flutter')
@@ -109,13 +108,13 @@ module.exports = {
           { text: 'node微服务',link: '/node-microService/'}
         ]
       },
-      {
-        text: 'TS系列',
-        items: [
-          { text: 'TypeScript入门与实战', link: '/typescript/' },
-          { text: 'TS重构axios项目开发', link: '/typescript-axios/' }
-        ]
-      },
+      // {
+      //   text: 'TS系列',
+      //   items: [
+      //     { text: 'TypeScript入门与实战', link: '/typescript/' },
+      //     { text: 'TS重构axios项目开发', link: '/typescript-axios/' }
+      //   ]
+      // },
       {
         text: 'react',
         items: [
@@ -205,7 +204,6 @@ module.exports = {
       '/vue-ssr/':vueSSRSidebar,
       '/vue-interview/': vueInterviewSidebar,
       '/Webpack/': WebpackSidebar,
-      '/typescript/': typescriptSidebar,
       '/typescript-axios/': typescriptAxiosSidebar,
       '/Front-end/': FrontendSidebar,
       '/Front-advance/': FrontadvanceSidebar,

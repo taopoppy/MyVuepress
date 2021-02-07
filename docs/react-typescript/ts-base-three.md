@@ -1,4 +1,4 @@
-# TS 类的相关
+# Typescript类的相关
 
 `TypeScript`当中的类和`ES6`当中的类实际上很相似
 
