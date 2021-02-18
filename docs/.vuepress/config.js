@@ -24,8 +24,6 @@ const protocolSidebar = require('./sidebars/protocol')
 const goReptileSidebar = require('./sidebars/go-reptile')
 const linuxSidebar = require('./sidebars/Linux')
 const prometheusSidebar = require('./sidebars/prometheus')
-const blockchainSidebar = require('./sidebars/blockchain')
-const nodeBlockchainSidebar = require('./sidebars/nodeblockchain')
 const vueInterviewSidebar = require('./sidebars/vueInterview')
 const reactReduxSiderbar = require('./sidebars/react-redux')
 const learnMaterialsSodebar = require('./sidebars/learnMaterials')
@@ -38,7 +36,7 @@ const OptimizationSidebar = require('./sidebars/optimization')
 const reactWebAppSiderbar = require('./sidebars/react-webapp')
 const reactSourceSiderbar = require('./sidebars/react-source')
 const reactTypescriptSiderbar = require('./sidebars/react-typescript')
-
+const webarchitectSiderbar = require('./sidebars/web-architect')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -58,12 +56,12 @@ module.exports = {
       { text: '资料', link: '/learnMaterials/'},
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '构建网站', link: '/construct/'},
-      { text: 'Flutter',
-        items: [
-          { text: 'Flutter入门到实战', link: '/Flutter/'},
-          { text: 'Flutter知识详解', link: '/Flutter-Know/'},
-        ]
-      },
+      // { text: 'Flutter',
+      //   items: [
+      //     { text: 'Flutter入门到实战', link: '/Flutter/'},
+      //     { text: 'Flutter知识详解', link: '/Flutter-Know/'},
+      //   ]
+      // },
       //{ text: '算法世界', link: '/Algorithm/'},
       { text: '小程序',
         items: [
@@ -182,13 +180,10 @@ module.exports = {
           { text: '前端中级面试', link: '/Front-advance/'}
         ]
       },
-      // {
-      //   text: '前端面试',
-      //   items: [
-      //     { text: '深入浅区块链',link: '/blockchain/'},
-      //     { text: 'Node+React开发区块链', link:'/node-blockchain/'}
-      //   ]
-      // }
+      {
+        text: 'web架构师',
+        link: '/Web-Architect/'
+      }
     ],
     sidebarDepth: 3,
     lastUpdated: 'Last Updated', // string | boolean
@@ -215,8 +210,6 @@ module.exports = {
       '/Weixin-quanzhan/': WeiXinQuanZhanSidebar,
       '/node/': nodeSidebar,
       '/go/': goSidebar,
-      '/blockchain/': blockchainSidebar,
-      '/node-blockchain/': nodeBlockchainSidebar,
       '/Linux/': linuxSidebar,
       '/go-reptile/': goReptileSidebar,
       '/Mysql/': mysqlSidebar,
@@ -232,7 +225,8 @@ module.exports = {
       '/react-antd/': reactAntdSiderbar,
       '/react-webapp/': reactWebAppSiderbar,
       '/react-source/': reactSourceSiderbar,
-      '/react-typescript/': reactTypescriptSiderbar
+      '/react-typescript/': reactTypescriptSiderbar,
+      '/Web-Architect/': webarchitectSiderbar
     }
   }
 }
