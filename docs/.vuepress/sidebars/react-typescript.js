@@ -17,13 +17,13 @@ module.exports = [
       "/react-typescript/ts-advanced-two",
       "/react-typescript/ts-advanced-three",
       "/react-typescript/ts-advanced-four",
-      "/react-typescript/ts-advanced-five"
     ],
   },
   {
     title: "Typescript高级语法",
     children:[
       "/react-typescript/ts-end-one",
+      "/react-typescript/ts-end-two",
     ]
   }
 ]
