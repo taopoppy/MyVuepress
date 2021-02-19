@@ -2,9 +2,10 @@
 module.exports = [
   '/node-GraphQL/',
   {
-    title: '认识GraphQL',
+    title: 'GraphQL-基础',
     children: [
       '/node-GraphQL/one_whatGraphQL',
+      '/node-GraphQL/two_whatGraphQL',
     ]
   },
 ]
