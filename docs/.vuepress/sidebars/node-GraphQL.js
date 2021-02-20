@@ -4,8 +4,8 @@ module.exports = [
   {
     title: 'GraphQL-基础',
     children: [
-      '/node-GraphQL/one_whatGraphQL',
-      '/node-GraphQL/two_whatGraphQL',
+      '/node-GraphQL/GraphQL-query-one.md',
+      '/node-GraphQL/GraphQL-query-two.md',
     ]
   },
 ]

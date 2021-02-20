@@ -1,4 +1,4 @@
-# Schema和Query
+# Schema和Query（1）
 
 我们学习之前先来在`vscode`当中安装一些插件
 + <font color=#1E90FF>Babel ES6/ES7</font>： `es6/es7`语法的高亮提示
@@ -122,3 +122,135 @@ server.start(()=> {
 	console.log("Server is running on localhost:4000")
 })
 ```
+
+## 操作参数
+操作参数是客户端选择性的获取服务端数据的一种方式,我们可以在`Query`当中添加带参数的字段，参数和参数之间使用逗号分隔，同样带！表示必须传递参数，不带的表示可选
+```javascript
+const {GraphQLServer} = require('graphql-yoga')
+
+// 类型定义{schema}
+const typeDefs = `
+	type Query{
+		greeting(name:String!,age:Int):String!
+	}
+`
+
+// Resolvers(函数实现)
+const resolvers= {
+	Query: {
+		// 字段的实现函数都有四个参数
+		// parent: 涉及到关系类型
+		// args: 所以通过query传递来的参数都保存在args当中
+		greeting(parent,args,ctx, info) {
+			const { name, age } = args
+			return age? `${name} is ${age}`:`hello ${name}` // 因为age是可选参数，需要判断是否存在
+		},
+	}
+}
+
+const server = new GraphQLServer({
+	typeDefs,
+	resolvers
+})
+
+server.start(()=> {
+	console.log("Server is running on localhost:4000")
+})
+```
+然后我们可以在`localhost:4000`当中去使用：
+
+<img :src="$withBase('/node-graphql-1.png')" alt="query参数">
+
+## 数组
+下面我们了解一下服务器怎么返回数组类型，以及怎么将数组类型的数据作为参数传递给服务器：
+```javascript
+const {GraphQLServer} = require('graphql-yoga')
+
+// 类型定义{schema}
+const typeDefs = `
+	type Query{
+		scores:[Int!]!
+		add(nums:[Int!]!):Int!
+	}
+`
+
+// Resolvers(函数实现)
+const resolvers= {
+	Query: {
+		scores() {
+			return [1,2,3]
+		},
+		add(parent,args,ctx, info) { // 这里要提示的是如果有参数，这个四个参数必须写全
+			const { nums } = args
+			if(nums.length === 0){
+				return 0
+			} else {
+				return nums.reduce((acc,cur) => acc + cur)
+			}
+		},
+	}
+}
+
+const server = new GraphQLServer({
+	typeDefs,
+	resolvers
+})
+
+server.start(()=> {
+	console.log("Server is running on localhost:4000")
+})
+```
+<img :src="$withBase('/node-graphql-2.png')" alt="">
+
+上面我们还是比较简单的数组，我们下面来返回一个自定义的数组
+```javascript
+const {GraphQLServer} = require('graphql-yoga')
+
+const allUsers = [
+	{id: "123", name: "wangxiaoming", email: "15009571633@163.com"},
+	{id: "124", name: "taozhenchuan", email: "15008600212@163.com"},
+	{id: "125", name: "bijingjing", email: "15008600289@163.com"},
+]
+
+
+// 类型定义{schema}
+const typeDefs = `
+	type Query{
+		users(query:String):[User!]!
+	}
+	type User{
+		id:ID!
+		name:String!
+		email:String!
+		age:Int
+	}
+`
+
+// Resolvers(函数实现)
+const resolvers= {
+	Query: {
+		users(parent, args, ctx, info) {
+			const { query } = args
+			if(query) {
+				return allUsers.filter(value => {
+					return value.name.toLowerCase().includes(query.toLowerCase())
+				})
+			} else {
+				return allUsers
+			}
+		},
+	}
+}
+
+const server = new GraphQLServer({
+	typeDefs,
+	resolvers
+})
+
+server.start(()=> {
+	console.log("Server is running on localhost:4000")
+})
+```
+这样的话，因为参数是可选的，我们就可以通过传递参数来选择我们想要所有的数据，还是一部分的数据
+
+<img :src="$withBase('/node-graphql-3.png')" alt="">
