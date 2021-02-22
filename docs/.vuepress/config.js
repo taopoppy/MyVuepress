@@ -37,6 +37,7 @@ const reactWebAppSiderbar = require('./sidebars/react-webapp')
 const reactSourceSiderbar = require('./sidebars/react-source')
 const reactTypescriptSiderbar = require('./sidebars/react-typescript')
 const webarchitectSiderbar = require('./sidebars/web-architect')
+const bigFrontEndSiderbar = require('./sidebars/big-front-end')
 
 module.exports = {
   title: 'TaoPoppy',
@@ -181,8 +182,12 @@ module.exports = {
         ]
       },
       {
-        text: 'web架构师',
-        link: '/Web-Architect/'
+        text: '究极全栈',
+        items: [
+          { text: '大前端', link: '/Big-Front-End/'},
+          { text: 'web架构课', link: '/Web-Architect/'}
+        ]
+        
       }
     ],
     sidebarDepth: 3,
@@ -226,7 +231,8 @@ module.exports = {
       '/react-webapp/': reactWebAppSiderbar,
       '/react-source/': reactSourceSiderbar,
       '/react-typescript/': reactTypescriptSiderbar,
-      '/Web-Architect/': webarchitectSiderbar
+      '/Web-Architect/': webarchitectSiderbar,
+      '/Big-Front-End/': bigFrontEndSiderbar
     }
   }
 }
