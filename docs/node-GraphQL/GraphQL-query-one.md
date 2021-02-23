@@ -1,4 +1,4 @@
-# Schema和Query（1）
+# Query（1）
 
 我们学习之前先来在`vscode`当中安装一些插件
 + <font color=#1E90FF>Babel ES6/ES7</font>： `es6/es7`语法的高亮提示

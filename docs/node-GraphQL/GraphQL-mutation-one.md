@@ -1,4 +1,4 @@
-# mutation
+# Mutation
 
 首选我们在学习之前，我们提前下载好几个库，这个章节所有的内容都是在之前的基础上，所以之前相同且写过的代码，我都会省略掉，但是最终会给出完整的代码：
 ```shell
@@ -278,7 +278,7 @@ const resolvers= {
 ```
 同样看到，删除的操作也是比较简单，只是对于我们举的例子来说，我们删除用户就要相应的删除用户所有写的文章和所有书写的评论，删除文章要删除对应的所有评论，删除评论就只删除评论，<font color=#1E90FF>所以通过这个简单的例子我们应该在书写后台的时候在删除的时候要考虑到关联性</font>
 
-### 2. refactor
+### 2. refactor(重构)
 可以看到，我们之前的代码都是全部写在了`index.js`当中，然后我们需要重构一下代码，让代码更加的工程化。
 
 <font color=#1E90FF>**① 分离schema**</font>
@@ -341,6 +341,7 @@ server.start(()=> {
 ```
 
 ## update(改)
+### 1. update
 我们首先到`src/schema.graphql`当中添加`typeDefs`：
 ```graphql
 type Mutation{
@@ -437,4 +438,4 @@ module.exports = {
 	Mutation
 }
 ```
-至此，`CURD`全部实现完毕。代码请在[github](https://github.com/taopoppy/node-graphql-api/tree/main/learntext)查看。
+至此，`CURD`全部实现完毕。代码请在[github](https://github.com/taopoppy/node-graphql-api/tree/main/learntext1)查看。

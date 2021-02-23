@@ -6,6 +6,8 @@ module.exports = [
     children: [
       '/node-GraphQL/GraphQL-query-one.md',
       '/node-GraphQL/GraphQL-query-two.md',
+      '/node-GraphQL/GraphQL-mutation-one',
+      '/node-GraphQL/GraphQL-subscription-one'
     ]
   },
 ]
