@@ -56,7 +56,7 @@ module.exports = {
       { text: '首页', link: '/' },
       { text: '资料', link: '/learnMaterials/'},
       { text: 'github', link: 'https://github.com/taopoppy/' },
-      { text: '构建网站', link: '/construct/'},
+      { text: '小技巧', link: '/construct/'},
       // { text: 'Flutter',
       //   items: [
       //     { text: 'Flutter入门到实战', link: '/Flutter/'},

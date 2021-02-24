@@ -24,7 +24,7 @@ module.exports = [
     ]
   },
   {
-    title: '翻墙',
+    title: '翻墙和下载加速',
     children: [
       '/construct/science_online'
     ]

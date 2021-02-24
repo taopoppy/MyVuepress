@@ -77,6 +77,14 @@ SSR软件默认自带一个节点就是`FreeSSR-public`，当时也不是用的�
 另外对于`https://www.ssrtool.com/tool/free_ssr`这个网站的二维码一般扫描不上，我们只能用复制ssr的连接，然后在小飞机中点击`从剪贴板中批量导入ssr连接`
 
 
+## 更简单的上网
+直接到[官网](http://googlehelper.net/)下载`GHelper`插件到`chrome`浏览器，然后点击插件登陆注册即可
+
+## 怎么加速下载百度网盘
++ 下载`chrome`浏览器插件：`Tampermonkey `
++ 到`https://bit.do/baidupan`，点击安装脚本，进入后再点击安装即可
++ 然后到网页版的百度网盘当中去生成链接
+
 **参考资料**
 
 1. [放弃VPN吧，目前最稳定的科学上网方式。电脑端SSR使用教程详解，花点耐心看完。翻墙原理以及VPN与SSR优劣比较，不再为翻墙发愁。授人与鱼不如授人与渔](https://www.youtube.com/watch?v=F6yh4b7ML5g)
