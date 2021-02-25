@@ -4,10 +4,25 @@ module.exports = [
   {
     title: 'GraphQL-基础',
     children: [
-      '/node-GraphQL/GraphQL-query-one.md',
-      '/node-GraphQL/GraphQL-query-two.md',
+      '/node-GraphQL/GraphQL-query-one',
+      '/node-GraphQL/GraphQL-query-two',
       '/node-GraphQL/GraphQL-mutation-one',
       '/node-GraphQL/GraphQL-subscription-one'
     ]
   },
+  {
+    title: 'Graphql-全栈入门',
+    children: [
+      '/node-GraphQL/GraphQL-fullstack-express',
+      '/node-GraphQL/GraphQL-fullstack-mongodb',
+      '/node-GraphQL/GraphQL-fullstack-react-apollo',
+    ]
+  },
+  {
+    title:'Prisma-基础',
+    children: [
+      '/node-GraphQL/Prisma-Overview',
+      '/node-GraphQL/Prisma-Operate'
+    ]
+  }
 ]
