@@ -90,10 +90,48 @@
 + <font color=#DD1144>UI设计（以UI设计师为主）</font>：原型图集、流程图集
 + <font color=#DD1144>需求总结（以项目经理为主 ）</font>：需求文档
 
+需求文档一般为`md`文档的形式，关于模板我们会在[github](https://github.com/taopoppy/Big-front-end/tree/main/resources)上提供。
+
+
 ## 服务端需求分析
+服务端的需求分析，大体上一般都和用户，数据相关，而前端一般是和体验或者操作流程相关的，和交互层面相关的
++ <font color=#1E90FF>用户，权限管理</font>
++ <font color=#1E90FF>内容管理，首页管理</font>
++ <font color=#1E90FF>其他功能（日志，多语言等等）</font>
+
+具体的需求分析和前面一样，我们就不会细说，我们经过一番思考，最终会得到一个脑图，如下：
+
+<img :src="$withBase('/bigfrontend-devop-8.png')" alt="">
+
+服务端根据脑图一般给出的说明文档或者需求文档，如果是前后端分离的项目中，就是具体的接口文档，如果在项目还没有开始写出接口文档，一般使用word文件或者PDF形式写出<font color=#9400D3>接口设计文档</font>、如果一边做一边生成，这个叫做<font color=#9400D3>接口生成文档</font>，这个是可以通过很多工具帮忙生成的，比如<font color=#1E90FF>postman的上传接口</font>、<font color=#1E90FF>swagger</font>等等。
 
 ## webapp/小程序需求分析
+小程序和`webapp`放在一起，因为都是要进行一部分的适配设计，都属于移动端的部分。
+
++ <font color=#1E90FF>主体功能</font>：因为一般移动端和小程序上的功能没有那么复杂和多样，所以要找到主体功能（除了视频类型的除外）
++ <font color=#1E90FF>技术实现/交互体验</font>：移动端的交互和浏览器差别很大，要考虑移动端的技术实现
++ <font color=#1E90FF>用户数据与流量入口</font>：移动端的业务开发是否能带来用户，如果成本高于收益，是不建议考虑的
+
+所以经过一番思考，我们在`PC`端分析的基础上精简了一些，就形成了下面的移动端的脑图：
+
+<img :src="$withBase('/bigfrontend-devop-9.png')" alt="">
+
+有了脑图，继续按照<font color=#1E90FF>原型图</font> -> <font color=#1E90FF>流程图</font> -> <font color=#1E90FF>需求文档</font>的顺序进行需求产出。
 
 ## 技术栈考量
++ 团队技术实力与业务需求结合
++ 能够复用，坚决不造轮子，需要造轮子，坚决不牵强
++ 怎么简单怎么来，多考虑时间，进度，质量因素
+
+技术栈的考虑最终会新城一个<font color=#9400D3>架构图</font>，如下所示：
+
+<img :src="$withBase('/bigfrontend-devop-10.png')" alt="">
+
+关于前端和后端的技术栈的选择基本都是和业务相关，但是`web`服务我们使用的是`Restful api`，其实还有很多的选择，比如`Graphql`、`Rpc`等等。关于`API`风格的选择可以在网上仔细研究一下区别，这里就不过多说。
+
+而`MongoDB`和`Redis`的数据库使用，应该是最契合大前端工程师了，所以没有太多挑剔的地方，而运行环境选择`Docker`则实际能快速帮助我们建立开发和运行的测试环境，也能快速帮助我们实现生产部署的技术。
 
 ## 需求工具概览
++ <font color=#1E90FF>原型类</font>：Axure,PS,墨刀。蓝湖
++ <font color=#1E90FF>思维脑图</font>：Xmind、mindmaster、MindNode(Mac)、MindManager
++ <font color=#1E90FF>流程图</font>：Visio(windows)、OmniGraffle(Mac)、processOn
