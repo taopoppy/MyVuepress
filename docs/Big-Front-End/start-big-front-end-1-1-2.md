@@ -135,3 +135,13 @@
 + <font color=#1E90FF>原型类</font>：Axure,PS,墨刀。蓝湖
 + <font color=#1E90FF>思维脑图</font>：Xmind、mindmaster、MindNode(Mac)、MindManager
 + <font color=#1E90FF>流程图</font>：Visio(windows)、OmniGraffle(Mac)、processOn
+
+<font color=#1E90FF>**① Axure**</font>
+
+可以自学一下`Axure`，要说明的就是可以通过`preview`的形式去预览当前的文件，同时也可以生成`html`文件，如果想要在浏览器当中预览这个文件，需要在`chrome`当中下载`Axure`插件，然后打开`允许访问文件网址`的开关即可。
+
+`Axure`有很多模板，我们可以在[axureshop](https://www.axureshop.com/)当中去搜素和查询。
+
+<font color=#1E90FF>**② 墨刀**</font>
+
+墨刀和`Axure`都是优秀的原型图设计工具，只不过前者在协同人数和项目数量增多之后是需要收费的，更重要的是前者在内部集成了很多模板供别人使用。
