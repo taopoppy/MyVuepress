@@ -17,12 +17,5 @@ module.exports = [
       '/node-GraphQL/GraphQL-fullstack-mongodb',
       '/node-GraphQL/GraphQL-fullstack-react-apollo',
     ]
-  },
-  {
-    title:'Prisma-基础',
-    children: [
-      '/node-GraphQL/Prisma-Overview',
-      '/node-GraphQL/Prisma-Operate'
-    ]
   }
 ]
