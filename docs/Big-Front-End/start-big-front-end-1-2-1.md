@@ -64,3 +64,29 @@
     + `Centos`命令：`firewall-cmd --zone=public --add-port=10050/tcp --permanent` + `firewall-cmd --reload`
   
 + 最后使用`Robo 3T`这个`MongoDB`的图形化工具去连接远程`mongo`服务
+
+## 虚拟化软件
+<font color=#1E90FF>**① 添加Hyper-V**</font>
+
+在`windows`的控制面板 > 程序 > 启用或关闭Window功能中选择`Hyper-v`，点击确定即可，这样`Hyper-V`就添加到`windows`程序当中了。如果需要重启就重启。
+
+注意有的电脑无法下载`Hyper-V`监控程序，需要在电脑的`BIOS`当中先开启虚拟化，这个不同的主板有不同的设置，百度即可。
+
+<font color=#1E90FF>**② 新建虚拟网络交换机**</font>
+
++ 打开搜索，搜索`Hyper-V管理器`，然后点击右边的<font color=#1E90FF>虚拟交换机管理器</font>，接着选择<font color=#1E90FF>创建虚拟交换机</font>
+  <img :src="$withBase('/bigfrontend-environment-1.png')" alt="">
+
++ 接着按照下面选择<font color=#1E90FF>外部网路</font>和<font color=#1E90FF>允许管理器操作系统共享此网络适配器</font>，最后点击确定
+
+  <img :src="$withBase('/bigfrontend-environment-2.png')" alt="">
+
+<font color=#1E90FF>**③ 新建虚拟机**</font>
+
+在`Hyper-V`右侧选择新建 > 虚拟机，然后进入下面的几个步骤：
++ 指定名称和位置：自己看情况修改
++ 指定代数：默认
++ 分配内存：启动内存修改为2048
++ 配置网路：前面配置的网络（我这里先用默认的Default Switch）
++ 连接虚拟硬盘：默认
++ 安装选项：选择`从可启动的CD/DVD-ROM安装操作系统`中的`映像文件`，选择自己下载镜像文件
