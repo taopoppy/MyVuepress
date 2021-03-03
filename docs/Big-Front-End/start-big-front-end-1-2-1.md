@@ -139,4 +139,46 @@
   + <font color=#1E90FF>rm -r</font>: 删除目录，`rm -r testdir/`
   + <font color=#1E90FF>rm -rf</font>：强制删除
 + 硬件型：（查看：硬盘/进程/服务/网络）
+  + <font color=#1E90FF>ps -ef | grep </font>，查看进程，`ps -ef | grep docker`
+  + <font color=#1E90FF>kill -9</font>: 杀死进程，`kill -9 pid`
+  + <font color=#1E90FF>service xxx status</font>：查看服务状态，`xxx`为服务名称
+  + <font color=#1E90FF>service xxx stop</font>：关闭服务
+  + <font color=#1E90FF>service xxx restart</font>：重启服务
+  + <font color=#1E90FF>systemctl status firewalld.service</font>：查看防火墙的状态
 + 功能性：压缩/解压，下载，远程
+  + <font color=#1E90FF>wget</font>：下载资源，`wget http://xxxxx.tar.gz`
+  + <font color=#1E90FF>tar zxvf</font>：解压资源，`tar zxvf xxxx.tar.gz`
+    + <font color=#1E90FF>z</font>：代表解压的文件是以`gz`结尾的
+    + <font color=#1E90FF>x</font>：代表解压
+    + <font color=#1E90FF>v</font>：代表显示解压的过程
+    + <font color=#1E90FF>f</font>：表示使用规格的名字，解压的文件是什么名字，解压出来就是什么名字，比如`xxx.tar.gz`解压出来就是`xxx`
+  + <font color=#1E90FF>tar zcvf</font>：压缩资源，`tar zcvf xxx.tar.gz xxx`，将`xxx`压缩到`xxx.tar.gz`文件中
+    + <font color=#1E90FF>c</font>：代表压缩的过程
+
+## SSH密钥连接
+常用的连接方式就是<font color=#DD1144>ssh 用户名@ip地址</font>：比如`ssh root@47.105.212.161`
+
+一般使用的默认端口22，如果使用的其他端口，可以使用`-p 23`这种，例如`ssh -p 23 root@47.105.212.161`
+
+一般进入之后，命令行比如显示的是这样`[root@admin ~]#`，`root`代表的用户名，`admin`代表主机的名字。主机的名字可以在`/etc/hostname`中配置
+
++ 首先通过`service sshd status`或者`systemctl status sshd.service`检查服务器的`ssh`的服务状态(`ubuntu`系统的是`ssh`，`Centos`系统的是`sshd`)
++ 然后使用`netstat -anlp | grep sshd`或者`cat /etc/ssh/sshd_config`查看`ssh`服务监听的端口，一般显示的就是`0.0.0.0.0:22`
++ 怎么去修改`ssh`监听的端口呢，在`ubuntu`上直接`vi /etc/ssh/sshd_config`，然后找到`#Port 22`那一行，修改为`Port 10022`，保存即可将`ssh`监听端口修改为10022，然后执行`service ssh restart`重启即可。
++ 但是在`Centos`上面除了上面的操作，由于集成了`selinux`，你还必须要执行`semanage port -a -t ssh_port_t -p tcp 10022`，最后进行`service ssh restart`
++ 但是系统会提示你`semanage`不存在，所以你还要去下载有这个命令的包，我们完整的`Centos`下修改`ssh`监听端口号操作流程如下：
+  + 执行`vi /etc/ssh/sshd_config`，修改`#Port 22`为`Port 10022`，记得`:wq`保存
+  + 执行`semanage port -a -t ssh_port_t -p tcp 10022`，发现`semanage`命令不存在
+  + 执行`yum whatprovides semanage`进行反查，发现在`policycoreutils-python`当中存在
+  + 执行`yum install -y policycoreutils-python`
+  + 重新执行`semanage port -a -t ssh_port_t -p tcp 10022`
+  + 确认是否添加：`semanage port -l | grep ssh`，然后就会显示当前有`10022`和`22`两个端口
+  + (可选)删除22端口，`semanage port -d -t ssh_port_t -p tcp 22`
+  + 最后执行`service sshd restart`
+
+怎么在`windows`的`powerShell`当中去连接虚拟机中的`Centos`系统？
++ <font color=#DD1144>在虚拟机上的centos系统中执行ifconfig -a 命令查看ip</font>
+  <img :src="$withBase('/bigfrontend-environment-4.png')" alt="">
++ <font color=#DD1144>关闭虚拟机的centos系统中的防火墙：service firewalld stop</font>
++ <font color=#DD1144>在本地的命令行中连接：ssh -p 10022  root@172.17.72.171</font>
+  <img :src="$withBase('/bigfrontend-environment-5.png')" alt="">
