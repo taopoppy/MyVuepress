@@ -182,3 +182,24 @@
 + <font color=#DD1144>关闭虚拟机的centos系统中的防火墙：service firewalld stop</font>
 + <font color=#DD1144>在本地的命令行中连接：ssh -p 10022  root@172.17.72.171</font>
   <img :src="$withBase('/bigfrontend-environment-5.png')" alt="">
+
+## docker入门
+<img :src="$withBase('/bigfrontend-environment-6.png')" alt="">
+
+我们首先来看左边
++ <font color=#1E90FF>基础设施</font>代表了物理机，比如硬件资源，`cpu`资源等等
++ <font color=#1E90FF>操作系统</font>有`windows`、`Mac`系统和`Linux`系统
++ <font color=#1E90FF>Docker</font>：容器化技术，该进程当中可以跑很多应用，各应用之间相互独立，但是公用一个`docker`进程
+
+二右边，虚拟化平台`Hyper-V`或者`VM`都是建立在物理机上的，会占用物理机的一部分资源，然后虚拟机里包含操作系统，操作系统中包含应用。
+
+下面我们来说一下`Docker`的主要特性：
++ <font color=#1E90FF>文件，资源，网络隔离</font>
++ <font color=#DD1144>变更管理（有点类型与git）</font>、<font color=#1E90FF>日志记录</font>
++ <font color=#DD1144>写时复制（所以启动很快，并非切分资源）</font>
+
+## docker安装
++ 苹果电脑就去官网下载`Docker.dmg`，进行双击，输入管理员密码即可，使用`docker version`来查看版本。苹果系统下载的会自动集成`docker-compose`
++ `windows`必须是`windows 10`才能下载使用
+
+下面我们着重来演示`Linux`下的`Docker`安装：
