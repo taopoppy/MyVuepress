@@ -164,7 +164,7 @@
 
 + 首先通过`service sshd status`或者`systemctl status sshd.service`检查服务器的`ssh`的服务状态(`ubuntu`系统的是`ssh`，`Centos`系统的是`sshd`)
 + 然后使用`netstat -anlp | grep sshd`或者`cat /etc/ssh/sshd_config`查看`ssh`服务监听的端口，一般显示的就是`0.0.0.0.0:22`
-+ 怎么去修改`ssh`监听的端口呢，在`ubuntu`上直接`vi /etc/ssh/sshd_config`，然后找到`#Port 22`那一行，修改为`Port 10022`，保存即可将`ssh`监听端口修改为10022，然后执行`service ssh restart`重启即可。
++ 怎么去修改`ssh`监听的端口呢，在`ubuntu`上直接`vi /etc/ssh/sshd_config`，然后找到`#Port 22`那一行，修改为`Port 10022`，保存即可将`ssh`监听端口修改为10022，然后执行`service sshd restart`重启即可。
 + 但是在`Centos`上面除了上面的操作，由于集成了`selinux`，你还必须要执行`semanage port -a -t ssh_port_t -p tcp 10022`，最后进行`service ssh restart`
 + 但是系统会提示你`semanage`不存在，所以你还要去下载有这个命令的包，我们完整的`Centos`下修改`ssh`监听端口号操作流程如下：
   + 执行`vi /etc/ssh/sshd_config`，修改`#Port 22`为`Port 10022`，记得`:wq`保存
@@ -203,3 +203,209 @@
 + `windows`必须是`windows 10`才能下载使用
 
 下面我们着重来演示`Linux`下的`Docker`安装：
+
+<font color=#1E90FF>**① 删除旧的版本**</font>
+
+(可选)如果你在之前有安装过`docker`，首先要将其删除，删除的命令如下：
+```shell
+# sudo yum remove docker \
+> docker-client \
+> docker-client-latest \
+> docker-common \
+> docker-latest \
+> docker-latest-logrotate \
+> docker-logrotate \
+> docker-engine
+```
+
+<font color=#1E90FF>**② 安装必要的依赖**</font>
+
+然后安装一些必须的依赖:
+```shell
+# sudo yum install -y yum-utils \
+> device-mapper-persistent-data \
+> lvm2
+```
+
+添加`stable`的`Docker-ce`的源：
+```shell
+# sudo yum-config-manager \
+> --add-repo \
+> https://download.docker.com/linux/centos/docker-ce.repo
+```
+因为这个地址是中央仓库，经常下载东西下载不下来，所以我们准备使用阿里的`docker-ce`源，所以，我们到官网[阿里云官方镜像站](https://developer.aliyun.com/mirror/),在镜像当中去选择容器，可以看到`docker-ce`，点击进入，就有`centos`的下载地址为`https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo`，我们按照官网给的提示去执行更行下载源：
+```shell
+# Step 2: 添加软件源信息
+sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+# Step 3: 更换源文件
+sudo sed -i 's+download.docker.com+mirrors.aliyun.com/docker-ce+' /etc/yum.repos.d/docker-ce.repo
+```
+
+<font color=#1E90FF>**③ 安装docker-ce**</font>
+
+```shell
+# sudo yum install docker-ce docker-ce-cli containerd.io
+```
+
+安装好之后，我们再来修改个东西，我们知道`docker`是要去下载镜像的，我们需要修改一下镜像地址为国内的`docker`镜像，也可以使用阿里云的镜像加速地址，这里给出怎么获取阿里云的镜像加速地址的[文章](https://blog.csdn.net/weixin_43569697/article/details/89279225)，我最终获取到的是`https://syayd8aw.mirror.aliyuncs.com`，去修改`/etc/docker/daemon.json`文件如下：
+```json
+{
+  "registry-mirrors": [
+    "https://syayd8aw.mirror.aliyuncs.com",
+    "https://registry.docker-cn.com"
+  ]
+}
+```
+整个过程的命令如下（来自阿里云镜像加速器提供）：
+```shell
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://syayd8aw.mirror.aliyuncs.com","https://registry.docker-cn.com"]
+}
+EOF
+sudo systemctl daemon-reload (可选，我是第一次没有启动就改了镜像地址，所以不需要)
+sudo systemctl restart docker 
+```
+
+接着就启动`docker`：
+```shell
+systemctl start docker
+systemctl status docker
+```
+
+我们可以执行这个命令：`docker run hello-world`，`docker`会告诉你，本地没有这个镜像，所以就通过`docker-deamon`连接`Docker hub`去拉去这个镜像，然后运行，可以通过`docker ps -a`查看所有的容器，包括未运行的，就会看到刚刚运行的`hello-word`
+
+删除容器们可以使用`docker rm [NAMES]`或者`docker rm [CONTAINER ID]`，其中`NAMES`和`CONTAINER ID`可以在`docker ps -a`的结果中看到容器对应的属性。前提是不能删除正在运行的容器，必须先`docker stop`。
+
+
+## docker-compose
+<font color=#DD1144>docker-compose是可以帮助我们通过一条命令去管理多个镜像的，也可以使用一条命令去查看多个镜像的状态。它本质上是一个docker集合命令的工具</font>
+
+`docker-compose`是通过`docker-compose up`去启动多个镜像，可以在`docker-compose.yml`当中去配置多个镜像的启动参数，官方给出的示例如下：
+```yml
+version: "3.9"  # optional since v1.27.0
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+      - logvolume01:/var/log
+    links:
+      - redis
+  redis:
+    image: redis
+volumes:
+  logvolume01: {}
+```
+
+<font color=#1E90FF>**① 安装docker-compose**</font>
+
+官网给出了下载命令，根据自己的需求修改版本号即可
+```shell
+sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+当然了，既然是官网，估计就下载不下来，我们给[Docker急速下载](https://get.daocloud.io/#install-compose)上看看，我们这里使用的是下面的命令：
+```shell
+sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.28.5/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+```
+
+
+
+<font color=#1E90FF>**② 给予权限**</font>
+
+给`docker-compose`的下载文件权限：
+```shell
+sudo chmod +x /usr/local/bin/docker-compose
+```
+然后使用`docker-compose --version`去检查一下版本即可
+
+
+<font color=#1E90FF>**③ 测试用例**</font>
+
+我们在`cd /home/`之后，`vi docker-compose.yml`,内容如下：
+```yml
+version '3'
+services:
+  mysql:
+    image:mysql      # 使用mysql镜像
+    environment:     # 配置向mysql镜像当中传入的环境变量
+    - MYSQL_ROOT_PASSWORD=123456
+    ports:           # 将mysql镜像的3306的端口映射到宿主机上28002端口上
+    - 28002:3306
+
+    mysql2:
+    image:mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=123456
+    ports: 
+    - 28003:3306
+```
++ 这样我们使用<font color=#DD1144>docker-compose up -d</font>就可以看到同时启动了两个`mysql`
++ 使用<font color=#DD1144>docker-compose stop</font>可以同时关闭`docker-compose`启动的多个镜像
++ 使用<font color=#DD1144>docker-compose rm</font>可以同时删除`docker-compose`设置的多个镜像
+
+## Docker hub
+`Docker hub`为官网的`docker`仓库，地址为[https://hub.docker.com](https://hub.docker.com)，就类似于`npm`一样，可以从上面拉取别人写好的库，也可以上传自己的，
+
+前提是首先得有一个`Docker hub`的账号，然后在虚拟机的命令行通过`docker login`登录到`Docker hub`，然后通过下面的命令进行推送：
+```shell
+docker commit [CONTAINER ID] taopoppy/mysql:1.0
+```
+其中`CONTAINER ID`是镜像保存在`docker`中的`id`，可以通过`docker ps`查看，然后`taopoppy/mysql:1.0`实际上我们想推送到`Docker hub`我们自己账号的一个镜像仓库的名称
+
+提交到本地之后，我们可以通过`docker images`查看一下
+
+最后通过下面的命令进行提交：
+```shell
+docker push taopoppy/mysql:1.0
+```
+那么别人也可以在其他机器上使用`docker`通过线上地址来拉取你提交的镜像
+```shell
+docker pull taopoppy/mysql:1.0
+```
+
+## nvm
+我们可以使用`nvm`去在同一台机器上去管理和切换多个版本的`nodejs`，[github](https://github.com/nvm-sh/nvm)提供了下载方法：
+
+先下载
+```shell
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+```
+然后添加环境变量：
+```shell
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+```
+
+但是呢，`https://raw.githubusercontent.com`是翻墙才能访问的，所以我们可以按照下面这个步骤来安装：
++ 使用`gitee`镜像下载：
+  ```shell
+  git clone https://gitee.com/mirrors/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
+  ```
++ 设置环境变量
+  ```shell
+  vi ~/.bash_profile
+  ```
++ 然后去[github](https://github.com/nvm-sh/nvm#install--update-script)上找到设置环境变量的的内容，如下所示，粘贴到`~/.bash_profile`当中，保存退出。
+  ```shell
+  export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+  ```
++ 设置环境变量生效：
+  ```shell
+  source ~/.bash_profile
+  ```
++ 查看版本
+  ```shell
+  nvm --version
+  ```
+
+下面我们来学习一下使用`nvm`的一些命令
++ <font color=#1E90FF>nvm list</font>：查看当前本地中所有的`node`版本
++ <font color=#1E90FF>nvm ls-remote</font>：查看远程的所有`node`版本
++ <font color=#1E90FF>nvm install v14.16.0</font>：使用`nvm`下载`nodejs`
++ <font color=#1E90FF>nvm use v13.14.0</font>：切换到新的版本上去
++ <font color=#1E90FF>nvm alias default v14.16.0</font>：设置默认的版本
