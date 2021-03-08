@@ -137,7 +137,7 @@ module.exports = {
           // { text: 'Get全栈技能打造商城系统', link: '/vue-shagncheng/' },
           // { text: 'Vue 实战商业级读书WebApp', link: '/vue-dushu/'},
           { text: 'Vue服务端渲染原理解析', link: '/vue-ssr/' },
-          { text: 'Vue面试指南', link: '/vue-interview/'}
+          { text: 'Vue3入门和实践', link: '/vue-interview/'}
           // { text: 'Vue全家桶+SSR+Koa2', link: '/vue-nuxt/' },
           // { text: 'Vue.js源码全方位深入解析', link: '/vue-yuanma/' }
         ]

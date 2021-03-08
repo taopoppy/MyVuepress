@@ -6,14 +6,4 @@ module.exports = [
     children: [
     ]
 	},
-	{
-    title: 'Vue原理',
-    children: [
-    ]
-	},
-	{
-    title: 'Vue面试题',
-    children: [
-    ]
-  }
 ]

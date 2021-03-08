@@ -28,3 +28,17 @@ React全家桶
 + [React深度剖析+实战](https://www.imooc.com/read/83)
 + [深入浅出搞定 React](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=510&sid=20-h5Url-0#/content)
 + [前端面试宝典之 React 篇](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=566&sid=20-h5Url-0#/content)
+
+微信小程序
++ [微信小程序入门与实战-全新版](https://coding.imooc.com/class/75.html)
++ [微信小程序全栈开发实战](https://time.geekbang.org/course/intro/100052401)
++ [微信分享与支付专项课程（公众号、小程序、小程序云）](https://coding.imooc.com/class/343.html)
++ [Node.js+Koa2+MySQL](https://coding.imooc.com/class/342.html)
+
+大前端
++ [大前端](https://class.imooc.com/sale/webfullstack)
++ [前端基础建设与架构 30 讲](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=584&sid=20-h5Url-0&buyFrom=2&pageId=1pz4#/sale)
++ [DevOps 落地笔记](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=561&sid=20-h5Url-0&buyFrom=2&pageId=1pz4#/sale	)
++ [成为会带团队的技术人](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=608&sid=20-h5Url-0&buyFrom=2&pageId=1pz4#/sale)
++ [前端工程化精讲](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=416&sid=20-h5Url-0&buyFrom=2&pageId=1pz4#/sale)
++ [腾讯敏捷项目管理实战](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=274&sid=20-h5Url-0&buyFrom=2&pageId=1pz4#/sale)
