@@ -1,4 +1,4 @@
-# setData数据绑定
+# 组件和flex布局
 
 ## 第三方包
 ### 1. 下载
@@ -135,3 +135,106 @@ swiper image { width: 100%; height: 460rpx; }
 ```
 
 <font color=#1E90FF>实际上，如果你按照这样方式去书写前端代码，你会发现你有了大局观的思维，代码写起来十分的顺畅和简单，<font color=#DD1144>真的没有必要一个个组件从0到1的挨个写，那样会很累，改变一下自己的写法会让自己进步很多</font></font>
+
+然后我们细化代码：
+```javascript
+<view bind:tap="onTap" class="post-container">
+  <view class="post-author-date">
+    <image catch:tap="onMaxImage" class="post-author" src="{{res.avatar}}"></image>
+    <text class="post-date">{{res.date}}</text>
+  </view>
+  <!-- {{item.postId}} -->
+
+  <text class="post-title">{{res.title}}</text>
+
+  <image class="post-image" src="{{res.imgSrc}}"></image>
+
+  <text class="post-content">{{res.content}}</text>
+
+  <view class="post-like">
+    <!-- <image class="post-like-image" src="/images/icon/chat.png"></image> -->
+    <l-icon class="post-like-image" color="#666" size="28" name="favor" />
+    <text class="post-like-font">{{item.collection}}</text>
+    <!-- <image class="post-like-image" src="/images/icon/view.png"></image> -->
+    <l-icon class="post-like-image" color="#666" size="32" name="eye" />
+    <text class="post-like-font">{{item.reading}}</text>
+
+  </view>
+</view>
+```
+最后将样式亮出：
+```css
+.post-container{
+  display: flex;
+  flex-direction: column;
+  margin-top: 20rpx;
+  margin-bottom: 40rpx;
+  background-color: #fff;
+  border-top:1px solid #ededed;
+  border-bottom:1px solid #ededed;
+  padding-bottom: 10rpx;
+}
+
+.post-author-date{
+  /* margin-top:10rpx;
+  margin-bottom: 20rpx;
+  margin-left: 10rpx; */
+  margin: 10rpx 0 20rpx 10rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.post-author{
+  width:60rpx;
+  height:60rpx;
+  /* vertical-align: middle; */
+}
+
+.post-date{
+  margin-left:20rpx;
+  font-size: 26rpx;
+  /* vertical-align: middle; */
+}
+
+.post-title{
+  font-size: 34rpx;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+  margin-left: 20rpx;
+  color:#333;
+}
+
+.post-image{
+  width: 100%;
+  height:340rpx;
+  margin-bottom: 30rpx;
+}
+
+.post-content{
+  color: #666;
+  font-size:28rpx;
+  margin-bottom: 20rpx;
+  margin-left:20rpx;
+  line-height: 40rpx;
+  letter-spacing: 2rpx;
+}
+
+.post-like{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left:20rpx;
+}
+
+.post-like-image{
+  /* height:32rpx;
+  width:32rpx; */
+  margin-right:16rpx;
+}
+/* html */
+.post-like-font{
+  margin-right: 40rpx;
+  font-size:26rpx;
+}
+```

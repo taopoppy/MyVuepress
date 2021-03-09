@@ -6,7 +6,8 @@ module.exports = [
     children: [
       '/WeiXin-Rumen/rumen_weixin_one',
       '/WeiXin-Rumen/rumen_weixin_two',
-      '/WeiXin-Rumen/rumen_weixin_three'
+      '/WeiXin-Rumen/rumen_weixin_three',
+      '/WeiXin-Rumen/rumen_weixin_four'
     ]
   }
 ]
