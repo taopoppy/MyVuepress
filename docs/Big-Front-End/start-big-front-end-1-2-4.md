@@ -57,3 +57,8 @@
 值得注意的是，上线的时候，上面粘贴到项目中的测试代码`script`要删除。
 
 ## 接口测试
+在开发准备这一章我们要说下面这些东西：
+
+<img :src="$withBase('/devtools-ready.png')" alt="">
+
+关于什么是`Restful API`的定义和特点，我们可以在之前的博客[node与Restful](https://www.taopoppy.cn/node-RESTful/)

@@ -5,7 +5,8 @@ module.exports = [
     children: [
       '/Big-Front-End/start-big-front-end-1-1-1',
       '/Big-Front-End/start-big-front-end-1-1-2',
-      '/Big-Front-End/start-big-front-end-1-2-1'
+      '/Big-Front-End/start-big-front-end-1-2-1',
+      '/Big-Front-End/start-big-front-end-1-2-4'
     ]
   }
 ]
