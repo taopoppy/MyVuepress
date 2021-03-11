@@ -56,9 +56,19 @@
 
 值得注意的是，上线的时候，上面粘贴到项目中的测试代码`script`要删除。
 
-## 接口测试
+## 接口测试和工具
 在开发准备这一章我们要说下面这些东西：
 
 <img :src="$withBase('/devtools-ready.png')" alt="">
 
 关于什么是`Restful API`的定义和特点，我们可以在之前的博客[node与Restful](https://www.taopoppy.cn/node-RESTful/)
+
+常见的终端类的测试工具，我们这里只说两个，一个是<font color=#DD1144>postman</font>，一个是<font color=#DD1144>DOClever</font>，后者是使用`Electron`技术实现的
+
+## Mock
+什么是`Mock`服务？
++ <font color=#1E90FF>模拟真实的接口</font>：实现效率开发，前后台同步，特别是分布式的系统
++ <font color=#1E90FF>虚拟业务场景</font>：某些开发场景非常难触发，还有一些异常逻辑和交互逻辑
++ <font color=#1E90FF>压力测试</font>：主要一般用于性能测试和压力测试（比如一下收到很多数据，前端的速率和性能）
+
+我们现在来搭建一个`DOClever`的服务，在我们之前搭建的虚拟机上
