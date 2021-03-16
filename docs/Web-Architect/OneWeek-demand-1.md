@@ -16,6 +16,7 @@
 
 <font color=#9400D3>所以架构师的职责是通过技术实现业务的增长，需求和设计是最重要的</font>
 
+<img :src="$withBase('/web_jiagoushizhize.png')" alt="">
 
 本周的收获有下面这些：
 + <font color=#DD1144>规范的产品研发流程</font>

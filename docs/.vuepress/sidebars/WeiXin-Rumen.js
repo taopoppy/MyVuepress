@@ -8,7 +8,8 @@ module.exports = [
       '/WeiXin-Rumen/rumen_weixin_two',
       '/WeiXin-Rumen/rumen_weixin_three',
       '/WeiXin-Rumen/rumen_weixin_four',
-      '/WeiXin-Rumen/rumen_weixin_five'
+      '/WeiXin-Rumen/rumen_weixin_five',
+      '/WeiXin-Rumen/rumen_weixin_six'
     ]
   }
 ]

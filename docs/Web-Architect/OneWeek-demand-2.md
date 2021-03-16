@@ -46,7 +46,6 @@
 
 <img :src="$withBase('/web_project_contect_all.png')" alt="">
 
-
 ## 数据结构设计
 
 ## 数据流转关系
