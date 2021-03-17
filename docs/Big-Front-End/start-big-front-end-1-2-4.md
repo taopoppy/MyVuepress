@@ -71,4 +71,96 @@
 + <font color=#1E90FF>虚拟业务场景</font>：某些开发场景非常难触发，还有一些异常逻辑和交互逻辑
 + <font color=#1E90FF>压力测试</font>：主要一般用于性能测试和压力测试（比如一下收到很多数据，前端的速率和性能）
 
-我们现在来搭建一个`DOClever`的服务，在我们之前搭建的虚拟机上
+
+使用`Mock`数据的开发流程呢如下：
++ 前端定义接口
++ 完成静态页面
++ 完成UI交互
++ 对接真实接口
++ 页面逻辑测试
++ 线上部署
+
+我们现在来搭建一个`DOClever`的服务，在我们之前搭建的虚拟机上，搭建教程参照[github]官网的教程，使用`docker-compose`来搭建，原始官网给出的配置如下：
+```yml
+version: "2"
+services:
+  DOClever:
+    image: lw96/doclever
+    restart: always
+    container_name: "DOClever"
+    ports:
+    - 10000:10000
+    volumes:
+    - /本地路径/file:/root/DOClever/data/file
+    - /本地路径/img:/root/DOClever/data/img
+    - /本地路径/tmp:/root/DOClever/data/tmp
+    environment:
+    - DB_HOST=mongodb://mongo:27017/DOClever
+    - PORT=10000
+    links:
+    - mongo:mongo
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: "mongodb"
+    volumes:
+    - /my/own/datadir:/data/db
+```
+
+我们根据之前的`docker-compose`来修改一下：
+```yml
+version: "2"
+services:
+  DOClever:
+    image: lw96/doclever
+    restart: always
+    container_name: "DOClever"
+    ports:
+    - 20080:10000
+    volumes:
+    - /srv/doclever/file:/root/DOClever/data/file
+    - /srv/doclever/img:/root/DOClever/data/img
+    - /srv/doclever/tmp:/root/DOClever/data/tmp
+    environment:
+    - DB_HOST=mongodb://mongo:27017/DOClever
+    - PORT=10000
+    links:
+    - mongo:mongo
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: "mongodb"
+    volumes:
+    - /srv/doclever/db:/data/db
+```
+我们只修改了`volumes`的部分和端口的部分，`volumes`这个代表数据挂载到本地的路径，我们统统放在`srv`的目录下面。
+
+然后我们进入终端工具，执行下面的命令：
+```javascript
+cd /home/      // 进入home目录
+ls
+mkdir doclever // 创建一个doclever文件夹
+cd doclever/
+ls
+vi docker-compose.yml // 创建并且编辑一个docker-compose.yml
+```
+然后把上面的配置内容加入到这个文件当中，然后`:wq`进行保存，然后再终端进行`docker-compose up -d`，`docker-compose`就会在后台开始运行和拉取镜像。<font color=#1E90FF>前提是你已经开始打开了docker服务，如果没有打开，请使用service docker start 打开</font>
+
+下载完毕，启动完毕，就可以使用`docker ps -a`或者`docker ps | grep doclever`去查看一下进程。然后因为`DOClever`是运行在20080端口的，我们要将虚拟机的20080端口进行放行，我们可以先使用命令来查看一下防火墙的放行端口有哪些：
+```js
+firewall-cmd --list-all
+```
+然后通过下面的命令来永久打开20080端口
+```js
+firewall-cmd --add-port=20080/tcp --zone=public --permanent  // 添加20080
+firewall-cmd --reload // 使其生效
+```
+最后使用`firewall-cmd --list-all`查看一下结果，就会在`ports`当中看到`10022/tcp`，`22/tcp`，`20080/tcp`这三个我们放行的端口。
+
+因为我们虚拟机的`ip`为：172.17.72.171，那么我们在本地浏览器就可以打开`172.17.72.171:20080`就可以看到下面的这样的`DOClever`的服务了
+
+<img :src="$withBase('/bigfrontend-devop-12.png')" alt="">
+
+在登陆->管理总后台，进行管理员登陆，用户名和密码都是`DOClever`
