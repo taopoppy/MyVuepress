@@ -164,3 +164,38 @@ firewall-cmd --reload // 使其生效
 <img :src="$withBase('/bigfrontend-devop-12.png')" alt="">
 
 在登陆->管理总后台，进行管理员登陆，用户名和密码都是`DOClever`
+
+## DOClever中的Mock开发
+我们登陆到虚拟机之后，使用`docker-compose`打开了`DOClever`之后，然后可以创建一个新的用户，我的新用户就是`taopoppy`，然后我们开始新建一个项目`test`，然后创建接口：
+
+<img :src="$withBase('/bigfrontend-devop-13.png')" alt="">
+
+然后在上图中的左上角有个设置，设置中有个`Mock`选项，会告诉你下面这些话：
+```javascript
+Mock Server地址：http://192.168.12.229:20080/mock/60534c27adfc8d000c418744
+Mock Js文件：net.js（和内网测试是同一个文件，需要安装node环境，安装包点击下载：window  mac）
+使用方法：在本地用node运行net.js ,加上mock server地址和你需要请求的真实地址的根地址，当您的接口文档的状态为开发完成的时候，net.js不会去请求mock server地址而去请求真实地址（举例：node net.js http://192.168.12.229:20080/mock/60534c27adfc8d000c418744 http://localhost:8081) ,然后将您开发工程下的根地址替换为localhost:36742即可开启您的Mock之旅
+```
+意思就是，我们在本地去下载`net.js`，解压到某个目录，然后再此目录执行`node net.js http://192.168.12.229:20080/mock/60534c27adfc8d000c418744 http://localhost:8081`，就可以将刚才的`mock`设置启动在一个服务中，执行之后会告诉你：`内网测试，Mock数据正在监听端口：36742`，说明，`mock`服务已经启动到`localhost:36742`。
+
+至于这个命令的含义：
++ `http://192.168.12.229:20080/mock/60534c27adfc8d000c418744`是虚拟机上面的`DOClever`的地址
++ `http://localhost:8081`是替代`Mock`数据地址的真实线上地址，现在我们也没有真实线上地址，就写个假的即可
+
+最后我们去使用`postman`去`get`请求一下`localhost:36742`，这样就能获取到我们在`DOClever`中自己设置的`Mock`数据。
+
+<font color=#1E90FF>但是我不推荐这样的Mock开发方式，第一太麻烦，第二对于虚拟机的ip有时候不是固定的，那么我们每次去请求都要换，第三就是开发的时候真实的请求地址一般还没有，所以得一直使用mock</font>
+
+## Mock.js
+如果你在内网环境，或者想使用一种更加轻量的`Mock`方法，我们更推荐[mock.js](http://mockjs.com/)
+
+可以通过`npm install mockjs -D`的方式去下载，然后`Mock.js`的语法规范包括两部分：
++ <font color=#1E90FF>数据模板定义规范（Data Template Definition，DTD）</font>
++ <font color=#1E90FF>数据占位符定义规范（Data Placeholder Definition，DPD）</font>
+
+具体的可以在官网进行学习，而且官网给出了很多的示例，不怕不会写。
+
+`Mockjs`还有个功能就是拦截，所以综合上面的所学，我们自己可以这样去打造`Mock`服务：
++ 使用`DOClever`，然后将域名作为环境变量，开发环境为`localhost:36742`，正式为正式的
++ 使用`Mockjs`，在项目中自己拦截自己，结合`process.ENV_NODE`去书写一个文件，里面全是对接口的拦截函数
++ 使用`Mockjs`，自己写个服务器，返回`Mock`数据，相当于`服务器 + Mockjs = DOClever`
