@@ -80,7 +80,7 @@
 + 页面逻辑测试
 + 线上部署
 
-我们现在来搭建一个`DOClever`的服务，在我们之前搭建的虚拟机上，搭建教程参照[github]官网的教程，使用`docker-compose`来搭建，原始官网给出的配置如下：
+我们现在来搭建一个`DOClever`的服务，在我们之前搭建的虚拟机上，搭建教程参照[github](https://github.com/sx1989827/DOClever/tree/master/docker)官网的教程，使用`docker-compose`来搭建，原始官网给出的配置如下：
 ```yml
 version: "2"
 services:

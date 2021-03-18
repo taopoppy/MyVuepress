@@ -48,6 +48,13 @@ Page({
 
 <font color=#DD1144>我们建议所有应该出现在data中的属性都应该在data对象当中进行预先的定义，使用this.setData只用来更来data中的数据</font>
 
+但是这里有例外的情况，<font color=#DD1144>我们在this.data当中定义的所有数据并非全要显示在UI中，简单的说并非UI里会用到所有this.data中的字段，只会用到一部分要和前端UI做数据绑定的字段。有些this.data中的字段是只在js文件中使用的，对于这些字段我们有两点注意</font>
++ <font color=#1E90FF>使用_下划线开头，表示只用于逻辑的数据字段</font>
++ <font color=#1E90FF>修改的时候可以直接赋值，可以不使用this.setData()方法</font>
+
+
+最后再来提一句：小程序的数据绑定和`React`还不太一样，我们都知道在`React`当中的`this.setStatus`是异步的，而小程序是这样的：<font color=#DD1144>setData在逻辑层的操作是同步，因此this.data中的相关数据会立即更新；setData在视图层的操作是异步，因此页面渲染可能并不会立即发生</font>，所以要记住这个不同。
+
 ## 生命周期与回调
 生命周期无论是在`React`或者`Vue`当中都是很常见的东西，我们下面来学习一下小程序当中的生命周期，首先来看下面这个图：
 
