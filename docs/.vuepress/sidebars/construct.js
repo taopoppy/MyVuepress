@@ -28,5 +28,11 @@ module.exports = [
     children: [
       '/construct/science_online'
     ]
+  },
+  {
+    title: '线上部署',
+    children: [
+      '/construct/deploy1'
+    ]
   }
 ]
