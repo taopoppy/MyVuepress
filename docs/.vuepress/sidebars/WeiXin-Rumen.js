@@ -10,7 +10,8 @@ module.exports = [
       '/WeiXin-Rumen/rumen_weixin_four',
       '/WeiXin-Rumen/rumen_weixin_five',
       '/WeiXin-Rumen/rumen_weixin_six',
-      '/WeiXin-Rumen/rumen_weixin_seven'
+      '/WeiXin-Rumen/rumen_weixin_seven',
+      '/WeiXin-Rumen/rumen_weixin_eight'
     ]
   }
 ]
