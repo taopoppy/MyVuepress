@@ -4,7 +4,7 @@
 小程序里面的选项卡是不需要自己编写的，有现有的组件供我们使用，[官网](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#tabBar)有明确的说明。我们这里给出`app.json`的关于`tabBar`的代码：
 ```json
 {
-	"tabBar": {
+  "tabBar": {
     "borderStyle": "white",
     "selectedColor": "#333333",
     "position": "bottom",
@@ -61,14 +61,14 @@ Component({
    * 组件的属性列表
    */
   properties: {
-		// res的完整版写法
+    // res的完整版写法,自定义默认值
     res:{
-			type: Object,
-			value: { name: 'taopoppy' }
-		}
+      type: Object,
+      value: { name: 'taopoppy' }
+    }
 
-		// res的简化版写法
-		res: Object
+    // res的简化版写法，默认值为类型默认值
+    res: Object
   },
 })
 ```
@@ -107,7 +107,7 @@ Component({
 在父组件当中，首先要监听到`posttap`事件，然后使用自定义函数`onGoToDetail`去处理：
 ```html
 <block>
-	<post bind:posttap = "onGoToDetail" res="{{item}}"/>
+	<post bind:posttap="onGoToDetail" res="{{item}}"/>
 </block>
 ```
 在自定义函数`onGoToDetail`当中可以通过`detail`对象拿到自定义组件触发事件时候传递的参数。
