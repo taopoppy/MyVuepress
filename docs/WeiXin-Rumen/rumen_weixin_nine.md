@@ -143,7 +143,7 @@ Page({
         this.setData({
           movies:res.data.subjects
         })
-        wx.stopPullDownRefresh() // 下拉刷新结束
+        wx.stopPullDownRefresh()  // 主动去关闭下拉刷新的动画效果
       }
     })
   },
@@ -169,4 +169,16 @@ Page({
     })
   },
 })
+```
+
+## 预览图片
+我们在点击图片的时候希望可以预览图片，小程序给了默认预览图片的API，我们来看下面代码：
+```javascript
+// 预览图片
+onViewPost(event){
+  console.log(this.data.movie.image)
+  wx.previewImage({
+    urls: [this.data.movie.image],
+  })
+},
 ```
