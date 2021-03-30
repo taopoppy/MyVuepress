@@ -14,5 +14,12 @@ module.exports = [
       '/WeiXin-Rumen/rumen_weixin_eight',
       '/WeiXin-Rumen/rumen_weixin_nine'
     ]
+  },
+  {
+    title: '微信小程序组件',
+    children: [
+      '/WeiXin-Rumen/jinjie_weixin_one',
+      '/WeiXin-Rumen/jinjie_weixin_two'
+    ]
   }
 ]
