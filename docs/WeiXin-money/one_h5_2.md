@@ -81,6 +81,183 @@ H5响应式的方案有很多，但是我们现在最好的方案就是<font col
   </body>
 </html>
 ```
-值得注意的是，代码当中的关于监听手机旋转和手机窗口变化的代码是可选的，要根据你自己的业务和项目来判断是否需要监听。
+值得注意的是，代码当中的关于监听手机旋转和手机窗口变化的代码是可选的，要根据你自己的业务和项目来判断是否需要监听。我们下面给出代码的专业版本：
+```javascript
+//严谨版
+<script>
+  !(function (n) {
+    var e = n.document, // 获取DOM
+      t = e.documentElement, // 获取html
+      i = 750, // 设计稿尺寸
+      d = i / 100, // 设置比例
+      o = "orientationchange" in n ? "orientationchange" : "resize", // 横屏orientationchange，竖屏resize
+      a = function () {
+        var n = t.clientWidth || 375; // 屏幕宽度
+        n > 750 && (n = 750); // 屏幕宽度大于750 强制等于750
+        t.style.fontSize = n / d + "px"; // 设置转化后的html字体
+      };
+
+    e.addEventListener && // 监听
+      (n.addEventListener(o, a, !1), // !1为false，在冒泡过程中捕获
+        e.addEventListener("DOMContentLoaded", a, !1));// 网页加载完成后 绑定的一个事件
+  })(window);
+</script>
+```
 
 ## 还原设计稿
+一般UI设计师设计出来就会将作品上传到<font color=#9400D3>蓝湖</font>当中，我们工程师就会使用在线工具去看这个UI设计稿。因为蓝湖在给出物理像素的同时能在右侧给出在web下面所有的逻辑像素的值。
+
+现在比如说设计稿给出的一张图片是`750px * 624px`(物理像素)的宽高，我们怎么换算成`rem`? 在`iphone6`下面，我们知道现在计算出来的`html`中的`font-size`的值为`50px`(逻辑像素)，那么图片的的物理像素`750px * 624px`在`iphone6`下转换成逻辑像素是`375px * 312px`，375/50= 7.5，312/50=6.24，所以最终是`7.5rem * 6.24rem`, <font color=#DD1144>这个时候你应该很敏感的发现7.5rem * 6.24rem 不就是原来的UI设计稿给出的750px * 624px这个值的基础上除了100而已么</font>，所以你想清楚了整个过程，你就可以直接在UI稿给出的任何物理像素下直接除以100就是你要写在程序当中的`rem`值。
+
+到这里我们就给出完整的代码，要学习一下怎么搭架子，还有怎么书写简单的样式：
+```javascript
+// src/main.js
+/**
+ * @author taopoppy
+ * @description 项目入口执行文件
+ */
+import Vue from 'vue'
+import App from './App.vue'
+import axios from 'axios'
+import VueAxios from 'vue-axios' // 帮助将axios挂载到vue上，每个页面通过this.axios请求
+import router from './router/index' // 引入路由文件
+import './assets/css/commen.css' // 引入全局通用样式
+Vue.config.productionTip = false
+
+axios.interceptors.request.use(function(){
+  // 请求地址的处理（修改替换），请求loading的处理都可以在这里进行
+})
+
+axios.interceptors.response.use(
+  function(response){// 请求响应的处理,请求成功了，但是请求结果出错
+    let res = response.data
+    if(res.code != 0) {
+      // 统一处理
+      alert(res.message)
+    }
+  },
+  function(error){ // 网络请求发生错误,这样可以通过catch捕获到组件通过this.axios请求的异常
+    return Promise.reject(error)
+  }
+)
+
+Vue.use(VueAxios, axios)
+new Vue({
+  router, // 进行路由配置
+  render: h => h(App),
+}).$mount('#app')
+```
+```javascript
+// src/App.vue
+<template>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'app',
+}
+</script>
+
+<style>
+</style>
+```
+```javascript
+// src/router/index.js
+import Vue from 'vue'
+import Router from 'vue-router'
+import index from '../pages/index.vue'
+import pay from '../pages/pay.vue'
+import activity from '../pages/activity.vue'
+
+Vue.use(Router)
+
+const routes = [
+	{
+		path: '/index',
+		name: 'index',
+		component: index,
+		meta: { title: '首页'}
+	},
+	{
+		path: '/pay',
+		name: 'pay',
+		component: pay,
+		meta: { title: '充值'}
+	},
+	{
+		path: '/activity',
+		name: 'activity',
+		component: activity,
+		meta: { title: '活动'}
+	}
+]
+
+const router = new Router({
+	routes
+})
+
+export default router
+```
+```javascript
+// src/pages/index.js
+<template>
+	<div class="index">
+		<img src="../assets/img/header.png" class="header" alt="">
+		<div class="btn-group">
+			<button class="btn">分享</button>
+			<button class="btn-primary">充值</button>
+			<button class="btn">活动详情</button>
+		</div>
+	</div>
+</template>
+
+<script>
+export default {
+  name: 'index',
+}
+</script>
+
+<style scoped>
+.index {
+	height: 100vh;
+	background-color: #ffc93a;
+}
+.btn-group {
+	padding-top: .34rem;
+	text-align: center;
+}
+
+</style>
+```
+```css
+/* src/assets/css/commen.css */
+#app {
+	margin: 0 auto;
+	max-width: 750px;
+}
+
+.header {
+	width: 100%;
+	height: 6.24rem;
+}
+
+.btn {
+	border: none;
+	border-radius: .5rem;
+	width: 5.4rem;
+	height: 1rem;
+	background-color: #fff;
+	line-height: 1rem;
+	text-align: center;
+	font-size: .34rem;
+	color: #ff3184;
+}
+
+.btn-primary {
+	background-color: #ff3184;
+	color: #fff;
+}
+```
