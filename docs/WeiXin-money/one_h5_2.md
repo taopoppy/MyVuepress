@@ -121,6 +121,7 @@ import App from './App.vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios' // 帮助将axios挂载到vue上，每个页面通过this.axios请求
 import router from './router/index' // 引入路由文件
+import './assets/css/base.css' // 引入清除默认样式文件
 import './assets/css/commen.css' // 引入全局通用样式
 Vue.config.productionTip = false
 
@@ -259,5 +260,51 @@ export default {
 .btn-primary {
 	background-color: #ff3184;
 	color: #fff;
+}
+```
+```css
+/* src/assets/css/base.css */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
 }
 ```
