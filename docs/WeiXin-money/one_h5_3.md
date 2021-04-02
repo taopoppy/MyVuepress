@@ -32,6 +32,8 @@
 + <font color=#1E90FF>测试号信息</font>，最关键的部分，只有利用这两者才能拿到用户信息
 + <font color=#1E90FF>接口配置信息</font>：暂时不用，功能是用户发送给服务号或者订阅号的信息会转发到这个服务器上面去进行处理，然后去响应用户
 + <font color=#1E90FF>JS接口安全域名</font>：做微信支付和分享，必须有一些微信的安全域名，这里可以搞一个虚拟域名，因为服务器并不会校验，后面再说。
++ <font color=#1E90FF>最后你要记得下面还有个测试号二维码，记得扫描一下关注一下</font>
+
 
 ### 2. 申请成为开发者
 我们在`开发` > `开发者工具` > `Web开发者工具` 当中添加开发者的微信号，那么开发者微信号可以在web开发者工具当中进行本公众号的开发和调试。
@@ -93,3 +95,240 @@ JSSDK调用流程：
 + <font color=#DD1144>引入JS文件（调用什么功能，就要引入那个功能的js文件）</font>
 + <font color=#DD1144>通过config接口注入权限验证配置（接口签名）</font>
 + <font color=#DD1144>通过ready接口处理成功验证</font>
+
+### 3. 用户同意授权
+现在我们比如说来在`App.vue`当中来做一个授权流程，怎么做呢?
+
+第一步就是用户同意授权，从微信获取`code`
+
+在确保微信公众账号拥有授权作用域（scope参数）的权限的前提下（服务号获得高级接口后，默认拥有scope参数中的snsapi_base和snsapi_userinfo），引导关注者打开如下页面：[https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect](https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect)
+
+上面这个是个模板，我们需要去将`APPID`、`REDIRECT_URI`、`SCOPE`、`STATE`换成我们需要的
++ `APPID`：真实开发直接去微信公众号后台拿，开发的时候使用测试号（我们这里是`wx1c9b84a50e29f2af`）
++ `REDIRECT_URI`：授权后的回调地址，<font color=#1E90FF>这个地址需要使用encodeURIComponent这个方法去进行一下编码才能放到这里</font>，<font color=#DD1144>还有最重要的就是前提是先要配置好公众号的那三个域名，这里的地址和配置好的域名要一致，比如配置的是m.51purse.com，那这里的地址就可以是http://m.51purse.com/#/index</font>，如果是测试号，可以在测试号的配置页面找到`网页账号`（网页授权获取用户基本信息），在这里修改一下，保持和`REDIRECT_URI`一致。
++ `SCOPE`: 值为`snsapi_base` （不弹出授权页面，直接跳转，只能获取用户openid），值为`snsapi_userinfo`（弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
+
+所以我们已经有了测试号`wx1c9b84a50e29f2af`,然后在测试号的下面去修改一下一个假的授权域名：
+
+<img :src="$withBase('/weixin_zhifu_9.png')" alt="">
+
+<img :src="$withBase('/weixin_zhifu_10.png')" alt="">
+
+然后我们去修改一下我们之前的代码：
+```javascript
+<!--App.vue-->
+<template>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'app',
+  mounted() {
+    let APPID = "wx1c9b84a50e29f2af"
+    let REDIRECT_URI = encodeURIComponent("http://m.imooc.com/#/index") // 地址也要为m.imooc.com下的
+    let SCOPE = "snsapi_userinfo"
+    window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}&state=STATE#wechat_redirect`
+  }
+}
+</script>
+
+<style>
+</style>
+```
+回到微信开发者工具，输入`localhost:8081/#/index`，执行到`App.vue`，就会跳转到授权页面，你点击同意，或者第二次及以后会自动授权，如下所示：
+
+<img :src="$withBase('/weixin_zhifu_11.png')" alt="">
+
+然后就调回到`http://m.imooc.com/#/index`,如果我们能在本地将`m.imooc.com`和`localhost:8081`做个绑定，然后实际的情况就是从`localhost:8081/#/index`跳到微信授权，授权完毕又跳转到`/m.imooc.com/#/index`,而`/m.imooc.com/#/index`就是`localhost:8081/#/index`。<font color=#DD1144>所以整个过程就是从index页面跳到微信授权，再调回到index页面，只有理解了这个过程，才可以在正式开发的时候不会迷惑</font>
+
+
+### 4. 接口代理和域名解析
+接口代理包括：
++ <font color=#1E90FF>配置主机</font>
++ <font color=#1E90FF>设置端口</font>
++ <font color=#1E90FF>拦截请求</font>
+
+Host域名解析
++ <font color=#DD1144>修改本地host文件</font>
+	+ <font color=#1E90FF>Window</font>：修改地址为`C:\Windows\System32\drivers\etc\hosts`
+	+ <font color=#1E90FF>Mac</font>：`vi /etc/hosts`
++ <font color=#1E90FF>通过软件修改</font>
+
+在此之前，我们还是把前面我们设置的`m.imooc.com`修改为`m.abcd.com`，因为前者是个真实的域名，后者是个假的，我们在本地将假的`m.abcd。com`和`localhost:8081`绑定，模拟真实的场景。
+
+现在我们首先去修改一下host文件，按照上面的地址，我们在`hosts`文件中添加这么一句：
+```javascript
+127.0.0.1 m.abcd.com
+```
+这样的话，我们就可以将`127.0.0.1`映射到`m.abcd.com`，在本地中访问`m.abcd.com`就相当于在访问`127.0.0.1`
+
+
+接着我们在H5项目当中创建`vue.config.js`文件，内容如下：
+```javascript
+module.exports = {
+	devServer: {
+		host: 'm.abcd.com', // 设置主机地址
+		port: 80, // 设置默认端口
+		proxy: {
+			'/api': {
+				// 设置目标API地址
+				target: 'http://localhost:5000',
+				// 如果要代理websockets
+				ws:false,
+				// 将主机标头的原点改为目标URL
+				// changeOrigin:true表示比如我们访问/api/test,实际访问的是localhost:5000/test
+				// changeOrigin:false表示比如我们访问/api/test,实际访问的是localhost:5000/api/test
+				changeOrigin:false
+			}
+		}
+	}
+}
+```
+然后特别要注意，我们必须通过管理员打开命令行，然后启动项目，这样，项目就可以启动到`m.abcd.com:80`上了，如下图所示：
+<img :src="$withBase('/weixin_zhifu_12.png')" alt="">
+
+此时此刻，我们打开微信开发工具，然后访问`http://m.abcd.com/#/index`，就可以访问到，我们开发的首页，然后首页会跳转到微信授权，点击同意之后，就会跳转回来，并且携带上`code`信息，如下所示，拿到`code`，我们再去做别的事情。
+
+<img :src="$withBase('/weixin_zhifu_13.png')" alt="">
+
+虽然前面我们在前端进行了授权演示，但是授权我们还要到后端完成，所以我们会在后面书写`node`的时候去完成全流程。
+
+## h5接入微信分享
++ <font color=#1E90FF>定义请求地址</font>
++ <font color=#1E90FF>微信授权，注入openId</font>
++ <font color=#1E90FF>获取签名信息配置config</font>
++ <font color=#1E90FF>定义分享公共信息</font>
+
++ <font color=#1E90FF>**① 绑定域名**</font>
+
+先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。（备注：登录后可在“开发者中心”查看对应的接口权限。）
+
+<font color=#1E90FF>**② 引入JS文件**</font>
+
+可以支持引入文件的方式，也可以通过使用包管理工具去引入
+
+<font color=#1E90FF>**③ 通过config接口注入权限验证配置**</font>
+
+所有需要使用JS-SDK的页面必须先注入配置信息，否则将无法调用，官网给出的实例如下
+```javascript
+wx.config({
+  debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+  appId: '', // 必填，公众号的唯一标识
+  timestamp: , // 必填，生成签名的时间戳
+  nonceStr: '', // 必填，生成签名的随机串
+  signature: '',// 必填，签名
+  jsApiList: [] // 必填，需要使用的JS接口列表
+});
+```
+
+<font color=#1E90FF>**④ 通过ready接口处理成功验证**</font>
+
+```javascript
+wx.ready(function(){
+  // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+});
+```
+
+大概了解后我们来<font color=#1E90FF>先从前端入手接入H5的分享</font>，先定义前端要请求后端的一些接口：
+```javascript
+// src/api/index.js
+export default {
+	wechatRedirect: '/wechat/redirect?url=http%3A%2F%2Fm.abcd.com%2F%23%2Findex&scope=snsapi_userinfo', // 重定向
+	wechatConfig: '/wechat/jssdk', // 获取config信息
+	getUserInfo:'/wechat/getUserInfo', // 获取用户信息
+	payWallet: '/wechat/pay/payWallet'//获取支付
+}
+```
+
+第二步就是<font color=#DD1144>进入页面先判断是否授权过了，没有授权就重定向去后端授权，已经授权就获取配置信息，然后在前端需要使用wx.config进行注入，最后通过wx.ready去注入分享功能</font>。整个过程我们也可以参照[官网](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html)
+
+```javascript
+// App.vue
+<template>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+import API from './api/index'
+import wx from 'weixin-js-sdk'
+import util from './util/index'
+export default {
+  name: 'app',
+  mounted() {
+    this.checkUserAuth()
+  },
+  methods: {
+    // 判断用户是否授权
+    checkUserAuth() {
+      // 第一次进来的时候需要授权，后面再进来就不需要了
+      let openId = this.$cookie.get('openId') // 在node当中注入一个openId，写库
+      if(!openId) {
+        // 如果没有获取到openId,服务端会做重定向，进行微信授权，同时获取openid
+        window.location.href = API.wechatRedirect
+      } else {
+        // 如果有openid，直接去获取配置
+        this.getWechatConfig()
+      }
+    },
+    // 获取微信的配置信息
+    getWechatConfig() {
+      // 请求后端地址，后端使用我们携带的query url进行签名，然后请求微信的配置，返回给我们
+      let url = API.wechatConfig + '?url=' + location.href.split('#')[0]
+      this.$http.get(url)
+      .then((response)=> {
+        let res = response.data
+        if(res.code == 0) {
+          let data = res.data
+
+          // 成功返回配置，我们使用wx.config进行注入
+          wx.config({
+            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: data.appId, // 必填，公众号的唯一标识
+            timestamp: data.timestamp, // 必填，生成签名的时间戳
+            nonceStr: data.nonceStr, // 必填，生成签名的随机串
+            signature: data.signature,// 必填，签名
+            jsApiList: data.jsApiList // 必填，需要使用的JS接口列表
+          })
+
+          // 注入后通过ready接口处理成功验证
+          wx.ready(()=> {
+            util.initShareInfo()
+          })
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style>
+</style>
+```
+```javascript
+// src/util/index.js
+import wx from 'weixin-js-sdk'
+
+export default {
+	// 定义分享功能
+	initShareInfo() {
+		let shareInfo = {
+			title: '支付和分享课程', // 分享标题
+			desc: '欢迎学习', // 分享描述
+			link: 'http://m.abcd.com/#/index', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: '', // 分享图标
+		}
+		wx.onMenuShareTimeline(shareInfo)
+		wx.onMenuShareAppMessage(shareInfo)
+		wx.onMenuShareQQ(shareInfo)
+		wx.onMenuShareQZone(shareInfo)
+		wx.updateAppMessageShareData(shareInfo) // 分享给朋友，分享给QQ
+		wx.updateTimelineShareData(shareInfo) // 分享到朋友圈，分享到QQ空间
+	}
+}
+```
+到这里我们分享功能的前端部分就结束了，我们在下面来开发后端的部分。
