@@ -74,3 +74,20 @@
 如果是比较复杂的项目，我们就可以考虑现有成熟化的产品，比如`Jenkins`(CI工具)+`git/gitlab`(版本控制工具)+`webpack`(构建工具) + `React/Vue`(前端框架)
 
 <img :src="$withBase('/bigfrontend-devop-14.png')" alt="">
+
+## 构建工具
+四款前端主流的打包工具：<font color=#9400D3>grunt</font> ，<font color=#9400D3>gulp</font>，<font color=#9400D3>webpack</font>， <font color=#9400D3>rollup</font>，以发布时间为顺序。
+
++ <font color=#1E90FF>Grunt</font>：最老牌的打包工具，它运用配置的思想来写打包脚本，一切皆配置，所以会出现比较多的配置项，诸如`option`,`src`,`dest`等等。而且不同的插件可能会有自己扩展字段，认知成本高，运用的时候需要明白各种插件的配置规则。
++ <font color=#1E90FF>Gulp</font>：用代码方式来写打包脚本，并且代码采用流式的写法，只抽象出了`gulp.src`, `gulp.pipe`, `gulp.dest`, `gulp.watch`接口，运用相当简单。更易于学习和使用，使用`gulp`的代码量能比`grunt`少一半左右。
++ <font color=#1E90FF>Webpack</font>: 是模块化管理工具和打包工具。通过`loader`的转换，任何形式的资源都可以视作模块，比如`CommonJs`模块、`AMD`模块、`ES6`模块、`CSS`、图片等。它可以将许多松散的模块按照依赖和规则打包成符合生产环境部署的前端资源。还可以将按需加载的模块进行代码分隔，等到实际需要的时候再异步加载。它定位是模块打包器，而`Gulp/Grunt`属于构建工具。`Webpack`可以代替 Gulp/Grunt 的一些功能，但不是一个职能的工具，可以配合使用。
++ <font color=#1E90FF>Rollup</font>：下一代`ES6`模块化工具，最大的亮点是利用`ES6`模块设计，利用`tree-shaking`生成更简洁、更简单的代码。一般而言，对于应用使用`Webpack`，对于类库使用`Rollup`；需要代码拆分(Code Splitting)，或者很多静态资源需要处理，再或者构建的项目需要引入很多`CommonJS`模块的依赖时，使用`webpack`。代码库是基于`ES6`模块，而且希望代码能够被其他人直接使用，使用`Rollup`。
+
+使用总结：
++ `Grunt`：MPA，老牌打包工具，基于文件为媒介（运行慢，零散的脚本文件一当多起来就受到影响
++ `Gulp`：MPA，易学，基于nodejs的steam流打包
++ `Webpack`：SPA，目前最强大的打包工具，但是过于臃肿，如何单纯打包js不推荐
++ `Roleup`：MPA，tree-shaking特性（针对es6，按需打包，多余的不要，目前（2018，vuex,react主流使用）
+
+
+关于`webpack`，我们在之前[前端工具](https://taopoppy.cn/Webpack/)已经详细的学习过了，去哪里学习即可。后续我们在学习`CL/CD`的时候还会涉及一些相关的知识。
