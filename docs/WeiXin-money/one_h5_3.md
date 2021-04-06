@@ -202,7 +202,7 @@ module.exports = {
 + <font color=#1E90FF>获取签名信息配置config</font>
 + <font color=#1E90FF>定义分享公共信息</font>
 
-+ <font color=#1E90FF>**① 绑定域名**</font>
+<font color=#1E90FF>**① 绑定域名**</font>
 
 先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。（备注：登录后可在“开发者中心”查看对应的接口权限。）
 
@@ -236,10 +236,10 @@ wx.ready(function(){
 ```javascript
 // src/api/index.js
 export default {
-	wechatRedirect: '/wechat/redirect?url=http%3A%2F%2Fm.abcd.com%2F%23%2Findex&scope=snsapi_userinfo', // 重定向
-	wechatConfig: '/wechat/jssdk', // 获取config信息
-	getUserInfo:'/wechat/getUserInfo', // 获取用户信息
-	payWallet: '/wechat/pay/payWallet'//获取支付
+	wechatRedirect: '/api/wechat/redirect?url=http%3A%2F%2Fm.abcd.com%2F%23%2Findex&scope=snsapi_userinfo', // 重定向
+	wechatConfig: '/api/wechat/jssdk', // 获取config信息
+	getUserInfo:'/api/wechat/getUserInfo', // 获取用户信息
+	payWallet: '/api/wechat/pay/payWallet'//获取支付
 }
 ```
 

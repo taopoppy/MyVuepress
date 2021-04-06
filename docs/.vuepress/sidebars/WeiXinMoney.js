@@ -7,5 +7,12 @@ module.exports = [
       '/WeiXin-money/one_h5_2',
       '/WeiXin-money/one_h5_3'
     ]
+  },
+  {
+    title: 'node开发',
+    children: [
+      '/WeiXin-money/one_node_1',
+      '/WeiXin-money/one_node_2',
+    ]
   }
 ]
