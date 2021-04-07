@@ -14,5 +14,11 @@ module.exports = [
       '/WeiXin-money/one_node_1',
       '/WeiXin-money/one_node_2',
     ]
-  }
+  },
+  {
+    title: '小程序',
+    children: [
+      
+    ]
+  },
 ]
