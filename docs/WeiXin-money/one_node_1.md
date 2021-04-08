@@ -47,8 +47,8 @@ router.get('/getOpenId',async function(req,res){
     if(result.code == 0){
       let data = result.data;
       let expire_time = 1000 * 60 * 60 * 2;                      // 设置有效时间2个小时,微信官网返回的只有两个小时有效期
-      cache.put('access_token', data.access_token, expire_time); // 缓存网页授权access_token
-      cache.put('openId', data.openid, expire_time);             // 缓存用户openid
+      cache.put('access_token', data.access_token, expire_time); // 缓存网页授权access_token(正式开发这里不应该缓存到后端)
+      cache.put('openId', data.openid, expire_time);             // 缓存用户openid(正式开发这里不应该缓存到后端)
       res.cookie('openId', data.openid, { maxAge: expire_time });// 将用户的openid放在将要返回个前端的cookie当中
       let redirectUrl = cache.get('redirectUrl');
       res.redirect(redirectUrl); // 重定向到前端
@@ -60,6 +60,7 @@ router.get('/getOpenId',async function(req,res){
 
 // 获取用户信息
 router.get('/getUserInfo',async function(req,res){
+  // 正式开发这里的access_token和openId应该从前端的cookie当中拿
   let access_token = cache.get('access_token'), openId = cache.get('openId');
   let result = await common.getUserInfo(access_token, openId);
   res.json(result);

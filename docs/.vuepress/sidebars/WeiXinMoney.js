@@ -18,7 +18,7 @@ module.exports = [
   {
     title: '小程序',
     children: [
-      
+
     ]
   },
 ]
