@@ -18,7 +18,8 @@ module.exports = [
   {
     title: '小程序',
     children: [
-
+      '/WeiXin-money/two_xiaochengxu_1',
+      '/WeiXin-money/two_xiaochengxu_2'
     ]
   },
 ]
