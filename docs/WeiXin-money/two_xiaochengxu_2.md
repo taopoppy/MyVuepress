@@ -166,5 +166,95 @@ Page({
 + <font color=#1E90FF>小程序拿到userId，进行保存即可</font>
 
 ## Node对接
+`Node`后端就是要去实现两个接口而已，配合我们前端小程序完成整个授权登录的过程：
+```javascript
+// routes/pay/mp.js
+let express = require('express');
+let router = express.Router(); // 路由
+let request = require('request');
+let config = require('./config');
+let util = require('./../../util/util')
+let dao = require('./../common/db')
+let wxpay = require('./../common/wxpay')
+
+config = Object.assign({}, config.mp);
+
+// 获取session接口（小程序）
+router.get('/getSession',function(req,res){
+  let code = req.query.code; // 从小程序拿到wx.login返回的code
+  if(!code){
+    res.json(util.handleFail('code不能为空',10001));
+  }else{
+    let sessionUrl = `https://api.weixin.qq.com/sns/jscode2session?appid=${config.appId}&secret=${config.appSecret}&js_code=${code}&grant_type=authorization_code`;
+    request(sessionUrl,function(err,response,body){
+      let result = util.handleResponse(err, response, body);
+      res.json(result); // 返回给小程序openid和session_key
+    })
+  }
+})
+
+// 小程序授权登录（小程序）
+router.get('/login',async function(req,res){
+  let userInfo = JSON.parse(req.query.userInfo); // 获取到小程序传来的完整的用户的信息，包括小程序openid和用户基础信息
+  if (!userInfo){
+    res.json(util.handleFail('用户信息不能为空',10002))
+  }else{
+    // 查询当前用户是否已经注册,查询的是users_mp
+    let userRes = await dao.query({ openid: userInfo.openid},'users_mp');
+    if (userRes.code == 0){
+      if (userRes.data.length >0){
+        // 如果用户已经存在，返回用户在mongodb当中的_id,_id是mongodb唯一的key
+        res.json(util.handleSuc({
+          userId: userRes.data[0]._id // 返回userId
+        }))
+      }else{
+        // 如果用户没有查出来，说明是新用户，应该作为新数据插入数据库当中
+        let insertData = await dao.insert(userInfo,'users_mp');
+        if (insertData.code == 0){
+          let result = await dao.query({ openid: userInfo.openid }, 'users_mp');
+          res.json(util.handleSuc({
+            userId: result.data[0]._id   // 返回userId
+          }))
+        }else{
+          res.json(insertData);
+        }
+      }
+    }else{
+      res.json(userRes);
+    }
+  }
+})
+```
 
 ## 小程序分享
+小程序和微信H5的分享可以通过右上角进行分享，但是小程序也可以通过在小程序当中点击按钮的方式进行分享，这个是微信H5不具备的。
+
+小程序点击按钮分享的功能是通过`button`的`open-type`这个功能实现的，准确的说小程序的点击按钮分享和右上角点击按钮分享的逻辑都是小程序`Page`当中的`onShareAppMessage`生命周期函数定义的：
+```javascript
+<view class="index">
+  <view class="btn-group">
+    <button open-type="share">分享</button>
+  </view>
+</view>
+```
+```javascript
+// index.js
+// 获取应用实例
+Page({
+  // 分享逻辑
+  onLoad:function() {
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
+    ...
+  },
+  onShareAppMessage() {
+    return {
+      title: "欢迎来到taopoppy的music",
+      path: "/pages/index/index",
+      imageUrl: "/assets/images/header.png"
+    }
+  }
+})
+```
