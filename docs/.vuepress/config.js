@@ -57,12 +57,12 @@ module.exports = {
       { text: '资料', link: '/learnMaterials/'},
       { text: 'github', link: 'https://github.com/taopoppy/' },
       { text: '小技巧', link: '/construct/'},
-      // { text: 'Flutter',
-      //   items: [
-      //     { text: 'Flutter入门到实战', link: '/Flutter/'},
-      //     { text: 'Flutter知识详解', link: '/Flutter-Know/'},
-      //   ]
-      // },
+      { text: 'Flutter',
+        items: [
+          { text: 'Flutter入门到实战', link: '/Flutter/'},
+          { text: 'Flutter知识详解', link: '/Flutter-Know/'},
+        ]
+      },
       //{ text: '算法世界', link: '/Algorithm/'},
       { text: '小程序',
         items: [

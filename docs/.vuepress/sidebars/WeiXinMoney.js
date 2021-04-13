@@ -5,7 +5,8 @@ module.exports = [
     children: [
       '/WeiXin-money/one_h5_1',
       '/WeiXin-money/one_h5_2',
-      '/WeiXin-money/one_h5_3'
+      '/WeiXin-money/one_h5_3',
+      '/WeiXin-money/one_h5_4'
     ]
   },
   {
