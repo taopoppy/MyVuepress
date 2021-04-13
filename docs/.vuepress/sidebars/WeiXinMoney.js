@@ -23,5 +23,11 @@ module.exports = [
       '/WeiXin-money/two_xiaochengxu_2',
       '/WeiXin-money/two_xiaochengxu_3',
     ]
+  },
+  {
+    title: '部署',
+    children: [
+      '/WeiXin-money/bushu_1',
+    ]
   }
 ]

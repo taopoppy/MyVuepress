@@ -42,4 +42,144 @@ router.get('/jssdk',async function(req,res){
 ```
 如上所示，你就应该要把`xxx.xxx.xxx.xxx`添加进微信公众号里的白名单了
 
+## 前端实现
+首先要说明的就是，微信公众号没有办法像小程序或者小程序云在本地进行支付测试，它必须要部署到线上去测试，所以这一点我们要记住。我们直接来看前端的代码即可:
+```vue
+<template>
+	<div>
+		<h4>支付页面</h4>
+		<input type="number" v-model="money"/>
+		<span style="font-size:20px">{{money/100}}元</span>
+		<button v-on:click="pay">支付</button>
+	</div>
+</template>
 
+<script>
+import API from '../api/index.js'
+import wx from 'weixin-js-sdk'
+export default {
+  name: 'pay',
+	data() {
+		return {
+			money: 0
+		}
+	},
+	methods: {
+		pay() {
+			// H5支付
+			if(this.money === 0 || this.money === undefined || this.money ===null) {
+				alert("请输入正确得金额")
+			}
+			this.$http.get(API.payWallet, {
+				params: {
+					money: this.money
+				}
+			}).then((response)=> {
+				let result = response.data
+				if(result && result.code === 0) {
+					// 请求成功就支付
+					// 通过微信得JS-AP拉起微信支付
+					let res = result.data
+					wx.chooseWXPay({
+						timestamp: res.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+						nonceStr: res.nonceStr, // 支付签名随机串，不长于 32 位
+						package: res.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+						signType: res.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+						paySign: res.paySign, // 支付签名
+						success: function (res) {
+							// 支付成功后的回调函数，支付成功和取消都算成功
+							if(res.errMsg === 'chooseWXPay:ok') {
+								// 用户端的支付成功，真正成功的表现时微信服务器去调用我们Node的回调地址
+								alert('支付成功')
+							} else if(res.errMsg === 'chooseWXPay:fail'){
+								alert('支付取消')
+							}
+						},
+						cancel: function() {
+							alert("支付取消")
+						},
+						fail: function(res) {
+							// 正儿八经得请求支付失败了
+							alert("支付失败", res.errMsg)
+						}
+					});
+				} else {
+					alert(result.message)
+				}
+			})
+		}
+	}
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+## 后端实现
+```javascript
+// routes/pay/wx.js
+// 微信支付（H5）
+router.get('/pay/payWallet', function (req, res) {
+  let openId = req.cookies.openId; // 拿到前端h5得cookie中得openId
+  let appId = config.appId;
+  // 商品简单描述
+  let body = "H5请求支付taopoppy";
+  // 如果是post请求，则用req.body获取参数
+  let total_fee = req.query.money;
+  // 微信支付成功回调地址，用于保存用户支付订单信息
+  let notify_url = "http://m.abcd.com/api/wechat/pay/callback";
+  // 通过微信支付认证的商户ID
+  let mch_id = config.mch_id;
+  // 附加数据
+  let attach = "微信支付课程体验";
+  // 调用微信支付API的机器IP
+  let ip = '61.133.217.141';
+  // 封装好的微信下单接口，统一下单接口
+  wxpay.order(appId, attach, body, mch_id, openId, total_fee, notify_url, ip).then(function (result) {
+    res.json(util.handleSuc(result));
+  }).catch((result) => {
+    res.json(util.handleFail(result));
+  })
+})
+
+
+/**
+ * 此接口主要用于支付成功后的回掉，用于统计数据
+ * 此处需要再app.js中设置请求头的接收数据格式
+ */
+router.post('/pay/callback', function (req, res) {
+  xml.parseString(req.rawBody.toString('utf-8'), async (error, xmlData) => {
+    if (error) {
+      logger.error(error);
+      res.send('fail')
+      return;
+    }
+    let data = xmlData.xml;
+    // data当中有很多信息，从中挑除自己要存到数据库里的即可
+    // data当中有哪些数据，参照https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8
+    let order = {
+      openId: data.openid[0],                // 用户标识
+      totalFee: data.total_fee[0],           // 订单金额
+      isSubscribe: data.is_subscribe[0],     // 是否关注公众账号
+      orderId: data.out_trade_no[0],         // 商户订单号
+      transactionId: data.transaction_id[0], // 微信支付订单号
+      tradeType: data.trade_type[0],         // 交易类型
+      timeEnd: data.time_end[0]              // 支付完成时间
+    }
+    // 插入订单数据
+    let result = await dao.insert(order, 'orders');
+    if (result.code == 0) {
+      // 向微信发送成功数据
+      let data = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+      res.send(data);
+    } else {
+      res.send('FAIl');
+    }
+  });
+})
+```
+
+你会发现整个过程和微信小程序支付几乎是一样的过程，如下所示
+<img :src="$withBase('/weixin_zhifu_23.png')" alt="">
