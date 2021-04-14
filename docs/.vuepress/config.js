@@ -67,8 +67,8 @@ module.exports = {
       { text: '小程序',
         items: [
           { text: '微信小程序入门和实战', link: '/WeiXin-Rumen/'},
-          { text: '微信小程序全栈开发实战', link: '/Weixin-quanzhan/'},
-          { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' },
+          // { text: '微信小程序全栈开发实战', link: '/Weixin-quanzhan/'},
+          // { text: '微信小程序云开发实战', link: '/WeiXin-Combat/' },
           { text: '微信支付和分享',link: '/WeiXin-money/'}
         ]
       },
