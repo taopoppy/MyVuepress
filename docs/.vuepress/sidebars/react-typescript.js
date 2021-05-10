@@ -25,5 +25,12 @@ module.exports = [
       "/react-typescript/ts-end-one",
       "/react-typescript/ts-end-two",
     ]
+  },
+  {
+    title: "React和Typescript",
+    children: [
+      "/react-typescript/react-ts-config_1",
+      "/react-typescript/react-ts-config_2"
+    ]
   }
 ]
