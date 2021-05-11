@@ -38,6 +38,24 @@ module.exports = [
     ]
   },
   {
+    title:'Hooks基础到进阶',
+    children: [
+      '/react-redux/hooks_newfunction',
+      '/react-redux/react_base_guanwang_hook1',
+      '/react-redux/react_base_guanwang_hook2',
+      '/react-redux/react_base_guanwang_hook3',
+      '/react-redux/react_base_guanwang_hook4',
+      '/react-redux/react_base_guanwang_hook5',
+      '/react-redux/react_base_guanwang_hook6'
+    ]
+  },
+  {
+    title: 'React原理剖析',
+    children: [
+      '/react-redux/react_principle_analysis1',
+    ]
+  },
+  {
     title:'react架构设计理论',
     children: [
       '/react-redux/jiagou_sign_one',
@@ -63,18 +81,6 @@ module.exports = [
       '/react-redux/jiagou_project_twelve',
       '/react-redux/jiagou_project_fourtheen',
       '/react-redux/jiagou_project_sixteen',
-    ]
-  },
-  {
-    title:'Hooks基础到进阶',
-    children: [
-      '/react-redux/hooks_newfunction',
-      '/react-redux/react_base_guanwang_hook1',
-      '/react-redux/react_base_guanwang_hook2',
-      '/react-redux/react_base_guanwang_hook3',
-      '/react-redux/react_base_guanwang_hook4',
-      '/react-redux/react_base_guanwang_hook5',
-      '/react-redux/react_base_guanwang_hook6'
     ]
   }
 ]
