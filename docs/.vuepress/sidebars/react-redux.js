@@ -28,16 +28,6 @@ module.exports = [
     ]
   },
   {
-    title:'redux基础到进阶',
-    children: [
-      '/react-redux/react_redux_base1',
-      '/react-redux/react_redux_base2',
-      '/react-redux/react_redux_advanced_one',
-      '/react-redux/react_redux_advanced_two',
-      '/react-redux/react_redux_advanced_three',
-    ]
-  },
-  {
     title:'Hooks基础到进阶',
     children: [
       '/react-redux/hooks_newfunction',
@@ -53,6 +43,16 @@ module.exports = [
     title: 'React原理剖析',
     children: [
       '/react-redux/react_principle_analysis1',
+    ]
+  },
+  {
+    title:'redux基础到进阶',
+    children: [
+      '/react-redux/react_redux_base1',
+      '/react-redux/react_redux_base2',
+      '/react-redux/react_redux_advanced_one',
+      '/react-redux/react_redux_advanced_two',
+      '/react-redux/react_redux_advanced_three',
     ]
   },
   {
