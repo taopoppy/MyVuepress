@@ -51,7 +51,10 @@ class TodoList extends Component {
 
 <font color=#9400D3>**③ componentDidMount**</font>
 
-<font color=#1E90FF>组件已经被渲染到页面中后触发：此时页面中有了真正的DOM的元素，可以进行DOM相关的操作, 依赖于 DOM 节点的初始化应该放在这里。如需通过网络请求获取数据，此处是实例化请求的好地方</font>。
+<font color=#1E90FF>组件已经被渲染到页面中后触发：此时页面中有了真正的DOM的元素，可以进行DOM相关的操作, 依赖于 DOM 节点的初始化应该放在这里。如需通过网络请求获取数据，此处是实例化请求的好地方，原因有两个：</font>：
++ <font color=#DD1144>componentDidMount的时候，真实的DOM才被挂载上去，也就是说这时候才有了真的DOM，然后ajax技术就是动态操作DOM交互显示，如果现在DOM都还没有挂载到上面，请求的数据用来动态显示和操作谁呢</font>
++ <font color=#DD1144>componentDidMount这个生命周期无论在服务端渲染，还是fiber架构当中，都只会确定的执行一次，而其他的生命周期就不一定了，所以为了保证不会重复请求，只能放在componentDidMount当中请求一次</font>
+
 
 ### 3. Updation
 可以看到,在组件中的`props`和`states`发生变化的时候，情况略微不一样，`props`比`states`多了一个`componentWillReceiveProps`方法，这个方法我们最后再讲，我们先来说`props`和`states`共有的几个生命周期方法：

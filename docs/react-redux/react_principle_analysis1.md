@@ -91,3 +91,118 @@ ReactDOM.render(<UpdateCounter name="Taylor" />, document.getElementById('root')
 + <font color=#DD1144>单向数据流</font>：数据和UI的关系只能是数据改变UI，不能UI改变数据
 
 那么数据驱动，这个数据具体指的是什么？就是<font color=#1E90FF>props</font>和<font color=#1E90FF>state</font>，`React`使用`state`为组件维护了自己的内部状态，使用`props`为组件维护了自己的外部状态。`state`和`props`的变化意味着组件的`UI`需要更新，这里的`UI`就是`JSX`对象，所以组件的设计思想可以使用一句话来说明：<font color=#DD1144>组件的state或者props发生变化会导致render函数重新执行，导致返回新的JSX对象</font>
+
+## 生命周期
+关于生命周期，实际上在几个版本当中都有个大幅度的变化，我们首先看看`react v16.3`之前的生命周期：
+
+<img :src="$withBase('/react_yuanli_4.png')" alt="">
+
+分别以组件的首次渲染和更新渲染流程为主线描绘其生命周期函数的调用时机与方式，调用组件的生命周期函数前必须取得组件实例。首次渲染时以`instance = new component(...)`的方式创建并获得组件实例。更新渲染时以`instance = workInProgress.stateNode`的方式获得组件实例。
+
+可以在`16.3`之后有了新的变化:
+<img :src="$withBase('/react_yuanli_5.png')" alt="">
+
+从`React v16.3`版本开始，React 建议使用`getDerivedStateFromProps`和`getSnapshotBeforeUpdate`两个生命周期函数替代`componentWillMount`，`componentWillReceiveProps`和`componentWillUpdate`三个生命周期函数。这里需要注意的是 <font color=#1E90FF>新增的两个生命周期函数和原有的三个生命周期函数必须分开使用，不能混合使用</font>。所以，这就是新版本的生命周期的变化，在官网的图也应该迎刃而解：
+
+<img :src="$withBase('/react_yuanli_6.png')" alt="">
+
+接下来，我们就说说为什么产生了新的生命周期：
+
+<font color=#1E90FF>**① componentWillMount函数的问题**</font>
+
+函数本身没有啥问题，只是有些开发者觉得首次渲染页面的时候没有获取到数据，导致白屏，所以会把异步请求代码写在这里，但是实际上，<font color=#DD1144>componentWillMount执行的时候第一次渲染已经开始了，数据还是没有没有请求过来，所以无论从哪里请求，都无法避免首次渲染没有异步数据的问题，除非你写在constructor里面</font>
+
+<font color=#1E90FF>**② componentWillReceiveProps**</font>
+
+如果组件自身的某个`state`跟其`props`密切相关（指`state`值可能受到`props`的影响 ）的话，一直都没有一种很优雅的处理方式去更新`state`，一般的做法是在 `componentWillReceiveProps`函数中判断前后两个`props`是否相同，如果不同再将新的`props`更新到相应的`state`上去
+```javascript
+componentWillReceiveProps(nextProps) {
+  // 如果nextProps.a传递的是基本数据类型，可以直接进行相等判断
+  if (nextProps.isLogin !== this.props.isLogin) {
+    this.setState({ 
+      isLogin: nextProps.isLogin,   
+    });
+  }
+  if (nextProps.isLogin) {
+    this.handleClose();
+  }
+}
+// 如果nextProps.a传递的是一个引用类型，一般是先将它们转换成字符串，然后进行相等判断
+componentWillReceiveProps(nextProps) {
+  if (JSON.stringify(nextProps.a) !== JSON.stringify(this.props.a)) {
+    this.setState({ 
+      ...  
+    });
+  }
+}
+```
+<font color=#DD1144>在componentWillReceiveProps函数将props映射为对应为state一方面会破坏state数据的单一数据源，导致组件状态变得不可预测，另一方面也会增加组件的重绘次数</font>
+
+<font color=#1E90FF>**③ componentWillUpdate**</font>
+
+与`componentWillReceiveProps`类似，许多开发者也会在`componentWillUpdate`中根据`props`的变化去触发一些回调。但不论是`componentWillReceiveProps`还是`componentWillUpdate`，都有可能在一次更新中被调用多次，也就是说写在这里的回调函数也有可能会被调用多次，这显然是不可取的。
+
+
+<font color=#1E90FF>**④ getDerivedStateFromProps**</font>
+
+`React`生命周期函数的命名一直都非常语义化，`getDerivedStateFromProps`的意思就是从`props`中获取`state`，换句话说就是将传入的`props`映射（赋值）到`state`中。`getDerivedStateFromProps`函数的使用方式如下。
+
+```javascript
+// 使用getDerivedStateFromProps替换componentWillReceiveProps
+static getDerivedStateFromProps(nextProps, prevState) {
+  if (nextProps.isLogin !== prevState.isLogin) {
+    // 注意这里的写法
+    return {
+      isLogin: nextProps.isLogin,
+    };
+  }
+  return null;
+}
+
+componentDidUpdate(prevProps, prevState) {
+  if (!prevState.isLogin && this.props.isLogin) {
+    // 这里this.props已经是最新的props，prevState是上一版本的state
+    this.handleClose();
+  }
+}
+```
+
+通常来讲，在`componentWillReceiveProps`中我们一般会做以下两件事。一是根据`props`来更新`state`，二是触发一些回调，如动画或页面跳转等。在`React v16.3`版本之前，这两件事都需要在`componentWillReceiveProps`中去做。而在新版本中，官方将更新`state`与触发回调分配到了`getDerivedStateFromProps`与`componentDidUpdate`中，使得组件整体的更新逻辑更为清晰。在`getDerivedStateFromProps`中禁止了组件访问`this.props`，强制让开发者去比较`nextProps`与`prevState`中的值，以确保程序在调用 `getDerivedStateFromProps`这个生命周期函数时是根据当前的`props`来更新组件的 `state`，而不是去做其他一些让组件自身状态变得更加不可预测的事情。
+
+<font color=#1E90FF>**⑤ getSnapshotBeforeUpdate**</font>
+
+`getSnapshotBeforeUpdate`函数在（DOM）更新之前被调用（获取一个快照），在该函数中可以访问更新前`DOM`的属性，其返回值将作为第三个参数传递给componentDidUpdate函数，这就保证了在两个函数中可以访问同一个值
+```javascript
+// 针对上面第3个问题使用getSnapshotBeforeUpdate替换componentWillUpdate
+class ScrollingList extends React.Component {
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    return (
+      // 这里可以访问更新前的DOM元素属性
+      return this.rootNode.scrollHeight
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    // snapshot值是在getSnapshotBeforeUpdate函数中返回
+    if (snapshot !== null) {
+      const curScrollTop= this.rootNode.scrollTop;
+			this.rootNode.scrollTop = curScrollTop + (this.rootNode.scrollHeight - snapshot);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        {/* ...contents... */}
+      </div>
+    );
+  }
+}
+```
+
+## 组件实例
+
+## 元素的设计思想
+
+## 更新队列
