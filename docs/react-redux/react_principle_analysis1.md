@@ -202,7 +202,207 @@ class ScrollingList extends React.Component {
 ```
 
 ## 组件实例
+### 1. 组件继承原理
+我们首先来讲组件继承原理：首先来看两段代码：
+```javascript
+class UpdateCounter extends React.Component {
+  constructor(props) {
+		super(props);
+		this.state = {
+			count: 0,
+			text: '点击计数'
+		};
+		this.handleClick = this.handleClick.bind(this);
+  }
+  
+  handleClick() {
+    // case1 setState入参类型为function，函数必须有返回值
+    this.setState((state) => {
+      return {count: state.count + 1};
+    });
+    
+    // case2 setState入参类型为object
+	this.setState({
+	  count: this.state.count + 1
+	});
+  }
+  
+  render() {
+    return (
+    	<div className="wrap-box">
+    	  <button key="1" onClick={this.handleClick}>点击计数</button>
+    	  <span key="2" id="spanText" className="span-text">{this.state.count}</span>
+    	</div>
+    )
+  }
+}
+
+```
+```javascript
+// 源码位置：packages/react/src/ReactBaseClasses.js
+function Component(props, context, updater) {
+  this.props = props;
+  this.context = context;
+  this.refs = emptyObject;
+  this.updater = updater || ReactNoopUpdateQueue;
+}
+// 部分属性定义在原型上
+Component.prototype.setState = function (partialState, callback) {
+  // 执行setState时会先校验入参的类型是否正确，入参类型必须是object或function
+  (function () {
+    if (!(typeof partialState === 'object' || typeof partialState === 'function' || partialState == null)) {
+      {
+        throw ReactError(Error('setState(...): 参数类型必须是object或者function'));
+      }
+    }
+  })();
+
+  this.updater.enqueueSetState(this, partialState, callback, 'setState');
+};
+```
+
+<img :src="$withBase('/react_yuanli_7.png')" alt="">
+
+上图当中的黑色线条是不需要过多解释的，这个关于函数原型的知识：
++ <font color=#1E90FF>构造函数的prototype属性指向原型对象</font>
++ <font color=#1E90FF>实例对象的_proto（[[Prototype]]）也指向原型对象</font>
++ <font color=#1E90FF>原型对象的constructor属性指向构造函数</font>
+
+关于红色线条，特别要强调一下，因为这个是`class`继承的知识：
++ <font color=#DD1144>子类的_proto_属性表示对父类构造函数的继承，总是指向父类</font>
++ <font color=#DD1144>子类prototype属性的_proto_属性表示方法的继承，总是指向父类的prototype属性</font>
+
+（<font color=#9400D3>简单的总结：构造函数的_proto指向父类构造函数，原型对象的_proto_指向父类原型对象</font>）
+
+当然，`UpdateCounter`组件也并不是通过显示手写`new UpdateCounter`去实例化的，而是在源码当中通过`constructClassInstance`去帮助我们实例化的，但本质还是`new UpdateCounter`:
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactFiberClassComponent.js
+function constructClassInstance(workInProgress, ctor, props, renderExpirationTime) {
+  ...
+  // ctor是定义的组件类
+  var instance = new ctor(props, context);
+  ...
+}
+```
+
+关于上面的图示，可能还有人比较迷惑，说`React`当中书写的不都是类么，怎么到图里面都变成了函数了？ <font color=#9400D3>实际上class在es6当中是一种语法糖，本质就是函数，因为class的写法更贴近面向对象，更好理解，而函数及相关的原型本身是不好理解的</font>，好比下面的两个代码本质是一模一样，你更喜欢哪种写法？
+```javascript
+// 函数原型的写法
+function Person() {}
+Person.prototype.name = "taopoppy"
+Person.prototype.sex = "man"
+Person.prototype.speak = function() {console.log("hello")}
+let xiaoming = new Person()
+console.log(xiaoming.name) // "taopoppy"
+console.log(xiaoming.sex) // "man"
+
+// class类写法
+class Person {
+  constructor() {
+    this.name = "taopoppy"
+    this.sex = "man"
+  }
+  speak() {
+    console.log("hello")
+  }
+}
+let xiaoming = new Person()
+console.log(xiaoming.name) // "taopoppy"
+console.log(xiaoming.sex) // "man"
+```
+
+### 2. 组件实例运行
+现在我们要搞清楚组件实例在`React`应用程序运行时的作用，有三个小步骤，分别是：<font color=#9400D3>返回组件元素与状态</font>、<font color=#9400D3>调用生命周期函数</font>、<font color=#9400D3>setState触发更新</font>
+
+<font color=#1E90FF>**① 返回组件元素与状态（state）**</font>
+
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactFiberBeginWork.js
+function finishClassComponent(current$$1, workInProgress, Component, shouldUpdate, hasContext, renderExpirationTime) {
+  ...
+  // instance.render()返回当前组件的元素
+  var nextChildren = instance.render();
+  ...
+  // 开始执行协调算法，返回下一个 Fiber 结点
+  reconcileChildren(current$$1, workInProgress, nextChildren, renderExpirationTime);
+  ...
+  // 使用组件实例值来记忆当前 Fiber 结点状态，可用于后续 diff
+  workInProgress.memoizedState = instance.state;
+}
+```
+
+<font color=#1E90FF>**② 调用生命周期函数**</font>
+
+组件的生命周期函数是在组件实例上面进行调用的:
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactFiberCommitWork.js
+// 调用commit完成后的生命周期函数
+function commitLifeCycles(finishedRoot, current$$1, finishedWork, committedExpirationTime) {
+  // tag标识了当前Fiber节点的类型，包括FunctionComponent，ClassComponent，HostComponent等
+  switch (finishedWork.tag) {
+      ...
+      case ClassComponent:
+      	...
+        instance.componentDidMount();
+      	...
+  }
+}
+// 调用组件被卸载前的生命周期函数
+var callComponentWillUnmountWithTimer = function (current$$1, instance) {
+  ...
+  instance.componentWillUnmount();
+  ...
+};
+```
+
+<font color=#1E90FF>**③ setState触发更新**</font>
+
+<font color=#1E90FF>应用程序首次渲染时会为组件实例绑定对应的更新器，当组件接收到事件触发更新时，通过组件实例上面的更新器执行更新流程</font>
+
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactFiberClassComponent.js
+// 应用程序首次渲染时会为组件实例绑定更新器
+function adoptClassInstance(workInProgress, instance) {
+  instance.updater = classComponentUpdater;
+  workInProgress.stateNode = instance;
+}
+// 组件更新器
+var classComponentUpdater = {
+  enqueueSetState: function (inst, payload, callback) {
+    // 创建更新对象
+    var update = createUpdate(expirationTime, suspenseConfig);
+    // 为更新对象赋值更新内容
+    update.payload = payload;
+    ...
+    // 将更新对象加入更新队列
+    enqueueUpdate(fiber, update);
+    // 开始（更新）调度工作
+    scheduleWork(fiber, expirationTime);
+    ...
+  }
+  ...
+}
+```
+
+总结：<font color=#DD1144>组件实例是 React 应用程序运行时组件被实例化后的状态，每一个组件实例都拥有自身的属性和继承于React.Component的属性。应用程序首次渲染时通过调用组件实例的instance.render()返回 React 元素，用于构建页面（UI）。当应用程序被（事件）触发更新时，组件实例调用自身的更新器（updater）进入更新渲染流程。此外，在应用程序渲染的 render 或者 commit 阶段（前后）中会通过组件实例调用对应的生命周期函数。</font>
 
 ## 元素的设计思想
+关于元素的设计思想，我们之前就提过了，<font color=#1E90FF>React元素，本质就是JSX对象，JSX对象是语法糖，Babel会把JSX转义成为React.createElement()函数的调用，函数执行后返回的就是虚拟DOM，一个用来描述真实DOM结构和内容的普通JS对象</font>，下面两段代码效果相同:
+```javascript
+const element = (
+  <h1 className="greeting">
+    Hello, world!
+  </h1>
+);
+```
+```javascript
+const element = React.createElement(
+  'h1',
+  {className: 'greeting'},
+  'Hello, world!'
+);
+```
+
+总结：<font color=#DD1144>React用元素来描述DOM结构的优点在于它们很容易遍历，不需要解析，并且它们比实际的DOM元素轻量得多！React组件是由UI部分加逻辑部分组成，其中UI部分就是React元素，元素在render会被转换成React Fiber 对象（结点）。Fiber对象的层层嵌套形成了应用程序的Fiber树，所有更新的处理都在这颗「树」中计算。React 中组件和元素的根本区别就是：<font color=#9400D3>元素普通对象</font>，<font color=#9400D3>组件是类和函数</font>，元素是组件的一部分。</font>
 
 ## 更新队列
