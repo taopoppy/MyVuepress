@@ -43,6 +43,7 @@ module.exports = [
     title: 'React原理剖析',
     children: [
       '/react-redux/react_principle_analysis1',
+      '/react-redux/react_principle_analysis2',
     ]
   },
   {

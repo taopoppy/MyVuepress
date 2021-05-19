@@ -406,3 +406,256 @@ const element = React.createElement(
 总结：<font color=#DD1144>React用元素来描述DOM结构的优点在于它们很容易遍历，不需要解析，并且它们比实际的DOM元素轻量得多！React组件是由UI部分加逻辑部分组成，其中UI部分就是React元素，元素在render会被转换成React Fiber 对象（结点）。Fiber对象的层层嵌套形成了应用程序的Fiber树，所有更新的处理都在这颗「树」中计算。React 中组件和元素的根本区别就是：<font color=#9400D3>元素普通对象</font>，<font color=#9400D3>组件是类和函数</font>，元素是组件的一部分。</font>
 
 ## 更新队列
+面试官经常问到的一个问题就是：<font color=#DD1144>在一段代码中连续使用多个setState(...)时 React 的处理方式是什么</font>
+
+实际上，本身`setState`处理是异步的，但是如果多个`this.setState`都处于同一个循环，那就属于<font color=#9400D3>同步更新</font>，比如下面这样：
+```javascript
+// 同步更新
+handleClick() {
+  this.setState({
+			count: this.state.count + 1
+		});
+  this.setState({
+    text: '点击计数' + this.state.count
+  });
+}
+```
+如果多个`this.setState`在写法上是连续的，但是在实际执行的时候不属于同一个循环，就属于<font color=#9400D3>异步更新</font>，如下：
+```javascript
+// 异步更新
+handleClick() {
+  this.setState({
+			count: this.state.count + 1
+		});
+  setTimeout(() => {
+    this.setState({
+      text: '点击计数' + this.state.count
+    });
+  }, 1000);
+}
+```
+所以总结：
++ <font color=#1E90FF>多个同步setState操作，React会将它们的更新先后加入到更新队列，队列在被处理的时候将所有更新合并，合并原则是相同属性的更新取最后一次的值</font>
++ <font color=#1E90FF>而异步setState操作，也同样式先进行同步更新，后按照EventLoop原理后续处理</font>
+
+
+下面我们来具体说一下如何将更新加入到更新队列的：<font color=#DD1144>要明确的是在组件首次渲染的时候，在adoptClassInstance函数当中就为组件的实例添加了更新器updater，然后this.setState触发更新的时候，就调用updater当中的enqueueSetState函数去执行更新</font>，这个就是最宏观的更新步骤和逻辑。
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactFiberClassComponent.js
+// 应用程序首次渲染时会为组件实例绑定更新器
+function adoptClassInstance(workInProgress, instance) {
+  instance.updater = classComponentUpdater;
+  workInProgress.stateNode = instance;
+}
+// 组件更新器
+var classComponentUpdater = {
+  enqueueSetState: function (inst, payload, callback) {
+    // 创建更新对象
+    var update = createUpdate(expirationTime, suspenseConfig);
+    // 为更新对象赋值更新内容
+    update.payload = payload;
+    ...
+    // 将更新对象加入更新队列
+    enqueueUpdate(fiber, update);
+    // 开始（更新）调度工作
+    scheduleWork(fiber, expirationTime);
+    ...
+  }
+  ...
+}
+```
+
+现在我们要研究一下具体`updater`当中的`enqueueSetState`函数怎么去执行更新的：<font color=#DD1144>简单的说就是使用setState触发更新后，在enqueueSetState函数当中，首先第一步为当前的更新创建了一个更新update对象，第二步通过enqueueUpdate函数将其加入到了更新队列，更新队列并非有新更新加入就会立即处理，而是第三步要等到render阶段使用processUpdateQueue函数集中处理</font>
+
+<font color=#1E90FF>**① 创建更新对象**</font>
+
+`React`对更新对象`update`的定义如下：
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactUpdateQueue.js
+function createUpdate(expirationTime, suspenseConfig) {
+  var update = {
+    // 过期时间与任务优先级相关联
+    expirationTime: expirationTime,
+    suspenseConfig: suspenseConfig,
+		// tag用于标识更新的类型如UpdateState，ReplaceState，ForceUpdate等
+    tag: UpdateState,
+    // 更新内容
+    payload: null,
+    // 更新完成后的回调
+    callback: null,
+		// 下一个更新（任务）
+    next: null,
+    // 下一个副作用
+    nextEffect: null
+  };
+  {
+    // 优先级会根据任务体系中当前任务队列的执行情况而定
+    update.priority = getCurrentPriorityLevel();
+  }
+  return update;
+}
+```
+每一个更新对象都有自己的过期时间（expirationTime）、更新内容（payload），优先级（priority）以及指向下一个更新的引用（next）。其中当前更新的优先级由任务体系统一指定。
+
+<font color=#1E90FF>**① 加入队列Queue**</font>
+
+`React`对更新队列的定义如下：
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactUpdateQueue.js
+function createUpdateQueue(baseState) {
+  var queue = {
+    // 当前的state
+    baseState: baseState,
+    // 队列中第一个更新
+    firstUpdate: null,
+    // 队列中的最后一个更新
+    lastUpdate: null,
+    // 队列中第一个捕获类型的update
+    firstCapturedUpdate: null,
+    // 队列中第一个捕获类型的update
+    lastCapturedUpdate: null,
+    // 第一个副作用
+    firstEffect: null,
+    // 最后一个副作用
+    lastEffect: null,
+    firstCapturedEffect: null,
+    lastCapturedEffect: null
+  };
+  return queue;
+}
+```
+值得注意的是，更新队列的数据结构不是数组，而是一个普通对象（一个单向链表结构）。要想实现数据驱动页面更新，更新内容需要加入到更新队列，这个过程的逻辑是什么样的呢？
+
+<font color=#1E90FF>在enqueueUpdate函数中，React将更新加入到更新队列时会同时维护两个队列对象queue1和queue2，其中queue1是应用程序运行过程中current树上当前Fiber结点最新队列，queue2是应用程序上一次更新时（workInProgress 树）Fiber 结点的更新队列</font>，它们之间的相互逻辑是下面这样的
++ `queue1`取的是`fiber.updateQueue`，`queue2`取的是`fiber.alternate.updateQueue`；
++ 如果两者均为`null`，则调用`createUpdateQueue(...)`获取初始队列；
++ 如果两者之一为`null`，则调用`cloneUpdateQueue(...)`从对方中获取队列；
++ 如果两者均不为`null`，则将`update`作为`lastUpdate`加入多`queue1` 中。
+
+所以更新队列的结构如下：
+<img :src="$withBase('/react_yuanli_8.png')" alt="">
+
+值得注意的是，整个更新队列对象通过`firstUpdate`属性和更新对象的`next`属性层层引用形成了链表结构。同时更新队列对象中也可以通过`lastUpdate`属性直接连接到最后一个更新对象，即`updateQueue.firstUpdate.next...next`的值会一直和`updateQueue.lastUpdate`执行的更新对象相同
+
+而将更新对象加入更新队列的函数`enqueueUpdate`源码如下所示：
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactUpdateQueue.js
+// 每次setState都会创建update并入updateQueue
+function enqueueUpdate(fiber, update) {
+  // 每个Fiber结点都有自己的updateQueue，其初始值为null，一般只有ClassComponent类型的结点updateQueue才会被赋值
+  // fiber.alternate指向的是该结点在workInProgress树上面对应的结点
+  var alternate = fiber.alternate;
+  var queue1 = void 0;
+  var queue2 = void 0;
+  if (alternate === null) {
+    // 如果fiber.alternate不存在
+    queue1 = fiber.updateQueue;
+    queue2 = null;
+    if (queue1 === null) {
+      queue1 = fiber.updateQueue = createUpdateQueue(fiber.memoizedState);
+    }
+  } else {
+    // 如果fiber.alternate存在，也就是说存在current树上的结点和workInProgress树上的结点都存在
+    queue1 = fiber.updateQueue;
+    queue2 = alternate.updateQueue;
+    if (queue1 === null) {
+      if (queue2 === null) {
+        // 如果两个结点上面均没有updateQueue，则为它们分别创建queue
+        queue1 = fiber.updateQueue = createUpdateQueue(fiber.memoizedState);
+        queue2 = alternate.updateQueue = createUpdateQueue(alternate.memoizedState);
+      } else {
+        // 如果只有其中一个存在updateQueue，则将另一个结点的updateQueue克隆到该结点
+        queue1 = fiber.updateQueue = cloneUpdateQueue(queue2);
+      }
+    } else {
+      if (queue2 === null) {
+        // 如果只有其中一个存在updateQueue，则将另一个结点的updateQueue克隆到该结点
+        queue2 = alternate.updateQueue = cloneUpdateQueue(queue1);
+      } else {
+        // 如果两个结点均有updateQueue，则不需要处理
+      }
+    }
+  }
+  if (queue2 === null || queue1 === queue2) {
+    // 经过上面的处理后，只有一个queue1或者queue1 == queue2的话，就将更新对象update加入到queue1
+    appendUpdateToQueue(queue1, update);
+  } else {
+    // 经过上面的处理后，如果两个queue均存在
+    if (queue1.lastUpdate === null || queue2.lastUpdate === null) {
+      // 只要有一个queue不为null，就需要将将update加入到queue中
+      appendUpdateToQueue(queue1, update);
+      appendUpdateToQueue(queue2, update);
+    } else {
+      // 如果两个都不是空队列，由于两个结构共享，所以只在queue1加入update
+      appendUpdateToQueue(queue1, update);
+      // 仍然需要在queue2中，将lastUpdate指向update
+      queue2.lastUpdate = update;
+    }
+  }
+  ...
+}
+  
+function appendUpdateToQueue(queue, update) {
+  if (queue.lastUpdate === null) {
+    // 如果队列为空，则第一个更新和最后一个更新都赋值当前更新
+    queue.firstUpdate = queue.lastUpdate = update;
+  } else {
+    // 如果队列不为空，将update加入到队列的末尾
+    queue.lastUpdate.next = update;
+    queue.lastUpdate = update;
+  }
+}
+```
+
+<font color=#1E90FF>**③ 处理更新队列**</font>
+
+处理更新队列的函数是`processUpdateQueue`，源码如下：
+```javascript
+// 源码位置：packages/react-reconciler/src/ReactUpdateQueue.js
+function processUpdateQueue(workInProgress, queue, props, instance, renderExpirationTime) {
+  ...
+  // 从队列中取出第一个更新
+  var update = queue.firstUpdate;
+  var resultState = newBaseState;
+  // 遍历更新队列，处理更新
+  while (update !== null) {
+    ...
+    // 如果第一个更新不为空，紧接着要遍历更新队列
+    // getStateFromUpdate函数用于合并更新，合并方式见下面函数实现
+    resultState = getStateFromUpdate(workInProgress, queue, update, resultState, props, instance);
+    ...
+    update = update.next;
+  }
+  ...
+  // 设置当前fiber结点的memoizedState
+  workInProgress.memoizedState = resultState;
+  ...
+}
+
+// 获取下一个更新对象并与现有state对象合并
+function getStateFromUpdate(workInProgress, queue, update, prevState, nextProps, instance) {
+  switch (update.tag) {
+      case UpdateState:
+      	{
+        	var _payload2 = update.payload;
+        	var partialState = void 0;
+        	if (typeof _payload2 === 'function') {
+          	// setState传入的参数_payload2类型是function
+          	...
+         	 partialState = _payload2.call(instance, prevState, nextProps);
+          	...
+        	} else {
+          	// setState传入的参数_payload2类型是object
+          	partialState = _payload2;
+        	}
+        	// 合并当前state和上一个state.
+       	 return _assign({}, prevState, partialState);
+      }
+  }
+}
+```
+<font color=#1E90FF>processUpdateQueue函数用于处理更新队列，在该函数内部使用循环的方式来遍历队列，通过update.next依次取出更新（对象）进行合并</font>，合并更新对象的方式是：
+
++ 如果`setState`传入的参数类型是`function`，则通过`payload2.call(instance, prevState, nextProps)`获取更新对象；
++ 如果`setState`传入的参数类型是`object`，则可直接获取更新对象；
++ 最后通过使用<font color=#9400D3>Object.assign()</font>合并两个更新对象并返回，如果属性相同的情况下则取最后一次值。
