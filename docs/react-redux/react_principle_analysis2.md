@@ -5,7 +5,7 @@
 
 答案是：<font color=#9400D3>主要目标是解决应用程序的更新任务与外部其他任务（如动画渲染）在CPU资源分配方面的问题</font>
 
-第二个问题：<font color=#DD1144>React Riber的本质是什么</font>
+第二个问题：<font color=#DD1144>React Fiber的本质是什么</font>
 
 答案是：<font color=#9400D3>从概念上将React Fiber是一种程序架构，但是在React应用程序运行过程中它实际体现是一个JS对象，该对象主要是由两个构造函数的实例层层引用组成，两个构造函数分别是FiberRootNode和FiberNode</font>
 
@@ -19,9 +19,9 @@
 <img :src="$withBase('/react_yuanli_9.png')" alt="">
 
 下图是`Fiber`架构实体：
-<img :src="withBase('/react_yuanli_10.png')" alt="">
+<img :src="$withBase('/react_yuanli_10.png')" alt="">
 
-面我们说到，`React Fiber`架构的实体由两个构造函数的实例构成，`fiberRoot`对象是整个`Fiber`架构的入口对象，在应用程序的更新过程中，`React`都会以这个对象为根基，查找到对应的``Fiber`结点，调用生命周期函数以及标记对应的`effectTag`等
+面我们说到，`React Fiber`架构的实体由两个构造函数的实例构成，`fiberRoot`对象是整个`Fiber`架构的入口对象，在应用程序的更新过程中，`React`都会以这个对象为根基，查找到对应的`Fiber`结点，调用生命周期函数以及标记对应的`effectTag`等
 
 ## 为何是fiber
 问题一：<font color=#1E90FF>使用fiber架构的主要解决问题手段是什么</font>
