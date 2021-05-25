@@ -1,6 +1,7 @@
 const constructSidebar = require('./sidebars/construct')
 const typescriptAxiosSidebar = require('./sidebars/typescript-axios')
 const FrontendSidebar = require('./sidebars/Front-end')
+const FrontsuperSidebar = require('./sidebars/Front-super')
 const FlutterSidebar = require('./sidebars/Flutter')
 const nodeRESTfulSidebar = require('./sidebars/node-RESTful')
 const FullStackFriendCircleSidebar = require('./sidebars/Full-Stack-FriendCircle')
@@ -178,7 +179,8 @@ module.exports = {
         text: '前端系列',
         items: [
           { text: '前端初级面试', link: '/Front-end/' },
-          { text: '前端中级面试', link: '/Front-advance/'}
+          { text: '前端中级面试', link: '/Front-advance/'},
+          { text: '前端高级面试', link: '/Front-super/' }
         ]
       },
       {
@@ -207,6 +209,7 @@ module.exports = {
       '/typescript-axios/': typescriptAxiosSidebar,
       '/Front-end/': FrontendSidebar,
       '/Front-advance/': FrontadvanceSidebar,
+      '/Front-super/': FrontsuperSidebar,
       '/Optimization/':OptimizationSidebar,
       '/Full-Stack-FriendCircle/': FullStackFriendCircleSidebar,
       '/WeiXin-Rumen/':WeiXinRumenSiderbar,
