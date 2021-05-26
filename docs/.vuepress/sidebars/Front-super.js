@@ -6,6 +6,8 @@ module.exports = [
     title: '算法-数据结构',
     children: [
       '/Front-super/algorithm_complexity',
+      '/Front-super/algorithm_stack',
+      '/Front-super/algorithm_queue',
     ]
   }
 ]
