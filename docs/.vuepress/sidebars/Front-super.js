@@ -8,6 +8,7 @@ module.exports = [
       '/Front-super/algorithm_complexity',
       '/Front-super/algorithm_stack',
       '/Front-super/algorithm_queue',
+      '/Front-super/algorithm_list',
     ]
   }
 ]
