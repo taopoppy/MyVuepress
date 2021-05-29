@@ -118,3 +118,95 @@ var reverseList = function(head) {
 ```
 + <font color=#1E90FF>时间复杂度</font>：只有一个循环，所有时间复杂度为`O(n)`,可见N就是链表的长度
 + <font color=#1E90FF>空间复杂度</font>：无论多长的链表，我们的临时变量就只有3个，所以实际上空间复杂度是个定值，为`O(1)`
+
+
+
+### 3. 求两个数的和
+搜索`LeetCode`当中题号为2的题目,求两个数的和，我的思路是这样，首先要考虑要记录的元素：
++ 因为两个数相加可能会超过10，向前进一位，所以记录一下进位数
++ 因为每个相加后的节点需要作为链表的节点加入链表，所以需要记录前一个链表的节点
++ 又因为最后访问结果要访问链表，所以要记录头节点
+
+```javascript
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var addTwoNumbers = function(l1, l2) {
+    // 设置一个进位数
+    let nextTop = 0
+    // 设置上一个节点
+    let preNode = ''
+    // 设置头节点
+    let header = new ListNode((l1.val + l2.val)%10,null)
+    while((l1 || l2) || (nextTop!==0)) {
+        let data = ((l1 &&l1.val) || 0) + ((l2 && l2.val) || 0) + nextTop
+        nextTop = Math.floor(data/10)
+        let tempNode = new ListNode((data%10), null) // 相加操作
+        if(preNode!=='') {
+            if(!header.next) {
+                header.next = tempNode   // 特殊节点（头节点）连接链表操作
+            } else {
+                preNode.next = tempNode  // 普通节点连接链表操作
+            }
+            preNode = tempNode  // 定义下一轮的preNode
+        } else {
+            preNode = tempNode // 定义下一轮的preNode
+        }
+        l1 = (l1 && l1.next) || null // 定义下一轮的l1
+        l2 = (l2 && l2.next) || null // 定义下一轮的l2
+    }
+    return header
+};
+```
+当然这种思路是对的，但是对于代码优化来说，需要注意的点就是：<font color=#9400D3>特殊判断单例化</font>，什么意思呢，就是说在上述代码代码当中：
++ <font color=#1E90FF>while判断条件不应该加特殊条件nextTop!==0， 因为特殊只会出现一次，所以如果每次都要判断，就会消耗时间，所以这种特殊情况直接拉出来单独书写</font>
++ <font color=#1E90FF>尽量在操作的时候不要加入太多的判断，这种判断在每次的循环当中都要执行，消耗性能，比如上述代码header和preNode，既然preNode在第一轮循环不存在，我们可以不可以制造一个已经存在的preNode，这样可以统一代码</font>
+
+经过优化的代码如下：
+```javascript
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var addTwoNumbers = function(l1, l2) {
+    const l3 = new ListNode(0)  // 定义一个虚假的preNode
+    let p1 = l1
+    let p2 = l2
+    let p3 = l3
+    let carry = 0
+    while(p1 || p2) {
+        const v1  = p1? p1.val : 0
+        const v2  = p2? p2.val : 0
+        const val = v1 + v2 + carry
+        carry = Math.floor(val / 10);
+        p3.next = new ListNode(val % 10)  // 这里就统一化了，不需要判断什么headNode和preNode
+        if(p1) p1 = p1.next
+        if(p2) p2 = p2.next
+        p3 = p3.next
+    }
+    // 把特殊情况拿出来单独写，尽量不要书写在循环当中
+    if(carry) {
+        p3.next = new ListNode(carry)
+    }
+    return l3.next
+};
+```
++ <font color=#1E90FF>时间复杂度</font>：`O(n)`，`n`就是较长链表的长度
++ <font color=#1E90FF>空间复杂度</font>：因为存在一个新的链表，且长度和较长的链表长度一致或者更长，所以空间复杂度为`O(n)`，<font color=#DD1144>但是新的链表是作为一个返回值存在的，所以实际上返回值不算空间复杂度的话算法空间复杂度就是O(1)</font>
