@@ -210,3 +210,79 @@ var addTwoNumbers = function(l1, l2) {
 ```
 + <font color=#1E90FF>时间复杂度</font>：`O(n)`，`n`就是较长链表的长度
 + <font color=#1E90FF>空间复杂度</font>：因为存在一个新的链表，且长度和较长的链表长度一致或者更长，所以空间复杂度为`O(n)`，<font color=#DD1144>但是新的链表是作为一个返回值存在的，所以实际上返回值不算空间复杂度的话算法空间复杂度就是O(1)</font>
+
+### 4. 删除链表中重复的数据
+搜索`LeetCode`当中题号为83的题目，给定`head`，然后删除链表中重复的元素
+
+这道题我的思路是这样：根据前面两个题总结的经验，这个题就很简单了，我们要按照下面的思路去想：
++ <font color=#1E90FF>首先从大的方面我们知道这肯定是要遍历和循环的，然后我们先思考每次循环做的事情，两个节点对比，一样就将前一个节点的next指向后一个节点的next</font>
++ <font color=#1E90FF>怎么定义初始变量？变量要根据每一轮循环里的操作变量来定义的，比如上述的操作设计到两个节点对比，那必然要定义两个变量</font>
++ <font color=#1E90FF>如何操作？这个需要随机应变，属于算法本身的内容</font>
++ <font color=#1E90FF>定义下一轮变量，下一轮变量就是修改初始变量的值，随机应变，属于算法本身的内容</font>
++ <font color=#1E90FF>返回head，这个我们只需要一开始定义一个新节点记住head即可</font>
+```javascript
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var deleteDuplicates = function(head) {
+    let tempNode = new ListNode(0, head)
+    let p1 = head
+    let p2 = head && head.next || null
+    while(p2) {
+        let p3 = p2.next
+        if(p1.val === p2.val) {
+            p1.next = p3
+            p2 = p3
+        } else {
+            p1 = p2
+            p2 = p3
+        }
+    }
+    return tempNode.next
+};
+```
++ <font color=#1E90FF>时间复杂度</font>：只有一个循环，所有时间复杂度为`O(n)`,可见N就是链表的长度
++ <font color=#1E90FF>空间复杂度</font>：为`O(1)`
+
+### 5 环形链表
+搜索`LeetCode`当中题号为83的题目，给定`head`，然后删除链表中重复的元素
+
+<font color=#DD1144>这道题就有意思了，如果你按照一般思想是想不出来结果的，我们的思维就是制造一个快指针和慢指针，然后一直遍历直到两者相同，这个原理就是如果在一个圈里跑，虽然起点一样，但是迟早快的要比慢的快一圈，也就是套圈模式</font>
+
+放在这个题当中，如果存在套圈，那么不会存在指针为`null`的情况，所以如果有哪个节点的`next`为`null`，说明不存在套圈，但是这个条件不能作为判断的唯一依据，因为题目只给了`head`一个参数，而如果两个快慢指针重合了，说明有套圈
+```javascript
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function(head) {
+    let p1 = head
+    let p2 = head
+    while(p1 && p2 && p2.next) {
+        p1 = p1.next
+        p2 = p2.next.next
+        if(p1 === p2) return true
+
+    }
+    return false
+};
+```
+所以其实写法很简单，而且：
++ <font color=#1E90FF>时间复杂度</font>：`O(n)`，无论是`O(2n)`还是`O(3n)`，都属于`O(n)`，因为没有脱离级别
++ <font color=#1E90FF>空间复杂度</font>：`O(1)`
