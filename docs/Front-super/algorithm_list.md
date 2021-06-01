@@ -286,3 +286,28 @@ var hasCycle = function(head) {
 所以其实写法很简单，而且：
 + <font color=#1E90FF>时间复杂度</font>：`O(n)`，无论是`O(2n)`还是`O(3n)`，都属于`O(n)`，因为没有脱离级别
 + <font color=#1E90FF>空间复杂度</font>：`O(1)`
+
+## 前端和链表
+前端的<font color=#9400D3>原型链就是一个本质为类的数据结构</font>
+
+关于原型链我们可以仔细去学习一下，但是下面这几个关键的知识点要牢记：
++ <font color=#DD1144>如果A沿着原型链可以找到B.prototype,那么instanceof B为true</font>
++ <font color=#DD1144>如果在A对象上没有找到X属性，就会沿着原型链找X属性</font>
+
+相关的有两个面试题：
+
+<font color=#1E90FF>**① instanceof原理，并用代码实现**</font>
+
+解法：<font color=#DD1144>遍历A的原型链，如果能找到B.prototype，返回true，否则返回false</font>
+```javascript
+const  instanceof = (A, B) => {
+    let p = A
+    while(p) {
+        if(p === B.prototype) {
+            return true
+        }
+        p = p.__proto__
+    }
+    return false
+}
+```
