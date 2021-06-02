@@ -33,6 +33,7 @@ const item2 = queue.shift() // 2
 + 比如：食堂排队打饭，JS异步中的任务队列，计算最近请求次数
 
 ## LeetCode示例
+### 1. 最近的请求次数
 我们到`LeetCode`找到题号为933的有效括号这个题目，我们的解题思路如下：
 + <font color=#1E90FF>越早发出的请求越早不在最近3000ms内的请求里</font>
 + <font color=#1E90FF>满足先进先出，使用队列</font>
