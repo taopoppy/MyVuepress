@@ -219,3 +219,54 @@ var lengthOfLongestSubstring = function(s) {
 
 + <font color=#9400D3>时间复杂度</font>: `O(n)`
 + <font color=#9400D3>空间复杂度</font>：`O(m)`，<font color=#1E90FF>注意，这里的m指的是整个字符串不重复字符的个数</font>
+
+
+### 5. 最小覆盖字串
+在`leetCode`上找到76这个题，最小覆盖字串
+
+我们的解题思路也很简单就是：
++ 先找出所有的包含`T`的子串
++ 找出长度最小那个子串，返回即可
+
+这个题还是一个窗口滑动的问题，就是说，右指针向向右滑动，每滑动一次，判断当前窗口当中的字符串是否包含题目给的所有字符，不包含就继续向右滑动，包含就开始将左指针向右滑动，相当于压缩当前窗口，没压缩一次，继续判断窗口当中是否包含所有字符，包含就继续将压缩，不包含就停止，继续将右指针向右滑动。
+
+这道题的难点在于<font color=#1E90FF>怎么判断当前窗口的字符串包含给出的所有字符呢</font>，<font color=#DD1144>暴力的做法就是一个一个检查，但是这样的有弊端，如果给出的字符有重复的，就不好检查，所以我们在字典当中保存的应该是每个字符对应的需求量，比如AAVC，字典当中应该记录A：2，V:1, C:1，然后右指针向右滑动是减少需求量，左指针向右滑动是增加需求量<font>
+```javascript
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {string}
+ */
+var minWindow = function(s, t) {
+    var res = ''
+    var l = 0
+    var r = 0
+    const need = new Map()
+    for(let c of t) {
+        need.set(c, need.has(c)? need.get(c)+1: 1)
+    }
+
+    var needType = need.size
+    while(r < s.length) {
+        const c = s[r]
+        if(need.has(c)) {
+            need.set(c, need.get(c)-1)
+            if(need.get(c) === 0) needType-= 1
+        }
+        while(needType === 0) {
+            const newRes = s.substring(l, r+1)
+            if(!res || newRes.length < res.length) res=newRes
+            const c2 = s[l]
+            if(need.has(c2)) {
+                need.set(c2, need.get(c2) + 1)
+                if(need.get(c2) ===1 ) needType+=1
+            }
+            l += 1
+        }
+        r +=1
+    }
+    return res
+};
+```
++ <font color=#9400D3>时间复杂度</font>：`O(n+m)`，`m`是`t`的长度，`n`是`s`的长度，其实更精细一些应该是`O(2n+m)`，因为虽然有两个`while`循环，但是实际上就是左右两个指针从头走到尾而已。
++ <font color=#9400D3>空间复杂度</font>：`O(m)`,因为字典里保存的就是`t`当中所有不同的字符而已。
