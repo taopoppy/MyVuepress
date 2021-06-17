@@ -166,3 +166,17 @@ postorder(tree) // 4526731
 + 然后从栈中拿出3，发现存在左右节点6和7，把7和6先后压入栈
 + 然后从栈中拿出6，发现6没有左右节点，此时栈还不为空，继续
 + 然后从栈中拿出7，发现7也没有左右节点，此时栈为空，结束
+
+```javascript
+// 先序遍历
+const preorder = (tree) => {
+	if(!tree) return
+	let stack = [tree]
+	while(stack.length!==0) {
+		let node = stack.pop()
+		console.log(node.value)
+		if(node.right) stack.push(node.right)
+		if(node.left) stack.push(node.left)
+	}
+}
+```
