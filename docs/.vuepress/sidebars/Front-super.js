@@ -10,7 +10,8 @@ module.exports = [
       '/Front-super/algorithm_queue',
       '/Front-super/algorithm_list',
       '/Front-super/algorithm_set',
-      '/Front-super/algorithm_map'
+      '/Front-super/algorithm_map',
+      '/Front-super/algorithm_tree'
     ]
   }
 ]

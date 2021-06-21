@@ -154,6 +154,7 @@ postorder(tree) // 4526731
 ```
 
 ## 二叉树先后中序遍历(非递归版)
+### 1. 先序
 非递归版的先序遍历我们需要先画一个图来告诉大家怎么做：
 
 <img :src="$withBase('/react_algorithm_5.png')" alt="">
@@ -180,3 +181,57 @@ const preorder = (tree) => {
 	}
 }
 ```
+
+### 2. 中序
+先说一下我自己想出来的一个方法，按照上面先序的启示，我们依旧可以使用栈作为数据结构，先画一个图
+
+<img :src="$withBase('/react_algorithm_6.png')" alt="">
+
++ 我们自己创建了一个栈，然后先把初始节点1放了进去
++ 从栈中取出1，发现存在左右节点2和3，<font color=#1E90FF>将3,1,2的顺序依次压入栈，注意的是压入1的时候需要给1做个标记，证明它已经被拆分过</font>
++ 然后取出2，发现存在左右节点4和5,然后按照5,2(mark),4的顺序压入栈
++ 然后取出4，发现4没有左右节点，所以打印即可
++ 然后取出2，发现它是被标记过的，直接打印即可
++ 然后取出5，发现5没有左右节点，所以打印即可
++ 然后取出1，发现1是被标记过的，直接打印即可
++ 然后取出3，发现有左右节点，按照7,3(mark),6的顺序压入栈即可
++ 然后取出6，发现6没有左右节点，所以打印即可
++ 然后取出3，发现已经被标记，直接打印即可
++ 然后取出7，发现7没有左右节点，所以打印即可
+
+```javascript
+const inorder = (tree) => {
+	if(!tree) return
+	let stack = [tree]
+	while(stack.length!==0) {
+		let node = stack.pop()
+		if(!(node.right && node.left) || node.mark){
+			console.log(node.value)
+			continue
+		}
+		if(node.right) stack.push(node.right)
+		node.mark = true
+		stack.push(node)
+		if(node.left) stack.push(node.left)
+	}
+}
+```
+
+还有一种方式，就是中序遍历的特点你仔细研究就会发现，先是沿着左子树会一直找到最下面，然后沿着最下面的一个节点往上找，也就是说，沿着1这个节点，一直沿着左边找到4,4开始往上找到2,2开始沿着5重新再整一轮，那么我们的代码如下：
+```javascript
+const inorder = (tree) => {
+	if(!tree) return
+	let stack = []
+	let p = tree
+	while(stack.length || p){
+		while(p){
+			stack.push(p)
+			p = p.left
+		}
+		const n = stack.pop()
+		console.log(n.value)
+		p = n.right
+	}
+}
+```
+这个写法是相对来说比较重要且稍微难懂一点，相对于上面我自己那种标记的算法显的更加正规，这是一种指针记录的方式。
