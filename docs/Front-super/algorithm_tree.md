@@ -154,7 +154,7 @@ postorder(tree) // 4526731
 ```
 
 ## 二叉树先后中序遍历(非递归版)
-### 1. 先序
+### 1. 先序遍历
 非递归版的先序遍历我们需要先画一个图来告诉大家怎么做：
 
 <img :src="$withBase('/react_algorithm_5.png')" alt="">
@@ -182,7 +182,7 @@ const preorder = (tree) => {
 }
 ```
 
-### 2. 中序
+### 2. 中序遍历
 先说一下我自己想出来的一个方法，按照上面先序的启示，我们依旧可以使用栈作为数据结构，先画一个图
 
 <img :src="$withBase('/react_algorithm_6.png')" alt="">
@@ -235,3 +235,44 @@ const inorder = (tree) => {
 }
 ```
 这个写法是相对来说比较重要且稍微难懂一点，相对于上面我自己那种标记的算法显的更加正规，这是一种指针记录的方式。
+
+### 3. 后序遍历
+按照上面中序遍历的启示，我们也有两种写法，就是<font color=#DD1144>标记</font>和<font color=#DD1144>指针的方法</font>，思路和图示我们就不展示了，几乎和中序遍历是一个套路，只不过顺序稍微有点变化而已：
+```javascript
+// 标记方法
+const postorder = (tree) => {
+  if(!tree) return
+  let stack = [tree]
+  while(stack.length!==0) {
+    const node = stack.pop()
+    if(!(node.right && node.left) || node.mark) {
+      console.log(node.value)
+      continue
+    }
+    node.mark = tree
+    stack.push(node)
+    if(node.right) stack.push(node.right) // 就是顺序有变化而已
+    if(node.left) stack.push(node.left)
+  }
+}
+```
+
+还有一个方法如下：<font color=#DD1144>如果你能够仔细观察，后序遍历的顺序你就会发现，整个顺序是一个变异先序的逆序，变异先序就是按照根右左的顺序，逆序就是倒过来</font>，所以只要我们能够按照根右左的顺序去访问节点，在访问的时候将节点压入另一个栈，那么另一个栈的出栈顺序就是后续遍历：
+
+```javascript
+const postorder = (tree) => {
+	if(!tree) return
+	let stack = [tree]
+  let stack1 = []
+	while(stack.length){
+    let node = stack.pop()
+    stack1.push(node)
+    if(node.left) stack.push(node.left)
+    if(node.right) stack.push(node.right)
+  }
+	while(stack1.length) {
+    console.log(stack1.pop().value)
+  }
+}
+```
+所以实际上是用到了两个栈的结构，我们把变异先序遍历的访问变成了压入另一个栈的操作而已。
