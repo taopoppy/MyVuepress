@@ -276,3 +276,61 @@ const postorder = (tree) => {
 }
 ```
 所以实际上是用到了两个栈的结构，我们把变异先序遍历的访问变成了压入另一个栈的操作而已。
+
+
+## LeetCode示例
+### 1. 二叉树的最大深度
+在`leetcode`当中找到104这道题，题目为二叉树的最大深度
+
+思路：二叉树的最大深度和树的有限遍历不谋而合，但是还需要加点逻辑
++ <font color=#1E90FF>新建一个变量，记录最大深度</font>	
++ <font color=#1E90FF>深度优先遍历整个树，并记录每个节点的层级，同时不断刷新最大深度这个变量</font>
++ <font color=#1E90FF>遍历结束后返回这个最大深度即可</font>
+
+我自己根据该思路得出的代码：
+```javascript
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var maxDepth = function(root) {
+   if(!root) return 0
+   let maxDeep = 1  // 记录最大深度
+   const dfs = (root, floor) => {
+       if(!root) return 
+       maxDeep = Math.max(maxDeep,floor) // 不断刷新最大深度
+       dfs(root.left, floor+1) // 对下一个子节点进行遍历的时候需要深度+1
+       dfs(root.right, floor+1)
+   }
+
+    dfs(root, maxDeep)
+    return maxDeep
+};
+```
+
+这个写法基本上就是最标准的写法，只不过在时间上还可以稍微优化，因为我们不需要在每个节点都去刷新最大深度，只需要在叶子节点刷新即可，所以我们最标准的写法如下：
+```javascript
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var maxDepth = function(root) {
+   if(!root) return 0
+   let maxDeep = 1
+   const dfs = (root, floor) => {
+       if(!root) {
+           return
+       } 
+       if(!root.left && !root.right) {
+           maxDeep = Math.max(maxDeep, floor)
+       }
+       dfs(root.left, floor+1)
+       dfs(root.right, floor+1)
+   }
+
+    dfs(root, maxDeep)
+    return maxDeep
+};
+```
++ <font color=#9400D3>时间复杂度</font>：`O(n)`, `n`就是整个树的节点数
++ <font color=#9400D3>空间复杂度</font>：`O(deep)`, 整个过程并非只有`maxDeep`这一个变量，因为`dfs`函数也属于内存，而在函数在递归执行的时候存在函数栈，栈的最大长度实际上就是树的最大深度，而树的最大深度和树的节点数`n`的关系在最坏的情况下就是相等，就是树每层只有一个节点，此时空间复杂度就是`O(n)`，最好的情况就是树每层都是满的，比如三层有7个节点，那么空间复杂度就约等于`O(logN)`
