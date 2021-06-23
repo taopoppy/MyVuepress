@@ -334,3 +334,77 @@ var maxDepth = function(root) {
 ```
 + <font color=#9400D3>时间复杂度</font>：`O(n)`, `n`就是整个树的节点数
 + <font color=#9400D3>空间复杂度</font>：`O(deep)`, 整个过程并非只有`maxDeep`这一个变量，因为`dfs`函数也属于内存，而在函数在递归执行的时候存在函数栈，栈的最大长度实际上就是树的最大深度，而树的最大深度和树的节点数`n`的关系在最坏的情况下就是相等，就是树每层只有一个节点，此时空间复杂度就是`O(n)`，最好的情况就是树每层都是满的，比如三层有7个节点，那么空间复杂度就约等于`O(logN)`
+
+### 2. 二叉树的最小深度
+<font color=#1E90FF>**① 深度优先遍历**</font>
+
+二叉树的最小深度和最大深度恰恰是个相反的过程
+```javascript
+var minDepth = function(root) {
+    if(!root) return 0
+    let minDeep = +Infinity
+
+    const dfs = (root, floor) => {
+        if(!root) return
+        if(!root.left && !root.right) {
+            minDeep = Math.min(minDeep,floor)
+        }
+
+        if(root.left) dfs(root.left, floor+1)
+        if(root.right) dfs(root.right, floor+1)
+    }
+    dfs(root, 1)
+
+    return minDeep
+};
+```
+如果这样做的话，实际上对于最小深度的时间复杂度和空间复杂度和最大深度是一样的，因为要遍历整颗树，只是在叶子节点的比大小的逻辑有所不同，但是最小深度其实可以优化，就是如果我们在递归的时候，发现`floor`已经大于记录的`minDeep`，就可以不用往下进行了，因为再往下也还是大于`minDeep`，没有什么必要，所以我写的代码如下：
+```javascript
+var minDepth = function(root) {
+    if(!root) return 0
+    let minDeep = +Infinity
+    const dfs = (root, floor) => {
+        if(!root || floor > minDeep ) return  // 当floor > minDeep就没有必要继续遍历下面的子节点了
+        if(!root.left && !root.right) {
+            minDeep = Math.min(minDeep,floor)
+        }
+
+        if(root.left) dfs(root.left, floor+1)
+        if(root.right) dfs(root.right, floor+1)
+    }
+    dfs(root, 1)
+
+    return minDeep
+};
+```
+这种写法下时间复杂度和空间复杂度在最差的情况下是和最大深度是一样的，分别是`O(n)`和`O(deep)`
+
+
+<font color=#1E90FF>**② 广度优先遍历**</font>
+
+其实更简单的方法是广度优先遍历，广度优先遍历为什么更简单呢，因为一层一层的找，只有找到一个叶子节点，就知道最小深度了,所以我的思路是：
++ 广度优先遍历每个节点，记录每个节点的层级
++ 依次取出队列的值，然后判断是否是叶子节点，如果是，就返回对应的层级即可
+
+```javascript
+var minDepth = function(root) {
+    if(!root) return 0
+    let queue = [[root, 1]]
+
+    let minDeep = 1
+
+    while(queue.length) {
+        const [node, floor] = queue.shift()
+        if(!node.left && !node.right) {
+            minDeep = floor
+            break
+        }
+        if(node.left) queue.push([node.left, floor+1])
+        if(node.right) queue.push([node.right, floor+1])
+
+    }
+    return minDeep
+};
+```
++ <font color=#9400D3>时间复杂度</font>：`O(n)`，在最差的情况下，可能会遍历到所有的节点
++ <font color=#9400D3>空间复杂度</font>：`O(n)`，在最差的情况下，队列也会保存所有的节点
