@@ -408,3 +408,62 @@ var minDepth = function(root) {
 ```
 + <font color=#9400D3>时间复杂度</font>：`O(n)`，在最差的情况下，可能会遍历到所有的节点
 + <font color=#9400D3>空间复杂度</font>：`O(n)`，在最差的情况下，队列也会保存所有的节点
+
+### 3. 二叉树的层序遍历
+<font color=#1E90FF>**① 简单解法**</font>
+
+在`leetcode`上面找到102题号，二叉树的层序遍历，这个题在上面广度优先遍历的基础上，其实解出来比较简单，知道每个节点的层级就能对应的插入到数组的不同元素当中去：
+```javascript
+/**
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+var levelOrder = function(root) {
+    if(!root) return []
+    let result  = []
+    let queue = [[root, 1]]
+
+    while(queue.length){
+        let [node, floor] = queue.shift()
+
+        if(!result[floor-1]) {
+            result.push([node.val])
+        } else {
+            result[floor-1].push(node.val)
+        }
+
+        if(node.left) queue.push([node.left, floor+1])
+        if(node.right) queue.push([node.right, floor+1])
+
+    }
+    return result
+};
+```
++ <font color=#9400D3>时间复杂度</font>：`O(n)`，需要遍历到所有节点，`n`为节点数量
++ <font color=#9400D3>空间复杂度</font>：`O(n)`，因为队列的长度是不确定的，队列在不停的出队和入队，无法知道在什么时候是最长的。
+
+<font color=#1E90FF>**② 复杂解法**</font>
+
+复杂的解法其实依旧是广度优先遍历，只不过我们实际上不需要知道每个节点的层级，因为比如说对于`[3,9,20,null,null,15,7]`这个树，在3出去后，队列里保存的就是第二层级所有的节点，数量也是知道的，为2个，然后队列出队两个后，队列里一定剩下的全都是第三层级的节点，数量也是知道的，所以，可以去除关于节点层级的操作，来优化时间：
+```javascript
+var levelOrder = function(root) {
+	if(!root) return []
+	let result  = []
+	let queue = [root]
+
+	while(queue.length){
+		let length = queue.length
+		let item = []
+		for(let i = 0; i< length;i++) {
+			let node = queue.shift()
+			item.push(node.val)
+			if(node.left) queue.push(node.left)
+			if(node.right) queue.push(node.right)
+		}
+		result.push(item)
+
+	}
+	return result
+};
+```
+时间复杂度和空间复杂度同上
