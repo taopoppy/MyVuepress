@@ -467,3 +467,56 @@ var levelOrder = function(root) {
 };
 ```
 时间复杂度和空间复杂度同上
+
+### 4. 路径总和
+找到`leetcode`上面112题号的算法，路径总和
+
+思路如下，如果要知道一个根节点到叶子节点的路径和，实际上要知道所有节点到根节点的路径和，所以我们使用广度优先遍历，在记录每个层级的节点的时候，记录它到根节点的路径和，那么这个思路和记录最小和最大深度是一个写法，队列里要结论节点和节点到根节点的路径和：
+
+<font color=#1E90FF>所以实际上如果对于记录每个节点的话，广度优先遍历和深度优先遍历都是一样的，而且深度优先遍历不需要维护队列，在时间上会更加有优势</font>
+
+```javascript
+// 广度优先遍历
+var hasPathSum = function(root, targetSum) {
+    if(!root) return false
+    let result = false
+    let queue = [[root, root.val]]
+    while(queue.length) {
+        let [node, sum] = queue.shift()
+        if(!node.left && !node.right && sum === targetSum) {
+            result = true
+            break
+        }
+        if(node.left) {
+            queue.push([node.left, sum+ node.left.val])
+        }
+        if(node.right) {
+            queue.push([node.right, sum+ node.right.val])
+        }
+    }
+    return result
+};
+```
+
++ <font color=#9400D3>时间复杂度</font>：`O(n)`,因为要遍历到所有的节点
++ <font color=#1E90FF>空间复杂度</font>：`O(n)`,队列也是逐步增长的，最糟的情况就是将所有的节点都保存在队列当中，所以为`O(n)`
+
+下面我们使用深度优先遍历：
+```javascript
+var hasPathSum = function(root, targetSum) {
+    if(!root) return false
+    let result = false
+    const dfs = (node, sum)=> {
+        if(!node.left && !node.right && sum === targetSum) {
+            result = true
+            return
+        }
+        if(node.left) dfs(node.left, sum+node.left.val)
+        if(node.right) dfs(node.right, sum+node.right.val)
+    }
+
+    dfs(root, root.val)
+
+    return result
+};
+```
