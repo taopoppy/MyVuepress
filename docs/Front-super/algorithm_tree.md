@@ -520,3 +520,23 @@ var hasPathSum = function(root, targetSum) {
     return result
 };
 ```
++ <font color=#9400D3>时间复杂度</font>：不管是广度优先遍历还是深度优先遍历，都是在最差的情况下会遍历到所有的节点，所以时间复杂度为`O(n)`
++ <font color=#9400D3>空间复杂度</font>：虽然深度优先遍历没有像广度优先遍历去维护一个队列，但是函数递归就会调用函数堆栈，函数栈的一个高度实际上就是树的高度，因为是深度优先遍历，所以在最差的情况下，为`O(n)`，`n`既是节点的数量，也是树的高度，可见最差的情况就是所有节点沿着一棵树一直连接下去。但是在均匀分布的情况下，树的高度和节点数量的关系是`logN`的关系，所以这种情况下，空间复杂度也是`logN`
+
+## 前端和树
+前端使用树的地方还是很多，尤其是`JSON`，比如说我们要修改`JSON`数据，通过深度优先遍历是个不错的选择。
+```javascript
+const json = {
+	a: {b: 2, c: 1},
+	d: [1, 2]
+}
+
+const dfs = (n, path)=> {
+	console.log(n, path)
+	Object.keys(n).forEach(k => {
+		dfs(n[k], path.concat(k))
+	})
+}
+
+dfs(json, [])
+```
