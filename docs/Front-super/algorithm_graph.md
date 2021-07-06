@@ -8,6 +8,7 @@
 
 <img :src="$withBase('/react_algorithm_7.png')" alt="">
 邻接矩阵比较好理解，就是如果两个节点之间存在连接，那么在二维数组当中就使用1来表示，同时要注意连接方向，而邻接表的方式其实更好理解，比如上图的图使用邻接表表示如下：
+
 ```javascript
 {
 	A:["B"],
@@ -17,6 +18,7 @@
 	E:["D"]
 }
 ```
+
 使用这种`key:value`的方式，`key`表示节点，`value`表示可以连接到的节点的数量。
 
 图的常用操作包括：<font color=#9400D3>深度优先遍历</font>、<font color=#9400D3>广度优先遍历</font>
@@ -24,11 +26,71 @@
 ### 1.深度优先遍历
 
 <font color=#9400D3>深度优先遍历</font>：尽可能深的搜索图的分支，步骤如下
-	+ <font color=#1E90FF>访问根节点</font>
-	+ <font color=#DD1144>对根节点的没访问过的相邻节点挨个进行深度优先遍历</font>
++ <font color=#1E90FF>访问根节点</font>
++ <font color=#1E90FF>对根节点的没访问过的相邻节点挨个进行深度优先遍历</font>
 
 <img :src="$withBase('/react_algorithm_8.png')" alt="">
 
 如上图，要重点解释的就是什么是没有访问过的相邻节点挨个遍历，就是说从`A`到`B`,然后`B`有两个相邻节点`A`和`C`，而`A`已经被访问过了，如果从`A`到`B`,然后再从`B`到`A`,那么就形成无限循环了，所以对于`B`的相邻节点来说，`A`是已经访问过的，`C`就是没有访问过的。同理`C`的相邻节点`A`也已经在之前就访问过了，所以`A`到`B`到`C`,这个是一次正确的深度遍历。同理`A`到`D`也是一次深度遍历
 
-+ <font color=#9400D3>广度优先遍历</font>：尽可能先访问离根节点最近的节点
+```javascript
+const graph = {
+	0:[1,2],
+	1:[2],
+	2:[0,3],
+	3:[3]
+}
+
+
+const visited = new Set()
+const dfs = (n) => {
+	console.log(n)
+	visited.add(n)
+	graph[n].forEach(element => {
+		if(!visited.has(element)){
+			dfs(element)
+		}
+	});
+}
+
+dfs(2)
+```
+
+
+<font color=#9400D3>广度优先遍历</font>：尽可能先访问离根节点最近的节点，步骤如下：
++	<font color=#1E90FF>新建一个队列吗，把根节点入队</font>
++ <font color=#1E90FF>把队头出队并访问</font>
++ <font color=#1E90FF>把队头的没访问过的相邻节点入队</font>
++ <font color=#1E90FF>重复第二、三步，直到队列为空</font>
+
+```javascript
+const graph = {
+	0:[1,2],
+	1:[2],
+	2:[0,3],
+	3:[3]
+}
+
+const bfs = (graph) => {
+	let visited = new Set()
+	visited.add(2)
+	let queue = [2]
+
+	while(queue.length) {
+		let node = queue.shift()
+		console.log(node)
+		graph[node].forEach(ele => {
+			if(!visited.has(ele)) {
+				queue.push(ele)
+				visited.add(node)  // 这里要注意，在这里将加入队列的元素就加入集合，否则会造成队列里有重复节点的出现
+			}
+		})
+	}
+}
+
+bfs(graph)
+```
+
+## LeetCode示例
+
+### 1. 65有效数字
