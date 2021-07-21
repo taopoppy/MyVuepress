@@ -220,5 +220,3 @@ var pacificAtlantic = function(heights) {
 ```
 + <font color=#9400D3>时间复杂度</font>：`O(m*n)`，无论怎么递归和循环，所有节点都会只访问到一次，这也是我们在判断当中添加`!flow[nr][nc]`的原因，标记过为`true`的不会再去重复访问
 + <font color=#9400D3>空间复杂度</font>：`O(m*n)`, 存在我们用来记录的`flow1`和`flow2`，大小是`m*n`，但是`dfs`递归函数也是递归了`m*n`次
-
-### 3 克隆图
