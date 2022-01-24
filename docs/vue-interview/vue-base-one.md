@@ -191,3 +191,7 @@
 
 
 ## 组件语法回顾
+### 1. 全局和局部组件
++ <font color=#3eaf7c>全局组件</font>：只要定义了处处可以使用，<font color=#DD1144>性能不高，使用简单</font>
++ <font color=#3eaf7c>局部组件</font>：定义之后需要注册到被使用的组件当中，<font color=#DD1144>性能比较高，使用略麻烦</font>
+
