@@ -195,3 +195,115 @@
 + <font color=#3eaf7c>全局组件</font>：只要定义了处处可以使用，<font color=#DD1144>性能不高，使用简单</font>
 + <font color=#3eaf7c>局部组件</font>：定义之后需要注册到被使用的组件当中，<font color=#DD1144>性能比较高，使用略麻烦</font>
 
+### 2. Non-props
+之前我们说父组件给子组件传递属性的时候，子组件通过`props`属性接收。
++ <font color=#1E90FF>但是如果子组件没有接收，则传递给子组件的属性会挂载到子组件当中最外层的标签上</font>
++ <font color=#1E90FF>如果想取消这样的行为，就使用`inheritAttrs:false`去取消即可</font>。
+
+这个属性在修改样式的时候比较有用，比如修改子组件的最外层组件的大小之类的
+
+如果子组件当中某个标签要继承父组件传来的所有`Non-props`属性，要使用<font color=#DD1144>$attrs</font>:
+```html
+<script>
+	const app = Vue.createApp({
+		template: `
+			<div>
+				<counter msg="hello" msg1="hello1"/>
+				<counter1 msg="hello" msg1="hello1"/>
+			</div>
+		`
+	})
+
+	// 拿到所有Non-Props属性
+	app.component('counter', {
+		// inheritAttrs: false,
+		template:`
+			<div>Counter</div>
+			<div v-bind="$attrs">Counter</div>
+			<div>Counter</div>
+		`
+	})
+
+	// 拿到部分Non-Props属性
+	app.component('counter1', {
+		// inheritAttrs: false,
+		template:`
+			<div v-bind:msg="$attrs.msg">Counter</div>
+		`
+	})
+
+</script>
+```
+
+### 3. 父子组件通信
+```html
+<script>
+	const app = Vue.createApp({
+		data() {
+			return {
+				count: 0
+			}
+		},
+		// 2. 父组件监听父组件add事件，并使用handleAdd函数处理
+		handleAdd(params) {
+			this.count += params
+		},
+		template: `
+			<div>
+				<counter :count="count" @add="handleAdd"/>
+			</div>
+		`
+	})
+
+	app.component('counter', {
+		props: ['count']
+		methods: {
+			handleItemClick() {
+				this.$emit('add', 2) // 1. 向父组件发射add事件,参数为2
+			}
+		}
+		template:`
+			<div @click="handleItemClick">{{count}}</div>
+		`
+	})
+
+</script>
+```
+
+### 4. 双向绑定高级用法 - 父子组件通信
+```html
+<script>
+	const app = Vue.createApp({
+		data() {
+			return {
+				count: 0,
+				count1: 0,
+			}
+		},
+		template: `
+			<div>
+				<counter v-model:count="count" v-model:count1="count1"/>
+			</div>
+		`
+	})
+
+	app.component('counter', {
+		props: ['count','count1'],
+		methods: {
+			handleItemClick() {
+				// 发射更新count的事件，并且传递更新的值
+				this.$emit('update:count', this.count + 1)
+			},
+			handleItemClick1() {
+				this.$emit('update:count1', this.count1 + 2)
+			},
+		},
+		template:`
+			<div @click="handleItemClick">{{count}}</div>
+			<div @click="handleItemClick1">{{count1}}</div>
+		`
+	})
+	app.mount('#root')
+</script>
+```
+上面这种写法注意一下，双向绑定就是互相影响，互相更新，上面这种写法也在实践的过程中经常使用到。而且代码量减少了很多。
