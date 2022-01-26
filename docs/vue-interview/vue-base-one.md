@@ -23,7 +23,7 @@
 
 
 ### 4. 事件绑定
-+ <font color=#1E90FF>点击事件同时传递参数和原生事件</font>:
++ <font color=#3eaf7c>点击事件同时传递参数和原生事件</font>:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -52,21 +52,21 @@
 </html>
 ```
 
-+ <font color=#1E90FF>点击事件绑定多个函数</font>
++ <font color=#3eaf7c>点击事件绑定多个函数</font>
 ```html
 <div>
 	<button @click="handleClick1(), handleClick2()">button</button>
 </div>
 ```
 
-+ <font color=#1E90FF>修饰符，阻止事件冒泡</font>
++ <font color=#3eaf7c>修饰符，阻止事件冒泡</font>
 ```html
 <div>
 	<button @click.stop="handleClick1">button</button>
 </div>
 ```
 
-+ <font color=#1E90FF>修饰符，自身触发</font>
++ <font color=#3eaf7c>修饰符，自身触发</font>
 ```html
 <div>
 	<div @click.self="handleClick">
@@ -77,13 +77,13 @@
 ```
 点击子元素`button`不会触发`handleClick`,点击`counter`才可以触发。
 
-+ <font color=#1E90FF>按键修饰符</font>
++ <font color=#3eaf7c>按键修饰符</font>
 ```html
 <input @keydown.enter="handleKeyDown"/>
 ```
 除了`enter`，还有`tab`、`delete`、`esc`、`down`等等
 
-+ <font color=#1E90FF>鼠标修饰符</font>
++ <font color=#3eaf7c>鼠标修饰符</font>
 ```html
 <div @click.right="handleClick"></div>
 ```
@@ -307,3 +307,94 @@
 </script>
 ```
 上面这种写法注意一下，双向绑定就是互相影响，互相更新，上面这种写法也在实践的过程中经常使用到。而且代码量减少了很多。
+
+### 5. 插槽
+插槽要解决的问题就是：<font color=#DD1144>当你使用某个组件间，组件内部某个部分需要开发者在开发的时候自己定义，这时候你需要使用插槽，将自定义的部分书写在组件的标签里面</font>。
+
+所以正确理解插槽可以这样理解：<font color=#1E90FF>父组件可以给子组件传递属性或者DOM节点，其中传递属性可以使用props，传动DOM节点可以使用slot</font>
+
++ <font color=#3eaf7c>默认插槽</font>
+
+就是在你没有传递插槽内容的时候，子组件将使用默认的插槽内容：即子组件中`<slot>xxxxx</slot>`里面`xxxxxx`的内容。
+
++ <font color=#3eaf7c>具名插槽</font>
+
+插槽可以写多个，通过给插槽命名，让其显示在子组件规定的位置，如下是子组件`base-layout`的内容：
+```javascript
+<div class="container">
+  <header> <slot name="header"></slot> </header>
+  <main>   <slot></slot> </main>
+  <footer> <slot name="footer"></slot> </footer>
+</div>
+```
+如下是父组件的内容：
+```javascript
+<base-layout>
+  <template v-slot:header>
+    <h1>这里会替换name为header的插槽</h1>
+  </template>
+
+  <p>这里会替换默认的插槽</p>
+  <p>这里也是</p>
+
+  <template v-slot:footer>
+    <p>这里会替换name为footer的插槽</p>
+  </template>
+</base-layout>
+```
+
++ <font color=#3eaf7c>作用域插槽</font>
+
+作用域插槽的作用实际是：<font color=#DD1144>当父组件写插槽的时候，需要对子组件内部的数据做布局的时候，就需要使用作用域插槽拿到子组件内部的数据</font>。
+```javascript
+const app = Vue.createApp({
+	// 2. 父组件从子组件拿到item和index属性，然后对这两个属性做布局
+	template: `
+		<list v-slot="{item, index}">
+			<div>{{item}}</div>
+			<div>{{index}}</div>
+		</list>
+	`
+})
+```
+下面是子组件的内容：
+```javascript
+	app.component('list', {
+		data() {return { list: [1,2,3]}},
+		// 1. 子组件通过绑定把item和index传给父组件
+		template: `
+			<div>
+				<slot v-for="(item, index) in list" :item="item" :index="index">
+			</div>
+		`
+	})
+```
+
+### 6. provide/inject
+<font color=#1E90FF>使用这个的场景是解决多层父子组件之间传值的问题</font>：
+
+```javascript
+// 父组件
+const app = Vue.createApp({
+	data() {
+		return { count: 1}
+	},
+	provide() {
+		return {
+			count: this.count // 1. 提供
+		}
+	}
+})
+
+// 子组件
+app.component('child',{
+	template: `<child-child />`
+})
+
+// 孙子组件
+app.component('child-child',{
+	inject: ['count']  // 2. 注入
+	template: `<div>{{count}}</div>`
+})
+```
+但是要特别注意：<font color=#DD1144>provide/inject是一次性的，没法像props那种实现响应式</font>，孙子组件当中的`count`是没有办法随着父组件的`count`变化而变化的，但是`Vue3`当中有新的语法会帮助你解决。
