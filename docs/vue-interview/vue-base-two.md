@@ -49,3 +49,71 @@
 </script>
 </html>
 ```
+
+## Teleport传送门
+<font color=#DD1144>teleport的作用是在当前组件内，将一部门的UI渲染到别的地方，但是UI逻辑是当前逻辑操作的</font>
+
+比如我们现在有这样一个例子，当前组件点击按钮后，要在全局渲染一个蒙层，所以蒙层就不能渲染到当前组件下，要渲染到`body`下面，所以代码如下：
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lesson 30</title>
+  <style>
+    .area {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 300px;
+      background: green;
+    }
+    .mask {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      opacity: 0.5;
+      color: #fff;
+      font-size: 100px;
+    }
+  </style>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="hello"></div>
+</body>
+<script>
+  // teleport 传送门
+  const app = Vue.createApp({
+    data() {
+      return {
+        show: false,
+        message: 'hello'
+      }
+    },
+    methods: {
+      handleBtnClick() {
+        this.show = !this.show;
+      }
+    },
+    template: `
+      <div class="area">
+        <button @click="handleBtnClick">按钮</button>
+        <teleport to="#hello">
+          <div class="mask" v-show="show" @click="handleBtnClick">{{message}}</div>
+        </teleport>
+      </div>
+    `
+  });
+
+  const vm = app.mount('#root');
+</script>
+</html>
+```

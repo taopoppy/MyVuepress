@@ -398,3 +398,182 @@ app.component('child-child',{
 })
 ```
 但是要特别注意：<font color=#DD1144>provide/inject是一次性的，没法像props那种实现响应式</font>，孙子组件当中的`count`是没有办法随着父组件的`count`变化而变化的，但是`Vue3`当中有新的语法会帮助你解决。
+
+## 高级语法回顾
+### 1. Mixin
+```javascript
+const myMixin = {
+	data() {
+		return {
+			number: 2,
+			count: 1
+		}
+	},
+	created() {
+		console.log('mixin created')
+	},
+	methods: {
+		handleClick() {
+			console.log("mixin handleClick")
+		}
+	}
+}
+
+const app = Vue.createApp({
+	data() {
+		return {
+			number: 1,
+		}
+	},
+	created() {
+		console.log("created")
+	},
+	mixins: [myMixin], // 1. 混入myMixin
+	methods: {
+		handleClick() {
+			console.log("handleClick")
+		}
+	},
+	template: `
+		<div>{{number}}</div>
+		<div>{{count}}</div>
+	`
+})
+```
+关于`mixin`混入的总结：
++ <font color=#1E90FF>组件的data、methods以及自定义属性的优先级高于mixin中data、methods和自定义属性的优先级</font>
++ <font color=#1E90FF>生命周期函数，先执行minxin里面的，再执行组件里面的</font>
++ <font color=#DD1144>上面说的都是局部mixins，全局的mixins不太推荐使用，会影响每个组件，所以维护性不太好</font>
++ <font color=#DD1144>如果想修改自定义的属性的mixins优先级，要这样做：</font>
+
+```javascript
+const myMixin = {
+	number: 1, // 1. number是除了data，methods等等之外的自定义属性
+}
+
+const app = Vue.createApp({
+	mixins: [myMixin],
+	number: 2,
+	// 2. 显示自定义属性使用this.$options.xxx
+	template: `
+		<div>
+			<div>{{this.$options.number}}</div>
+		</div>
+	`
+})
+
+// 3. 使用app.config.optionMergeStragies这个方法对number的mixins优先级做修改
+// 4. mixinVal表示mixin中的number值，appValue表示组件当中number值
+app.config.optionMergeStrategies.number = (mixinVal, appValue) => {
+	return mixinVal || appValue // 5. mixin当中的number值优先
+}
+```
+在新版的`vue3`当中，已经不推荐使用`mixin`属性了，代替的是`composition API`将会有更好的维护性。因为这种混入不仅会增加查错的成本，更会增加代码阅读性的难度。
+
+### 2. 自定义指令
+自定义指令这块虽然不是很难，但是在我自己的实际项目当中几乎没有使用过，这块的知识也可以看官网，官网说的比较清晰和简单。
+
+### 3. render函数
+在`react`当中我们对`render`函数有所了解，实际上在`vue`当中`template`最后也会编译成为`render`函数，`render`函数当中是调用`Vue`当中的`h`函数，虚拟函数返回的是个虚拟`DOM`,虚拟`DOM`就是能够描述`DOM`结构的`JS`对象。
+
+### 4. 插件
+`plugins`插件，也是把通用性的功能封装起来。了解插件的写法也方便去读像`vuex`或者`vue-router`的一些源码：
+
+```javascript
+// 1. 书写插件
+const myPlugin = {
+	install(app, options) {
+		app.provide('name',options.name) // 3. 向全局提供name属性
+		app.direcive('focus', {          // 4. 向全局提供自定义指令
+			mounted(el) {
+				el.focus()
+			}
+		}),
+		app.mixin({
+			mounted(){
+				console.log("每个组件被调用都会打印一下") // 5. 向全局组件提供mixin
+			}
+		}),
+		app.config.globalProperties.$sayHello = 'hello world' // 6. 添加Vue底层全局的属性
+	}
+}
+
+const app = Vue.createApp({
+	template: `
+		<my-title />
+	`
+})
+
+app.component('my-title', {
+	inject: ['name'], // 7-4. 在任何组件当中使用插件提供的功能
+	mounted() {
+		console.log(this.$sayHello) // 7-6. 在任何组件当中使用插件提供的功能
+	},
+	// 7-3. 在任何组件当中使用插件提供的功能
+	template: `
+		<div>
+			{{name}}
+			<input v-focus />
+		</div>
+	`
+})
+
+// 2. 注册插件
+app.use(myPlugin, {name: 'taopoppy'})
+```
+
+因为插件还是使用比较广泛，所以我们需要自己再写一个来掌握一下：
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lesson 33</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  // 1. 对数据做校验的插件
+  const app = Vue.createApp({
+    data() {
+      return { name: 'dell', age: 23}
+    },
+    // 2. rules会被插件识别
+    rules: {
+      age: {
+        validate: age => age > 25,
+        message: 'too young, to simple'
+      },
+      name: {
+        validate: name => name.length >= 4,
+        message: 'name too short'
+      }
+    },
+    template: `
+      <div>name:{{name}}, age:{{age}}</div>
+    `
+  });
+
+  // 3. 插件
+  const validatorPlugin = (app, options) => {
+    app.mixin({
+      created() {
+        for(let key in this.$options.rules) {
+          const item = this.$options.rules[key];
+          this.$watch(key, (value) => {
+            const result = item.validate(value);
+            if(!result) console.log(item.message);
+          })
+        }
+      }
+    })
+  }
+
+  app.use(validatorPlugin);
+  const vm = app.mount('#root');
+</script>
+</html>
+```
