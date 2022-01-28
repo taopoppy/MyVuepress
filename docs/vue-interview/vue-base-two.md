@@ -117,3 +117,144 @@
 </script>
 </html>
 ```
+
+## compositionAPI
+### 1. setup初体验
+```javascript
+// 对数据做校验的插件
+const app = Vue.createApp({
+  template: `
+    <div @click="handleClick">{{name}}</div>
+  `,
+  // created 实例被完全初始化之前
+  setup(props, context) {
+    return {
+      name: 'taopoppy',
+      handleClick: () => {
+        name = "taozhenchuan"
+      }
+    }
+  }
+})
+```
+特别要注意的一点，<font color=#DD1144>setup里面没有办法使用this，因为setup执行的时候实例还没有初始化完成，所以setup没有办法调用外部的东西，但是外部的东西却可以调用setup返回的内容</font>
+
+### 2. reactive和ref
+按照上面的`setup`的写法，返回的`name`并不是响应式的，也就是`name`发生变化，并不会展示在页面上，所以需要`ref`和`reactive`将其做成响应式的：
+
+<font color=#DD1144>响应式的原理是：ref底层通过proxy对数据进行封装，当数据发生变化的时候，对模板内容进行更新,之前name是个普通的值，通过ref修饰，就变成了proxy({value: 'taopoppy'})这样的响应式引用</font>，<font color=#1E90FF>特别要注意的就是：ref只能处理基础类型的数据</font>
+```javascript
+<script>
+	const app = Vue.createApp({
+		template: `
+			<div @click="handleClick">{{name}}</div>
+		`,
+		methods: {
+			handleClick() {
+				this.name = "de"
+			}
+		},
+		// created 实例被完全初始化之前
+		setup(props, context) {
+			const { ref } = Vue
+			let name = ref("taopoppy") // taopoppy 变成proxy({value: 'taopoppy'})这样的响应式引用
+			return {
+				name
+			}
+		}
+	})
+	app.mount("#root")
+</script>
+```
+
+<font color=#DD1144>而reactive是可以帮助处理对象，数组这些数据类型的</font>，同时`readonly`修饰的对象是不可以响应式的修改的。
+```javascript
+<script>
+	const app = Vue.createApp({
+		template: `
+			<div @click="handleClick">{{nameObj.name}}</div>
+		`,
+		methods: {
+			handleClick() {
+				this.nameObj.name = "de"
+			}
+		},
+		// created 实例被完全初始化之前
+		setup(props, context) {
+			const { reactive, readonly } = Vue
+			const nameObj = reactive({ name: 'dell'}) // {name:"dell"}变成proxy({name:'dell'})这样响应式的引用
+			const copyNameObj = readonly(nameObj)
+			setTimeout(()=> {
+				nameObj.name = "lee"
+				copyNameObj.name = "taopoppy"
+			},2000)
+			return { nameObj, copyNameObj }
+		}
+	})
+	app.mount("#root")
+</script>
+```
+
+### 3. toRefs
+<font color=#1E90FF>toRefs的作用就是将rective修饰的proxy对象转换成为ref修饰的proxy对象，简单的说如果一个reactive对象的单个属性拿出来并不是响应式的，必须通过toRefs才能将其变成响应式的</font>
+
+```javascript
+setup(props, context) {
+  const { reactive, toRefs } = Vue
+  const nameObj = reactive({ name: 'dell', age: 18})
+  setTimeout(()=> {
+    nameObj.name = "lee"
+    nameObj.age = 20
+  },2000)
+  // proxy({name:'dell', age: 18}) 一个reactive修饰的对象变成两个ref修饰的对象
+  // { name: proxy({value: 'dell'}), age: proxy({value: 18}) }
+  const { name, age } = toRefs(nameObj)
+  return { name, age }
+}
+```
+
+### 4. toRef
+<font color=#DD1144>toRef的作用是解决toRefs无法给找不到的属性赋空值的问题</font>，什么意思，看下面的代码：
+
+```javascript
+setup(props, context) {
+  const { reactive, toRefs } = Vue
+  const nameObj = reactive({ name: 'dell'})
+  const { age } = toRefs(nameObj) // nameObj本身里面没有age，所以age取出来不是空对象，而是undefined，undefined.value是不存在的
+  setTimeout(()=> {
+    age.value = 20
+  },2000)
+  return { age }
+}
+```
+所以我们需要使用`toRef`，语法和`toRefs`稍微有所区别：
+```javascript
+setup(props, context) {
+  const { reactive, toRef } = Vue
+  const nameObj = reactive({ name: 'dell'})
+  const age = toRef(nameObj, 'age') // 即使nameObj当中没有age，那么也会给age赋值为空的响应式数据
+  setTimeout(()=> {
+    age.value = 20
+  },2000)
+  return { age }
+}
+```
+<font color=#DD1144>当然我们不太推荐这样写，即使没有age这种属性，我们还是尽量提前在nameObj当中赋一个空值即可,即`const nameObj = reactive({ name: 'dell',age: ''})`</font>
+
+### 5. context
+`context`里面包含的三个内容分别是`attrs`、`slots`、`emit`，分别就是`Non-Props`属性，插槽，还有父子组件通信方法`emit`：
+```javascript
+setup(props, context) {
+  const { attrs, slots, emit} = context
+  console.log(attrs.app) // 拿到父组件传过来的但子组件未接收的Non-Props属性
+  console.log(slots.default()) // 拿到父组件传递来的插槽内容
+  function handleClick() {
+    emit("change")
+  }
+  return {
+    handleClick
+  }
+}
+```
+
+我们这里结合上面已有的知识，来写一个新版的`TodoList`：
