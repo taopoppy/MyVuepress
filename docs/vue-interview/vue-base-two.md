@@ -257,4 +257,157 @@ setup(props, context) {
 }
 ```
 
+### 6. 功能分离
 我们这里结合上面已有的知识，来写一个新版的`TodoList`：
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+	<div id="root"></div>
+</body>
+<script>
+	const app = Vue.createApp({
+		setup() {
+			const { ref,reactive } = Vue
+			const inputValue = ref('')
+			const list = reactive([])
+
+			const handleInputValueChange = (e) => {
+				inputValue.value = e.target.value
+			}
+			const handleSubmit = () => {
+				list.push(inputValue.value)
+				inputValue.value = ''
+			}
+
+			return {
+				inputValue,
+				list,
+				handleInputValueChange,
+				handleSubmit
+			}
+		},
+		template: `
+			<div>
+				<div>
+					<input @keydown.enter="handleSubmit" :value="inputValue" @input="handleInputValueChange"/>
+					<button @click="handleSubmit">提交</button>
+				</div>
+				<ul>
+					<li v-for="(item, index) in list" :key="index">{{item}}</li>
+				</ul>
+			</div>
+		`
+	})
+	app.mount("#root")
+</script>
+</html>
+```
+如果仅仅是这样，你会觉的没啥改变，反而数据的定义和函数的定义都写在了同一个`setup`当中，会很臃肿，所以我们要进行分离:
+```html
+<script>
+	// 关于list 操作的内容进行了封装
+	const listRelativeEffect = () => {
+		const { reactive } = Vue
+		const list = reactive([])
+		const addItemToList = (item) => {
+			list.push(item)
+		}
+		return {
+			list, addItemToList
+		}
+	}
+
+	// 关于inputValue操作的内容进行了封装
+	const inputRelativeEffect = () => {
+		const { ref } = Vue
+		const inputValue = ref('')
+		const handleInputValueChange = (e) => {
+			inputValue.value = e.target.value
+		}
+		return {
+			inputValue, handleInputValueChange
+		}
+	}
+
+	const app = Vue.createApp({
+		// 相当于流程中转调度
+		setup() {
+			const { list, addItemToList } = listRelativeEffect()
+			const { inputValue, handleInputValueChange } = inputRelativeEffect()
+			return {
+				inputValue,
+				list,
+				handleInputValueChange,
+				addItemToList
+			}
+		},
+		template: `
+			<div>
+				<div>
+					<input @keydown.enter="() => addItemToList(inputValue)" :value="inputValue" @input="handleInputValueChange"/>
+					<button @click="() => addItemToList(inputValue)">提交</button>
+				</div>
+				<ul>
+					<li v-for="(item, index) in list" :key="index">{{item}}</li>
+				</ul>
+			</div>
+		`
+	})
+	app.mount("#root")
+</script>
+```
+
+### 7. computed
+`setup`当中的计算属性和旧的语法并不相同，我们来看：
+```html
+<script>
+	const app = Vue.createApp({
+		// 相当于流程中转调度
+		setup() {
+			const { ref, computed } = Vue // 1. 引入computed
+			const count = ref(0)
+			// 2. computed的简单用法
+			const countAddFive = computed(() => {
+				return count.value + 5
+			})
+			// 3. computed的高级复杂写法，同样可以直接修改computed属性
+			const countAddSix = computed( {
+				get: () => { return count.value + 6 },
+				set: (params) => { count.value = params -6 }
+			})
+
+			const handleClick = () => {
+				count.value +=1
+			}
+			const handleClick1 = () => {
+				countAddSix.value = 10
+			}
+
+			return {
+				count,
+				countAddFive,
+				countAddSix,
+				handleClick,
+				handleClick1
+			}
+		},
+		template: `
+			<div>
+				<div>
+					<div @click="handleClick">{{count}}--{{countAddFive}}</div>
+					<div @click="handleClick1">{{count}}--{{countAddSix}}</div>
+				</div>
+			</div>
+		`
+	})
+	app.mount("#root")
+</script>
+```
