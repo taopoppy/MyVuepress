@@ -259,19 +259,7 @@ setup(props, context) {
 
 ### 6. 功能分离
 我们这里结合上面已有的知识，来写一个新版的`TodoList`：
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
-	<script src="https://unpkg.com/vue@next"></script>
-</head>
-<body>
-	<div id="root"></div>
-</body>
+```javascript
 <script>
 	const app = Vue.createApp({
 		setup() {
@@ -308,7 +296,6 @@ setup(props, context) {
 	})
 	app.mount("#root")
 </script>
-</html>
 ```
 如果仅仅是这样，你会觉的没啥改变，反而数据的定义和函数的定义都写在了同一个`setup`当中，会很臃肿，所以我们要进行分离:
 ```html
@@ -410,4 +397,135 @@ setup(props, context) {
 	})
 	app.mount("#root")
 </script>
+```
+
+### 8. watch和watchEffect
+`watch`可以监听`ref`和`reactive`修饰的对象，如下：
+```html
+<script>
+	const app = Vue.createApp({
+		setup() {
+			const { ref, reactive, watch } = Vue
+			const name = ref("taopoppy")
+
+			// 使用watch监听name属性，具有一定惰性
+			// currentValue为当前改变后的值，prevValue为改变之前的值
+			watch(name, (currentValue, prevValue)=> {
+				console.log(currentValue, prevValue)
+			})
+
+			return { name }
+		},
+		template: `
+			<div>
+				<div> Name: <input v-model="name"/> </div>
+				<div> Name is {{name}} </div>
+			</div>
+		`
+	})
+	app.mount("#root")
+</script>
+```
+修饰`reactive`的对象的时候，写法稍有不同：
+```html
+<script>
+	const app = Vue.createApp({
+		setup() {
+			const { reactive, watch } = Vue
+			const nameObj = reactive({name: "dell"})
+
+			// 这里要书写一个函数，返回nameObj.name
+			watch(() => nameObj.name, (currentValue, prevValue)=> {
+				console.log(currentValue, prevValue)
+			})
+			const { name } = toRefs(nameObj)
+
+			return { name }
+		},
+		template: `
+			<div>
+				<div> Name: <input v-model="name"/> </div>
+				<div> Name is {{name}} </div>
+			</div>
+		`
+	})
+	app.mount("#root")
+</script>
+```
+`watch`不能可以监听一个属性，也可以同时监听多个属性，写法就变成了数组，这种写法可以在(官网)[https://v3.cn.vuejs.org/api/computed-watch-api.html#%E4%B8%8E-watcheffect-%E7%9B%B8%E5%90%8C%E7%9A%84%E8%A1%8C%E4%B8%BA]看到。
+
+下面我们来说`watchEffect`, <font color=#DD1144>watchEffect是没有惰性的，是立即执行的，它不需要传递你要侦听的参数，会自动感知代码依赖，但是watchEffect无法获取之前数据的值</font>：
+```javascript
+watchEffet(() => {
+	console.log(nameObj.name)
+})
+
+// 可以取消watchEffect侦听器
+const stop = watchEffect(() => {
+	setTimeout(()=> {
+		stop()
+	}, 5000)
+})
+```
+我们之前说`watch`是惰性的，但是实际上`watch`默认是惰性的，可以通过`watch`的第三个参数进行配置。
+
+### 9. 新版生命周期
++ <font color=#1E90FF>setup的执行是在beforeCreate和created之间，所以beforeCreate和created之间的代码可以直接写在setup当中</font>
++ <font color=#1E90FF>onRenderTracked在每次渲染后重新收集响应式依赖的时候</font>
++ <font color=#1E90FF>onRenderTriggered在每次触发页面重新渲染时自动执行</font>
+
+### 10. Provide/inject
+```html
+<script>
+  // provide, inject
+  const app = Vue.createApp({
+    setup() {
+      const { provide, ref, readonly } = Vue;
+      const name = ref('dell');
+      provide('name', readonly(name)); // 1. 向子组件们提供只读的属性
+      provide('changeName', (value) => { // 2. 向子组件提供修改属性的函数，保证在父组件修改属性
+        name.value = value;
+      });
+      return { }
+    },
+    template: `
+      <div>
+        <child />
+      </div>
+    `,
+  });
+
+  app.component('child', {
+    setup() {
+      const { inject } = Vue;
+      const name = inject('name');  // 3. 拿到name属性
+      const changeName = inject('changeName'); // 4. 拿到修改name的函数
+      const handleClick = () => {
+        changeName('lee');  // 5. 利用父组件提供的函数修改属性，保证数据单向数据流
+      }
+      return { name, handleClick }
+    },
+    template: '<div @click="handleClick">{{name}}</div>'
+  })
+  const vm = app.mount('#root');
+</script>
+```
+
+### 11. ref
+```javascript
+const app = Vue.createApp({
+	setup() {
+		const { ref, onMounted } = Vue;
+		const hello = ref(null);
+		onMounted(() => {
+			console.log(hello.value);
+		})
+		return { hello } // 这里的hello里面保存的就是DOM元素的应用
+	},
+	template: `
+		<div>
+			<div ref="hello">hello world</div>
+		</div>
+	`,
+});
 ```
