@@ -5,8 +5,46 @@
 
 ### 1. mvvm
 `mvvm`设计模式，`m`就是`model`数据，`v`就是`view`视图，`vm`就是`viewModel`视图数据连接层, <font color=#3eaf7c>所以我们书写vue实际上data是我们要书写的数据层，template是我们要书写的视图层，而vm是vue帮助我们做的，这才是我们应该正确理解vue和mvvm的一部分</font>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+	<div id="root"></div>
+</body>
+<script>
+	// createApp 表示创建一个vue应用，存储到app变量当中去
+	// 传入的参数表示，这个应用最外层的组件，应该如何展示
+	const app = Vue.createApp({
+		data() {
+			return {
+				message: 'hello world'
+			}
+		},
+		template:`
+			<div>{{message}}</div>
+		`
+	})
+
+	// vm 就代表了vue应用的根组件
+	// vm.$data 可以获取到数据
+	const vm = app.mount('#root')
+
+</script>
+</html>
+```
+
 
 ### 2. 生命周期函数
+首先，生命中周期函数的意思就是在某一个时刻会自动执行的函数
+<img src="https://cn.vuejs.org/assets/lifecycle.16e4c08e.png" alt="生命周期">
+
 + `beforeCreate`: 是在创建`Vue`对象之前
 + `created`: 是创建好了`Vue`对象之后
 + 中间有一层将数据和`template`进行结合的过程，<font color=#1E90FF>实际就是执行了render函数</font>， 这里有一个判断，`Vue`当中有`template`属性就拿`template`作为模板，没有的话就拿正式`dom`的`root`根节点下的内容做模板。
@@ -14,7 +52,7 @@
 + `Mounted`: 已经将虚拟`dom`代替了网页上真实的`dom`之后
 + `beforeUpdate`: 在`data`数据发生变化的时候会自动执行，但是页面还没有变化
 + `updated`: 页面随着`data`变化完毕之后自动执行
-+ `beforeUnmount`: `Vue`应用失效的时候立即执行的函数
++ `beforeUnmount`: `Vue`应用失效的时候立即执行的函数，此时页面展示的东西还没变
 + `unmounted`: `Vue`应用失效，且`dom`完全销毁之后，自动执行的函数
 
 ### 3. 属性
