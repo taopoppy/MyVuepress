@@ -79,11 +79,15 @@
 	Vue.createApp({
 		template: `
 			<div>
-				<button @click="handleAddBtnClick(2, $event)">button</button>
+				<button @click="handleAddBtnClick0">button</button>
+				<button @click="handleAddBtnClick1(2, $event)">button</button>
 			</div>
 		`,
 		methods: {
-			handleAddBtnClick(num, event) {}
+			// 没有参数，默认只有原生事件对象
+			handleAddBtnClick0(event) {}
+			// 同时传递参数和原生事件对象
+			handleAddBtnClick1(num, event) {}
 		}
 	}).mount('#root')
 </script>
@@ -94,6 +98,13 @@
 ```html
 <div>
 	<button @click="handleClick1(), handleClick2()">button</button>
+</div>
+```
+
++ <font color=#3eaf7c>修饰符，阻止默认行为</font>
+```html
+<div>
+	<button @click.prevent="handleClick1">button</button>
 </div>
 ```
 
@@ -113,7 +124,7 @@
 	</div>
 </div>
 ```
-点击子元素`button`不会触发`handleClick`,点击`counter`才可以触发。
+点击子元素`button`不会触发`handleClick`,点击`counter`才可以触发。也就是说点击自己内部所有的html标签子元素，都不会触发`handleClick`,只有点击自己的内容元素才会触发`handleClick`
 
 + <font color=#3eaf7c>按键修饰符</font>
 ```html
@@ -126,6 +137,19 @@
 <div @click.right="handleClick"></div>
 ```
 鼠标的修饰符有`left`、`right`、`middle`等等
+
++ <font color=#3eaf7c>精确修饰符</font>
+```html
+<!-- 当按下 Ctrl 时，即使同时按下 Alt 或 Shift 也会触发 -->
+<button @click.ctrl="onClick">A</button>
+
+<!-- 仅当按下 Ctrl 且未按任何其他键时才会触发 -->
+<button @click.ctrl.exact="onCtrlClick">A</button>
+
+<!-- 仅当没有按下任何系统按键时触发 -->
+<button @click.exact="onClick">A</button>
+```
+允许控制触发一个事件所需的确定组合的系统按键修饰符。
 
 ### 5.双向绑定
 + <font color=#1E90FF>input</font>
