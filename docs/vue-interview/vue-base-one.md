@@ -166,6 +166,7 @@
 				{{message}}
 				<input v-model.lazy="message"/>
 				<input v-model.number="message"/>
+				<input v-model.trim="msg" />
 			</div>
 		`,
 		methods: {
@@ -174,10 +175,11 @@
 	}).mount('#root')
 </script>
 ```
-`v-model.lazy`这个修饰符的意思就是输入框输入完毕，焦点失去的时候，才会去修改`message`
-`v-model.number`这个修饰符的意思就是输入数字，将会以数字形式保存在`message`
+`v-model.lazy`这个修饰符的意思就是输入框输入完毕，焦点失去的时候，才会去修改`message`,同时，输入完毕点击回车的时候，也会触发事件，不需要去书写`@keydown.enter`事件。
+`v-model.number`这个修饰符的意思就是输入数字，将会以数字形式保存在`message`。如果你想要默认自动去除用户输入内容中两端的空格，你可以在`v-model`后添加`.trim`修饰符
 
-+ <font color=#1E90FF>checkbox</font>
+
++ <font color=#1E90FF>checkbox（多选）</font>
 ```html
 <script>
 	Vue.createApp({
@@ -201,7 +203,7 @@
 </script>
 ```
 
-+ <font color=#1E90FF>radio</font>
++ <font color=#1E90FF>radio（单选）</font>
 ```html
 <script>
 	Vue.createApp({
@@ -225,7 +227,7 @@
 </script>
 ```
 
-+ <font color=#1E90FF>select</font>
++ <font color=#1E90FF>select（下拉选择）</font>
 ```html
 <script>
 	Vue.createApp({
@@ -250,12 +252,43 @@
 	}).mount('#root')
 </script>
 ```
+```html
+<script>
+	Vue.createApp({
+		data() {
+			return {
+				message: [], // select也可以是多选，所以初始数据是个数组
+				options:[
+					{ text: 'A', value: 'A'},
+					{ text: 'B', value: 'B'},
+					{ text: 'C', value: 'C'},
+				]
+			}
+		},
+		template: `
+			<div>
+			{{message}}
+			<select v-model="message" mutiple>
+				<option v-for="item in options" :value="item.value">{{item.text}}</option>
+			</select>
+			</div>
+		`,
+		methods: {
+			handleAddBtnClick(num, event) {}
+		}
+	}).mount('#root')
+</script>
+```
 
 
 ## 组件语法回顾
 ### 1. 全局和局部组件
 + <font color=#3eaf7c>全局组件</font>：只要定义了处处可以使用，<font color=#DD1144>性能不高，使用简单</font>
+	+ 一般使用`app.component()`方式创建的都是全局组件
 + <font color=#3eaf7c>局部组件</font>：定义之后需要注册到被使用的组件当中，<font color=#DD1144>性能比较高，使用略麻烦</font>
+	+ 直接通过定义变量的方式去定义，比如`const counter = {}`这种是属于局部组件，必须通过注册才能使用
+	+ `.vue`类型的文件本质都是局部组件，调用必须要引用外加注册。
+	+ 局部组件一般起名字要大写，与驼峰的JS变量区分，组件为`HelloWorld`，JS变量为`helloWorld`
 
 ### 2. Non-props
 之前我们说父组件给子组件传递属性的时候，子组件通过`props`属性接收。
