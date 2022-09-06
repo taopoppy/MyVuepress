@@ -293,7 +293,7 @@
 ### 2. Non-props
 之前我们说父组件给子组件传递属性的时候，子组件通过`props`属性接收。
 + <font color=#1E90FF>但是如果子组件没有接收，则传递给子组件的属性会挂载到子组件当中最外层的标签上</font>
-+ <font color=#1E90FF>如果想取消这样的行为，就使用`inheritAttrs:false`去取消即可</font>。
++ <font color=#1E90FF>如果想取消这样的行为，就使用`inheritAttrs:false`去取消即可,这样的话子组件没有通过props接收属性，这些属性也就不会挂载到子组件最外层的标签上</font>。
 
 这个属性在修改样式的时候比较有用，比如修改子组件的最外层组件的大小之类的
 
@@ -339,13 +339,13 @@
 				count: 0
 			}
 		},
-		// 2. 父组件监听父组件add事件，并使用handleAdd函数处理
+		// 2. 父组件监听父组件addCount事件，但是要写成add-count的方式，并使用handleAdd函数处理
 		handleAdd(params) {
 			this.count += params
 		},
 		template: `
 			<div>
-				<counter :count="count" @add="handleAdd"/>
+				<counter :count="count" @add-count="handleAdd"/>
 			</div>
 		`
 	})
@@ -354,7 +354,46 @@
 		props: ['count']
 		methods: {
 			handleItemClick() {
-				this.$emit('add', 2) // 1. 向父组件发射add事件,参数为2
+				this.$emit('addCount', 2) // 1. 向父组件发射addCount事件,参数为2
+			}
+		}
+		template:`
+			<div @click="handleItemClick">{{count}}</div>
+		`
+	})
+
+</script>
+```
+除了上面简单的用法，还可以在子组件对事件做判断，写法也有两种：
+```html
+<script>
+	app.component('counter', {
+		props: ['count'],
+		emits: ['add'], // 第一种写法没啥作用，就能直观的告诉阅读代码的人子组件向外触发了多少个事件
+		methods: {
+			handleItemClick() {
+				this.$emit('add', 2)
+			}
+		}
+		template:`
+			<div @click="handleItemClick">{{count}}</div>
+		`
+	})
+
+</script>
+```
+```html
+<script>
+	app.component('counter', {
+		props: ['count'],
+		emits: {
+			add:(count) => {
+				return count > 0
+			}
+		} // 第二种写法是对子组件向外触发事件的参数判断，和props的对象写法类似，有判断作用，返回true，判断通过，返回false，判断不通过，就不会向外触发add事件
+		methods: {
+			handleItemClick() {
+				this.$emit('add', 2)
 			}
 		}
 		template:`
@@ -440,7 +479,7 @@
 
 + <font color=#3eaf7c>作用域插槽</font>
 
-作用域插槽的作用实际是：<font color=#DD1144>当父组件写插槽的时候，需要对子组件内部的数据做布局的时候，就需要使用作用域插槽拿到子组件内部的数据</font>。
+作用域插槽的作用实际是：<font color=#DD1144>当父组件写插槽的时候，需要对子组件内部的数据做布局的时候，就需要使用作用域插槽拿到子组件内部的数据,否则如果直接在父组件的插槽里写{{item}},实际上用的是父组件中的item</font>。
 ```javascript
 const app = Vue.createApp({
 	// 2. 父组件从子组件拿到item和index属性，然后对这两个属性做布局
