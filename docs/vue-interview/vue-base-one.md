@@ -607,10 +607,43 @@ app.config.optionMergeStrategies.number = (mixinVal, appValue) => {
 ### 2. 自定义指令
 自定义指令这块虽然不是很难，但是在我自己的实际项目当中几乎没有使用过，这块的知识也可以看官网，官网说的比较清晰和简单。
 
-### 3. render函数
-在`react`当中我们对`render`函数有所了解，实际上在`vue`当中`template`最后也会编译成为`render`函数，`render`函数当中是调用`Vue`当中的`h`函数，虚拟函数返回的是个虚拟`DOM`,虚拟`DOM`就是能够描述`DOM`结构的`JS`对象。
+### 3. teleport
+这个传送门的功能主要作用就是把一个组件里面的某些元素或者某些组件挂载到其他`DOM`的位置上。
+```html
+<script>
+	const app = Vue.createApp({
+		data(){
+			return {
+				show:false
+			}
+		},
+		methods: {
+			handleBtnClick() {
+				this.show = true
+			}
+		}
 
-### 4. 插件
+		template: `
+			<div class="area">
+				<button @click="handleBtnClick">按钮</button>
+				<teleport to="body">    <!-- 放在body标签下-->
+					<div class="mask" v-show="show"></div>
+				</teleport>
+				<teleport to="#hello">   <!-- 放在id为hello的节点下-->
+					<div class="mask" v-show="show"></div>
+				</teleport>
+			</div>
+		`
+	})
+</script>
+```
+尤其一些需要蒙层的组件，需要在使用的时候在全屏幕展示蒙层，此时就可以将蒙层的`div`传送到`body`上面去。或者传送到指定`DOM`,比如`id`为`hello`的`	DOM`节点上去。
+
+### 4. render函数
+在`react`当中我们对`render`函数有所了解，实际上在`vue`当中`template`最后也会编译成为`render`函数，`render`函数当中是调用`Vue`当中的`h`函数（`const { h } = Vue`），虚拟函数返回的是个虚拟`DOM`,虚拟`DOM`就是能够描述`DOM`结构的`JS`对象。
++ `template` -> `render` -> `h` -> `虚拟DOM(JS对象)` -> `真实DOM`
+
+### 5. 插件
 `plugins`插件，也是把通用性的功能封装起来。了解插件的写法也方便去读像`vuex`或者`vue-router`的一些源码：
 
 ```javascript
