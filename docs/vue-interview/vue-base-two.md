@@ -126,8 +126,15 @@ const app = Vue.createApp({
   template: `
     <div @click="handleClick">{{name}}</div>
   `,
+	methods: {
+		test() {
+			console.log(this.$options.setup()) // 但是setup的外部可以调用setup以及返回的东西
+		}
+	}
   // created 实例被完全初始化之前
   setup(props, context) {
+    // setup是在实例完全初始化之前，所以无法调用methods里的东西
+    // this.test()   // 错误实例
     return {
       name: 'taopoppy',
       handleClick: () => {
@@ -185,8 +192,8 @@ const app = Vue.createApp({
 			const nameObj = reactive({ name: 'dell'}) // {name:"dell"}变成proxy({name:'dell'})这样响应式的引用
 			const copyNameObj = readonly(nameObj)
 			setTimeout(()=> {
-				nameObj.name = "lee"
-				copyNameObj.name = "taopoppy"
+				nameObj.name = "lee"  // reactive修饰的会响应式修改
+				copyNameObj.name = "taopoppy" // readonly不允许响应式修改
 			},2000)
 			return { nameObj, copyNameObj }
 		}
@@ -194,6 +201,7 @@ const app = Vue.createApp({
 	app.mount("#root")
 </script>
 ```
+在`vue2`当中修改数组或者对象当中的元素时，`vue`并不认为数组或者对象本身改变，所以不会响应，在`vue3`当中就会认为数组或者对象是响应式修改了。
 
 ### 3. toRefs
 <font color=#1E90FF>toRefs的作用就是将rective修饰的proxy对象转换成为ref修饰的proxy对象，简单的说如果一个reactive对象的单个属性拿出来并不是响应式的，必须通过toRefs才能将其变成响应式的</font>

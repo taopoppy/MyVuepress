@@ -649,6 +649,7 @@ app.config.optionMergeStrategies.number = (mixinVal, appValue) => {
 ```javascript
 // 1. 书写插件
 const myPlugin = {
+	// install函数是固定写法，表示初始化的函数，app就是创建的Vue实例，options是app注册插件时候传递的第二个参数
 	install(app, options) {
 		app.provide('name',options.name) // 3. 向全局提供name属性
 		app.direcive('focus', {          // 4. 向全局提供自定义指令
@@ -685,7 +686,7 @@ app.component('my-title', {
 	`
 })
 
-// 2. 注册插件
+// 2. 注册插件（第二个参数会在插件的install函数当中使用options接收）
 app.use(myPlugin, {name: 'taopoppy'})
 ```
 
