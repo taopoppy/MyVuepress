@@ -359,6 +359,46 @@ setup(props, context) {
 	app.mount("#root")
 </script>
 ```
+关于`reactive`还有一个比较重要的问题就是，<font color=#DD1144>reactive修饰的数据无法通过直接赋值的方式去赋值</font>,比如下面这段代码就不起作用：
+```html
+<script>
+	const list = reactive([])
+	const clearAll = () => {
+		list = []  // 不起作用，无法通过直接给reactive类型直接赋值
+	}
+</script>
+```
+有下面三种方式去解决，个人认为第一种最简单，最后一种最合理：
+```html
+<script>
+	// 第一种，改为ref定义（虽然说前面我们说ref只能定义基础类型，但是实战里面定义对象也可以）
+	const list = ref([])
+	const clearAll = () => {
+		list.value = []
+	}
+
+	// 纯粹通过数组方式去解决(有些场景用起来比较方便，比如删除数组某个元素，list.splice(index, 1))
+	const list = reactive([])
+	const clearAll = () => {
+		if(list.length ! == 0) {
+			list.pop()
+		}
+	}
+
+	// 再封装一层数据（合理）
+	// 这种使用起来就需要使用list.data了
+	// 如果想让data成为响应性的，可通过toRefs()方法再转换成ref类型
+	const list  = reactive({
+		data: []
+	})
+	const clearAll = () => {
+		list.data = []
+	}
+
+</script>
+```
+
+
 
 ### 7. computed
 `setup`当中的计算属性和旧的语法并不相同，我们来看：
@@ -416,7 +456,7 @@ setup(props, context) {
 			const { ref, reactive, watch } = Vue
 			const name = ref("taopoppy")
 
-			// 使用watch监听name属性，具有一定惰性
+			// 使用watch监听name属性，具有一定惰性（第一次页面渲染的时候不会执行，只有数据变化的时候才执行）
 			// currentValue为当前改变后的值，prevValue为改变之前的值
 			watch(name, (currentValue, prevValue)=> {
 				console.log(currentValue, prevValue)
@@ -442,7 +482,7 @@ setup(props, context) {
 			const { reactive, watch } = Vue
 			const nameObj = reactive({name: "dell"})
 
-			// 这里要书写一个函数，返回nameObj.name
+			// 这里要书写一个函数，返回nameObj.name，这种一种getter的写法
 			watch(() => nameObj.name, (currentValue, prevValue)=> {
 				console.log(currentValue, prevValue)
 			})
@@ -460,12 +500,146 @@ setup(props, context) {
 	app.mount("#root")
 </script>
 ```
-`watch`不能可以监听一个属性，也可以同时监听多个属性，写法就变成了数组，这种写法可以在(官网)[https://v3.cn.vuejs.org/api/computed-watch-api.html#%E4%B8%8E-watcheffect-%E7%9B%B8%E5%90%8C%E7%9A%84%E8%A1%8C%E4%B8%BA]看到。
+`watch`不仅可以监听一个属性，也可以同时监听多个属性，写法就变成了数组，这种写法可以在(官网)[https://v3.cn.vuejs.org/api/computed-watch-api.html#%E4%B8%8E-watcheffect-%E7%9B%B8%E5%90%8C%E7%9A%84%E8%A1%8C%E4%B8%BA]看到。
+
+上面我们说了`watch`监听基础类型的数据其实很简单，但是对于`watch`监听引用类型的数据其实比较复杂：下面是参考[Vue3中watch的最佳实践](https://juejin.cn/post/6980987158710452231)的一段代码：
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+	<div id="root"></div>
+</body>
+<script>
+
+
+
+
+	const app = Vue.createApp({
+		template:`
+		<div>
+			<div>ref定义数组：{{arrayRef}}</div>
+			<div>reactive定义数组：{{arrayReactive}}</div>
+		</div>
+		<div>
+			<button @click="changeArrayRef">改变ref定义数组第一项</button>
+			<button @click="changeArrayReactive">改变reactive定义数组第一项</button>
+		</div>
+		<div>
+			<div>ref定义object：{{objectRef}}</div>
+			<div>reactive定义object：{{objectReactive}}</div>
+		</div>
+		<div>
+			<button @click="changeObjectRef">改变ref定义对象的name</button>
+			<button @click="changeObjectReactive">改变reactive定义对象的name</button>
+		</div>
+		`,
+		setup() {
+			const {ref, reactive, watch} = Vue
+
+			const arrayRef = ref([1, 2, 3, 4])
+			const arrayReactive = reactive([1, 2, 3, 4])
+			const objectRef = ref({name:'preName'})
+			const objectReactive = reactive({name:'preName'})
+
+			// ref not deep, 不能深度侦听
+			const arrayRefWatch = watch(arrayRef, (newValue, oldValue) => {
+				console.log('newArrayRefWatch', newValue, 'oldArrayRefWatch', oldValue)
+			})
+
+			// ref deep， 深度侦听，新旧值一样
+			const arrayRefDeepWatch = watch(arrayRef, (newValue, oldValue) => {
+				console.log('newArrayRefDeepWatch', newValue, 'oldArrayRefDeepWatch', oldValue)
+			}, {deep: true})
+
+			// ref deep, getter形式 ， 新旧值不一样
+			const arrayRefDeepGetterWatch = watch(() => [...arrayRef.value], (newValue, oldValue) => {
+				console.log('newArrayRefDeepGetterWatch', newValue, 'oldArrayRefDeepGetterWatch', oldValue)
+			})
+
+			// reactive，默认深度监听，可以不设置deep:true, 新旧值一样
+			const arrayReactiveWatch = watch(arrayReactive, (newValue, oldValue) => {
+				console.log('newArrayReactiveWatch', newValue, 'oldArrayReactiveWatch', oldValue)
+			})
+
+			// reactive，getter形式 ， 新旧值不一样
+			const arrayReactiveGetterWatch = watch(() => [...arrayReactive], (newValue, oldValue) => {
+				console.log('newArrayReactiveFuncWatch', newValue, 'oldArrayReactiveFuncWatch', oldValue)
+			})
+
+			// ref not deep, 不能深度侦听
+			const objectRefWatch = watch(objectRef, (newValue, oldValue) => {
+				console.log('newObjectRefWatch', newValue, 'oldObjectRefWatch', oldValue)
+			})
+
+			// ref deep， 深度侦听，新旧值一样
+			const objectRefDeepWatch = watch(objectRef, (newValue, oldValue) => {
+				console.log('newObjectRefDeepWatch', newValue, 'oldObjectReDeepWatch', oldValue)
+			},{deep: true})
+
+			// ref deep, getter形式 ， 新旧值不一样
+			const objectRefDeepGetterWatch = watch(() => { return {...objectRef.value} }, (newValue, oldValue) => {
+				console.log('newObjectRefDeepGetterWatch', newValue, 'oldObjectRefDeepGetterWatch', oldValue)
+			})
+
+			// reactive，默认深度监听，可以不设置deep:true, 新旧值一样
+			const objectReactiveWatch = watch(objectReactive, (newValue, oldValue) => {
+				console.log('newObjectReactiveWatch', newValue, 'oldObjectReactiveWatch', oldValue)
+			})
+
+			// reactive，getter形式 ， 新旧值不一样
+			const objectReactiveGetterWatch = watch(() => { return {...objectReactive} }, (newValue, oldValue) => {
+				console.log('newObjectReactiveFuncWatch', newValue, 'oldObjectReactiveFuncWatch', oldValue)
+			})
+
+
+			const changeArrayRef = () => { arrayRef.value[0] = 3 }
+			const changeArrayReactive = () => { arrayReactive[0] = 6 }
+			const changeObjectRef = () => { objectRef.value.name = "NextName" }
+			const changeObjectReactive = () => { objectReactive.name = "NextName" }
+
+			return {
+				arrayRef,
+				arrayReactive,
+				objectRef,
+				objectReactive,
+				changeArrayRef,
+				changeArrayReactive,
+				changeObjectRef,
+				changeObjectReactive
+			}
+
+		}
+	})
+
+	const vm = app.mount('#root')
+</script>
+
+</html>
+```
+现象：当将引用对象采用`ref`形式定义时，如果不加上`deep:true`，`watch`是侦听不到值的变化的；而加上`deep:true`，`watch`可以侦听到数据的变化，但是当前值和先前值一样，即不能获取先前值。当将引用对象采用`reactive`形式定义时，不作任何处理，`watch`可以侦听到数据的变化，但是当前值和先前值一样。两种定义下，把`watch`的数据源写成`getter`函数的形式并进行深拷贝返回，可以在`watch`回调中同时获得当前值和先前值。
+
+结论：当我们使用watch侦听引用对象时
++ <font color=#1E90FF>若使用ref定义的引用对象：</font>
+	+	<font color=#DD1144>只要获取当前值，watch第一个参数直接写成数据源，另外需要加上deep:true选项</font>
+	+ <font color=#DD1144>若要获取当前值和先前值，需要把数据源写成getter函数的形式，并且需对数据源进行深拷贝</font>
++ <font color=#1E90FF>若使用reactive定义的引用对象</font>：
+	+ <font color=#DD1144>只要获取当前值，watch第一个参数直接写成数据源，可以不加deep：true选项</font>
+	+	<font color=#DD1144>若要获取当前值和先前值，需要把数据源写成getter函数的形式，并且需对数据源进行深拷贝</font>
+
 
 下面我们来说`watchEffect`, <font color=#DD1144>watchEffect是没有惰性的，是立即执行的，它不需要传递你要侦听的参数，会自动感知代码依赖，但是watchEffect无法获取之前数据的值</font>：
 ```javascript
+// watchEffect的执行依赖于传递给watchEffect的函数里用到了那些响应式变量
+// 比如你修改了nameObj.name,watchEffect发现函数内部用到了nameObje.name，所以会去执行，但是你要修改了其他响应式变量，,watchEffect发现函数内部没有用到，就不会执行
 watchEffet(() => {
-	console.log(nameObj.name)
+	console.log(nameObj.name) // 当且仅当nameObj.name变化，这个函数才会执行
 })
 
 // 可以取消watchEffect侦听器
@@ -478,9 +652,11 @@ const stop = watchEffect(() => {
 我们之前说`watch`是惰性的，但是实际上`watch`默认是惰性的，可以通过`watch`的第三个参数进行配置。
 
 ### 9. 新版生命周期
-+ <font color=#1E90FF>setup的执行是在beforeCreate和created之间，所以beforeCreate和created之间的代码可以直接写在setup当中</font>
++ <font color=#1E90FF>setup的执行是在beforeCreate和created之间，所以beforeCreate和created之间的代码可以直接写在setup当中，也正是因为如此，setup当中没有提供onBeforeCreate和onCreated这两个生命周期函数</font>
 + <font color=#1E90FF>onRenderTracked在每次渲染后重新收集响应式依赖的时候</font>
 + <font color=#1E90FF>onRenderTriggered在每次触发页面重新渲染时自动执行</font>
+
+具体的`setup`当中生命周期的用法请参考[官网](https://cn.vuejs.org/api/composition-api-lifecycle.html#onmounted)
 
 ### 10. Provide/inject
 ```html
@@ -518,6 +694,8 @@ const stop = watchEffect(() => {
   const vm = app.mount('#root');
 </script>
 ```
+前面我们就说了在`vue2`当中是`project/inject`是一次性的，但是在`vue3`当中是可以试想响应式的，但是也要符合单向数据流的思想，通过调用祖辈的方式去修改数据值。
+
 
 ### 11. ref
 ```javascript
